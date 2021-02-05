@@ -19,7 +19,7 @@ function App({ scrapedData }) {
  
 
   const getRepresentatives = (address) => {
-    fetch('https://www.googleapis.com/civicinfo/v2/representatives?key=AIzaSyB3qmL3kbua0m-hzhrxw-kL-nfrl21o42M&roles=legislatorLowerBody&roles=legislatorUpperBody&roles=headOfGovernment&levels=administrativeArea1&address=' + encodeURIComponent(address))
+    fetch('https://www.googleapis.com/civicinfo/v2/representatives?key=AIzaSyA6pBuQbIQYtJYBarykcwYzxxmuWULqw4Q&roles=legislatorLowerBody&roles=legislatorUpperBody&roles=headOfGovernment&levels=administrativeArea1&address=' + encodeURIComponent(address))
       .then(response => response.json())
       .then(data => {
         if (data.error) {
@@ -85,7 +85,7 @@ function App({ scrapedData }) {
   return (
     <div className="App-container">
       <div className="App-header">
-        <h1>Track W.Va's 2021 Legislative Session</h1>
+        <h1>W.Va's 2021 Legislative Session Tracker</h1>
         <div className="byline">By <a href="https://mountainstatespotlight.org/author/lucasmanfield/">Lucas Manfield</a>, Mountain State Spotlight. Updated Feb 1, 3:30 p.m.</div>
       </div>
       <div className="App-search">
@@ -162,7 +162,7 @@ function App({ scrapedData }) {
           </h2>
         </div>
         <div className="App-section-content">
-          {scrapedData.bills.filter(b => b.following).map(bill => (
+          {scrapedData.bills.filter(b => b.followingIdx != null).sort(b => b.followingIdx).map(bill => (
             <BillBox {...bill} key={bill.name}/>
           ))}
         </div>

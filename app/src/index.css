@@ -34,14 +34,15 @@ h2 {
 
 .Header-button {
   float: right;
-  background: #3b63be;
+  background: #0037b5;
   opacity: .8;
+  font-size: 14px;
   border-radius: 3px;
   color: white;
-  font-weight:900;
-  padding:0px 10px;
-  height:32px;
-  line-height:32px;
+  font-weight: 700;
+  padding: 0px 10px;
+  height: 32px;
+  line-height: 32px;
 }
 
 .Header-button:hover {
@@ -50,7 +51,7 @@ h2 {
 }
 
 .App-container {
-  margin:40px auto;
+  margin:20px auto;
   max-width: 760px;
   padding: 10px;
 }
@@ -62,7 +63,7 @@ h2 {
 
 .App-header {
   text-align: center;
-  margin-bottom:50px;
+  margin-bottom:40px;
 }
 
 .App-section {
@@ -70,7 +71,8 @@ h2 {
 }
 
 .App-section-header {
-  border-bottom:1px solid #ccc;
+  margin-bottom:10px;
+  margin-left:2px;
 }
 
 .react-autosuggest__container {
@@ -164,6 +166,25 @@ h2 {
   margin-right:12px;
 }
 
+.Bill-url, .Person-url {
+  margin-top:10px;
+  font-size:12px;
+  font-style: italic;
+  color: #777;
+}
+.Bill-url svg, .Person-url svg {
+  position:relative;
+  top:1px;
+  font-size:11px;
+  margin-left:2px;
+}
+.Bill-url a, .Person-url a {
+  color: #777;
+}
+.Bill-url a:hover, .Person-url a:hover {
+  color: black;
+}
+
 .Bill-follow svg {
   margin-right:10px;
 }
@@ -200,8 +221,43 @@ h2 {
   font-size:15px;
 }
 
+.Bill-committees {
+  display: flex;
+}
+
+.Bill-committee {
+  display: flex;
+  align-items: center;
+  font-size:14px;
+  padding: 0px 20px 5px 0px;
+  min-width: 200px;
+}
+
+.Bill-committee-status {
+  font-style: italic;
+  font-size: 12px;
+  color: #666;
+}
+
+.Bill-committee-chamber {
+  display: inline-block;
+  padding:2px 5px;
+  background: #888;
+  color: white;
+  font-weight: bold;
+  font-size: 12px;
+  border-radius: 3px;
+  position: relative;
+  width:40px;
+  text-align: center;
+  margin:4px 10px 4px 0px;
+}
+
 .Bill-sponsors {
   overflow-x: scroll;
+  width:100%;
+}
+.Bill-sponsors-container {
   display: flex;
 }
 
@@ -284,7 +340,6 @@ h2 {
   background: green;
   border-color: green;
 }
-
 .Bill-statusbar-line {
   height:3px;
   width: 100%;
@@ -316,14 +371,37 @@ h2 {
 }
 
 .Person-header {
-  margin-bottom:20px;
-  padding:20px 0px;
   border-bottom: 1px solid #ddd;
+  border-top: 1px solid #ddd;
+  font-size:14px;
+  margin:20px 0px;
+  padding:20px 0px;
 }
 
-.Person-title {
+.Person-name {
   font-weight: bold;
   font-size: 20px;
+  margin-bottom:4px;
+}
+
+.Person-contact {
+  margin-top: 10px;
+}
+.Person-contact svg {
+  position: relative;
+  top:3px;
+  margin-right:3px;
+  font-size: 16px;
+}
+.Person-contact a {
+  color: #333;
+  margin-right: 10px;
+  display: block;
+  margin-bottom:3px;
+}
+.Person-contact a:hover {
+  color: black;
+  text-decoration: none;
 }
 
 .Person-breadcrumbs {
@@ -332,13 +410,11 @@ h2 {
 }
 
 .Person-bills {
-  display: flex;
-  flex-wrap: wrap;
+  margin-top:10px;
 }
 
 .Person-bills-header {
-  font-weight: bold;
-  margin: 10px 5px;
+  margin-left:2px;
 }
 
 .Person-bill {
@@ -351,17 +427,6 @@ h2 {
   margin:40px auto;
   max-width: 760px;
   padding:10px;
-}
-
-.Subject-header {
-  margin-bottom:20px;
-  padding:20px 0px;
-  border-bottom: 1px solid #ddd;
-}
-
-.Subject-title {
-  font-weight: bold;
-  font-size: 20px;
 }
 
 .Subject-breadcrumbs {
@@ -402,12 +467,12 @@ h2 {
   background: #f8f8f8;
   font-size:14px;
   color: #333;
+  min-height:50px;
+  cursor: pointer;
 }
 
 .PersonBox-representative-name {
   margin-bottom: 5px;
-}
-.PersonBox-representative-name a {
   font-size:20px;
   font-weight: 600;
   color: black;
@@ -429,11 +494,24 @@ h2 {
   color: black;
 }
 
-.App-bill {
-  padding: 10px 15px;
+.PersonBox-tag {
+  display: inline-block;
+  padding:2px 5px;
+  background: rgb(17, 0, 172);
+  color: white;
+  font-weight: bold;
+  font-size: 12px;
+  border-radius: 3px;
+  position: relative;
+  margin-right:5px;
+  margin-top:10px;
+}
+
+.BillBox {
+  padding: 5px 15px;
   border: 1px solid #ddd;
   border-radius: 3px;
-  margin: 10px 0px;
+  margin: 5px 0px;
   min-width: 198px;
   position: relative;
   background: #f8f8f8;
@@ -444,42 +522,86 @@ h2 {
   cursor: pointer;
 }
 
-.App-bill:hover {
+.BillBox:hover {
   color: black;
 }
 
-.App-bill-name {
+.BillBox-name {
   font-weight: 600;
   display: inline-block;
   flex: 0 0 100px;
 }
 
-.App-bill-status {
-  text-align: right;
+.BillBox-status {
+  text-align: center;
   margin-left:10px;
+  margin-right:10px;
   font-size: 12px;
   font-style: italic;
   font-weight: 600;
+  padding-top:5px;
 }
 
-.App-bill-details {
+.BillBox-details {
   flex: 1;
+  padding: 5px 0px;
 }
 
-.App-bill-notes {
+.BillBox-notes {
   font-style: italic;
   color: #666;
   margin-top: 5px;
+  margin-bottom: 5px;
 }
 
-.App-bill-tags {
+.BillBox-tags {
   margin-top:10px;
 }
+
+.BillBox-statusbar {
+  margin:10px auto;
+  width:40px;
+  display: flex;
+  position: relative;
+  left:-5px;
+}
+
+.BillBox-statusbar-segment {
+  position: relative;
+  flex: 1;
+}
+.BillBox-statusbar-segment-long {
+  flex: 2;
+}
+.BillBox-statusbar-dot {
+  height: 4px;
+  width: 4px;
+  border-radius: 4px;
+  position: absolute;
+  left: 0px;
+  margin-top: -3px;
+  z-index: 1;
+  background: white;
+  border: 2px solid black;
+}
+.BillBox-statusbar-dot.active {
+  background: green;
+  border-color: green;
+}
+.BillBox-statusbar-line {
+  height:2px;
+  width: 100%;
+  background: black;
+}
+.BillBox-statusbar-line.active {
+  background: green;
+}
+
 .Tag {
   background: lightblue;
   border-radius: 10px;
   padding:3px 10px;
-  margin: 0px 5px 5px 0px;
+  margin: 0px 5px 1px 0px;
   display: inline-block;
   font-size:12px;
   color: black;

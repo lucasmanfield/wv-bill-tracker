@@ -1,15 +1,24 @@
 
 import React from 'react';
 import { MdPhone, MdEmail } from 'react-icons/md';
+import { useHistory } from "react-router-dom";
 
-function PersonBox({ name, email, phone, party, district, office }) {
+function PersonBox({ name, email, phone, party, district, office, tag }) {
+  const history = useHistory()
   return (
-    <div className="PersonBox-representative" key={name}>
-      <div className="PersonBox-representative-name"><a href={`/person/${encodeURIComponent(name)}`}>{party ? `${party[0]} - ` : ''}{name}</a></div>
-      <div className="PersonBox-representative-office">{office == 'WV State Senator' ? 'Senator' : 'Delegate'}{district ? `, District ${district}` : ''}</div>
+    <div 
+      className="PersonBox-representative" 
+      key={name} 
+      onClick={() => history.push(`/person/${encodeURIComponent(name)}`)}
+    >
+      <div className="PersonBox-representative-name">{party ? `${party[0]} - ` : ''}{name}</div>
+      <div className="PersonBox-representative-office">
+        {office == 'WV State Senator' ? 'Senator' : 'Delegate'}{district ? `, District ${district}` : ''}
+      </div>
+      {tag ? <div className="PersonBox-tag">{tag}</div> : ''} 
       <div className="PersonBox-contact-icons">
-        {email ? <a href={`mailto:${email}`}><MdEmail /></a> : ''}
-        {phone ? <a href={`tel:${phone}`}><MdPhone/></a> : ''}
+        {email ? <a href={`mailto:${email}`} onClick={e => e.stopPropagation()}><MdEmail /></a> : ''}
+        {phone ? <a href={`tel:${phone}`} onClick={e => e.stopPropagation()}><MdPhone/></a> : ''}
       </div>
     </div>
   )

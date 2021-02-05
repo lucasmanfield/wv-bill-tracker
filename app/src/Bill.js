@@ -6,6 +6,7 @@ import {
   Link,
 } from "react-router-dom";
 import { BsStarFill, BsStar } from 'react-icons/bs';
+import { RiExternalLinkLine } from 'react-icons/ri';
 import PersonBox from './PersonBox'
 import { mapTagToColor } from './utilities'
 import moment from 'moment'
@@ -24,7 +25,7 @@ function Bill({ scrapedData }) {
       }
     })
     setTimeout(() => window.twttr.widgets.load(), 0)
-  });
+  }, []);
 
   if (!bill) {
     return <div />
@@ -58,6 +59,9 @@ function Bill({ scrapedData }) {
             <div key={tag} className="Tag" style={{background: mapTagToColor(tag)}}>{tag}</div>
           ))}
         </div>
+        <div className="Bill-url">
+          Source:&nbsp;&nbsp;<a href={bill.url} target="_blank">West Virginia Legislature <RiExternalLinkLine /></a>
+        </div>
       </div>
       <div className="Bill-statusbar">
         <div className="Bill-statusbar-group">
@@ -76,63 +80,100 @@ function Bill({ scrapedData }) {
               <div className='Bill-statusbar-status-date'>{bill.last_update}</div>
             </div>
           : ''}
-          <div className={`Bill-statusbar-dot ${bill.step > 1 ? 'active' : ''}`} />
-          <div className={`Bill-statusbar-line ${bill.step > 2 ? 'active' : ''}`} />
+          <div className={`Bill-statusbar-dot ${bill.step >= 1 ? 'active' : ''}`} />
+          <div className={`Bill-statusbar-line ${bill.step >= 1 ? 'active' : ''}`} />
         </div>
         <div className="Bill-statusbar-segment">
-          {bill.step == 3 ?
+          {bill.step >= 1 && bill.step < 5 ?
             <div className='Bill-statusbar-status'>
               <div className='Bill-statusbar-status-name'>{bill.status}</div>
               <div className='Bill-statusbar-status-date'>{bill.last_update}</div>
             </div>
           : ''}
-          <div className={`Bill-statusbar-dot ${bill.step > 3 ? 'active' : ''}`} />
-          <div className={`Bill-statusbar-line ${bill.step > 4 ? 'active' : ''}`} />
+          <div className={`Bill-statusbar-dot ${bill.step >= 2 ? 'active' : ''}`} />
+          <div className={`Bill-statusbar-line ${bill.step >= 2 ? 'active' : ''}`} />
         </div>
         <div className="Bill-statusbar-segment Bill-statusbar-segment-long">
-          {bill.step == 4 ?
+          {bill.step == 5 ?
             <div className='Bill-statusbar-status'>
               <div className='Bill-statusbar-status-name'>{bill.status}</div>
               <div className='Bill-statusbar-status-date'>{bill.last_update}</div>
             </div>
           : ''}
-          <div className={`Bill-statusbar-dot ${bill.step > 4 ? 'active' : ''}`} />
-          <div className={`Bill-statusbar-line ${bill.step > 5 ? 'active' : ''}`} />
+          <div className={`Bill-statusbar-dot ${bill.step >= 5 ? 'active' : ''}`} />
+          <div className={`Bill-statusbar-line ${bill.step >= 5 ? 'active' : ''}`} />
         </div>
         <div className="Bill-statusbar-segment">
-          <div className={`Bill-statusbar-dot ${bill.step > 5 ? 'active' : ''}`} />
-          <div className={`Bill-statusbar-line ${bill.step > 6 ? 'active' : ''}`} />
+          {bill.step == 6 ?
+            <div className='Bill-statusbar-status'>
+              <div className='Bill-statusbar-status-name'>{bill.status}</div>
+              <div className='Bill-statusbar-status-date'>{bill.last_update}</div>
+            </div>
+          : ''}
+          <div className={`Bill-statusbar-dot ${bill.step >= 6 ? 'active' : ''}`} />
+          <div className={`Bill-statusbar-line ${bill.step >= 6 ? 'active' : ''}`} />
         </div>
         <div className="Bill-statusbar-segment">
-          <div className={`Bill-statusbar-dot ${bill.step > 7 ? 'active' : ''}`} />
-          <div className={`Bill-statusbar-line ${bill.step > 8 ? 'active' : ''}`} />
+          {bill.step >= 6 && bill.step < 10 ?
+            <div className='Bill-statusbar-status'>
+              <div className='Bill-statusbar-status-name'>{bill.status}</div>
+              <div className='Bill-statusbar-status-date'>{bill.last_update}</div>
+            </div>
+          : ''}
+          <div className={`Bill-statusbar-dot ${bill.step >= 7 ? 'active' : ''}`} />
+          <div className={`Bill-statusbar-line ${bill.step >= 7 ? 'active' : ''}`} />
         </div>
         <div className="Bill-statusbar-segment Bill-statusbar-segment-long">
-          <div className={`Bill-statusbar-dot ${bill.step > 8 ? 'active' : ''}`} />
-          <div className={`Bill-statusbar-line ${bill.step > 9 ? 'active' : ''}`} />
-        </div>
-        <div className="Bill-statusbar-segment">
-          {bill.step == 12 ?
+          {bill.step == 10 ?
             <div className='Bill-statusbar-status'>
               <div className='Bill-statusbar-status-name'>{bill.status}</div>
               <div className='Bill-statusbar-status-date'>{bill.last_update}</div>
             </div>
           : ''}
-          <div className={`Bill-statusbar-dot ${bill.step > 10 ? 'active' : ''}`} />
+          <div className={`Bill-statusbar-dot ${bill.step >= 10 ? 'active' : ''}`} />
+          <div className={`Bill-statusbar-line ${bill.step >= 11 ? 'active' : ''}`} />
+        </div>
+        <div className="Bill-statusbar-segment">
+          {bill.step >= 11 ?
+            <div className='Bill-statusbar-status'>
+              <div className='Bill-statusbar-status-name'>{bill.status}</div>
+              <div className='Bill-statusbar-status-date'>{bill.last_update}</div>
+            </div>
+          : ''}
+          <div className={`Bill-statusbar-dot ${bill.step == 12 ? 'active' : ''}`} />
         </div>
       </div>
       <div className="Bill-content">
+        {(bill.committees || []).length ?
+        <div>
+          <div className="Bill-section-header">Committees</div>
+          <div className="Bill-section Bill-committees">
+            {bill.committees.map(committee => (
+              <div className="Bill-committee">
+                <div className="Bill-committee-chamber">{committee.chamber === 'senate' ? 'Sen.' : 'House'}</div>
+                <div className="Bill-committee-details">
+                  <div className="Bill-committee-name">{committee.name}</div>
+                  <div className="Bill-committee-status">{committee.status} {committee.status === 'Referred' ? moment(committee.date).fromNow() : ''}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        : ''}
         <div className="Bill-section-header">Sponsors</div>
-        <div className="Bill-sponsors Bill-section">
-          {bill.sponsors.map(sponsor => {
-            const person = getPersonByLastName(people, sponsor.name)
-            if (!person) {
-              return <span className="Bill-sponsor" key={sponsor.name}>{sponsor.name}</span>
-            }
-            return (
-              <PersonBox {...person} key={person.name}/>
-            )
-          })}
+        <div className="Bill-section Bill-sponsors">
+          <div className="Bill-sponsors-container" style={{width: bill.sponsors.length * 232 + 'px'}}>
+            {bill.sponsors.map(sponsor => {
+              const person = getPersonByLastName(people, sponsor.name)
+              if (!person) {
+                return <span className="Bill-sponsor" key={sponsor.name}>{sponsor.name}</span>
+              }
+    
+              return (
+                <PersonBox {...person} tag={sponsor.classification == 'primary' ? 'Lead Sponsor' : null} key={person.name}/>
+              )
+            })}
+          </div>
         </div>
         {(bill.dispatches || []).length ?
         <div>

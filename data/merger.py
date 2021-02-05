@@ -40,7 +40,8 @@ for filename in glob.glob(path):
         if 'person_' in filename:
             person = {
                 'name': data['name'],
-                'image': data['image']
+                'image': data['image'],
+                'url': data['sources'][0]['url']
             }
             for item in data['contact_details']:
                 t = item['type']
@@ -59,8 +60,10 @@ for membership in memberships:
             person['party'] = party
     if 'lower' in membership['organization_id']:
         person['chamber'] = 'house'
+        person['office'] = 'WV State Representative'
     if 'upper' in membership['organization_id']:
         person['chamber'] = 'senate'
+        person['office'] = 'WV State Senator'
     
     if membership['post_id']:
         postData = json.loads(membership['post_id'][1:].encode('utf-8').decode('unicode_escape'))

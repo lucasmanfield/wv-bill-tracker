@@ -3,6 +3,7 @@ import {
   useParams,
   Link,
 } from "react-router-dom";
+import BillBox from './BillBox'
 
 function Subject({ scrapedData }) {
   const { name } = useParams();
@@ -16,25 +17,18 @@ function Subject({ scrapedData }) {
         }
       })
     })
-  });
+  }, []);
 
   return (
     <div className="Subject-container">
       <div className="Subject-breadcrumbs">
         <Link to="/">Search</Link>&nbsp;&nbsp;»&nbsp;&nbsp;{name}
       </div>
-      <div className="Subject-header">
-        <div className="Subject-name">{name}</div>
-      </div>
       <div className="Subject-content">
-      <div className="Subject-bills-header">Bills</div>
-        <div className="Subject-bills">
-          {bills.map(bill => (
-            <Link key={bill.name} className="Person-bill" to={`/bill/${bill.name}`}>
-              {bill.name}
-            </Link>
-          ))}
-        </div>
+      <div className="Subject-bills-header"><h2>Related Bills</h2></div>
+        {bills.map(bill => (
+          <BillBox {...bill} key={bill.name} />
+        ))}
       </div>
     </div>
   );

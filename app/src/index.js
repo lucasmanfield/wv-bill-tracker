@@ -65,11 +65,12 @@ function Wrapper() {
 
   useEffect(async () => {
     const output = await joinAirtable()
-    output[0].forEach((billData) => {
+    output[0].forEach((billData, idx) => {
       scrapedData.bills.forEach(bill => {
         updateBillStatus(bill)
         if (billData.name == bill.name) {
-          bill.following = true
+          bill.followingIdx = idx
+          console.log("seting ", idx, bill.name)
           bill.notes = billData.notes
           bill.tags = billData.tags
         }
