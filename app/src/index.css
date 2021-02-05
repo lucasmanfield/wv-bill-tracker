@@ -1,0 +1,486 @@
+body {
+  margin: 0;
+  font-family: "Lato","-apple-system","BlinkMacSystemFont","Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neue","sans-serif";
+}
+
+h1 {
+  font-weight:900;
+  font-size:42px;
+  margin:15px 0px;
+}
+
+h2 {
+  font-size:16px;
+  margin:5px 0px;
+  color: #333;
+}
+
+ a {
+   color: #237eb5;
+   text-decoration: none;
+ }
+ a:hover {
+   text-decoration: underline;
+ }
+
+.Header {
+  background: #ddd;
+  padding:10px 20px;
+}
+
+.Header-logo {
+  height: 30px;
+}
+
+.Header-button {
+  float: right;
+  background: #3b63be;
+  opacity: .8;
+  border-radius: 3px;
+  color: white;
+  font-weight:900;
+  padding:0px 10px;
+  height:32px;
+  line-height:32px;
+}
+
+.Header-button:hover {
+  opacity: 1;
+  text-decoration: none;
+}
+
+.App-container {
+  margin:40px auto;
+  max-width: 760px;
+  padding: 10px;
+}
+
+.byline {
+  font-style: italic;
+  color: #666;
+}
+
+.App-header {
+  text-align: center;
+  margin-bottom:50px;
+}
+
+.App-section {
+  margin:20px;
+}
+
+.App-section-header {
+  border-bottom:1px solid #ccc;
+}
+
+.react-autosuggest__container {
+  position: relative;
+  margin-bottom:20px;
+}
+
+.react-autosuggest__input {
+  padding: 15px 20px;
+  box-sizing: border-box;  
+  width: 100%;
+  font-weight: 300;
+  font-size: 16px;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+  border: 1px solid #e1e1e1;
+  box-shadow: 0 0 5px rgba(0,0,0,.05);
+  color: black;
+  font-size: 19px;
+}
+
+.react-autosuggest__input--focused, .react-autosuggest__input:focus {
+  outline: none;
+}
+
+.react-autosuggest__input--open {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.react-autosuggest__suggestions-container {
+  display: none;
+  width: 100%;
+}
+
+.react-autosuggest__suggestions-container--open {
+  display: block;
+  position: absolute;
+  top: 51px;
+  border: 1px solid #aaa;
+  background-color: white;
+  font-family: Helvetica, sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  z-index: 2;
+}
+
+.react-autosuggest__suggestions-list {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.react-autosuggest__suggestion {
+  cursor: pointer;
+  padding: 10px 20px;
+}
+
+.react-autosuggest__suggestion--highlighted {
+  background-color: #ddd;
+}
+
+.Bill-container {
+  margin:40px auto;
+  max-width: 760px;
+  padding:10px;
+  position: relative;
+}
+
+.Bill-header {
+  background: #f8f8f8;
+  border-radius: 3px;
+  border: 1px solid #ddd;
+  padding: 15px 20px;
+}
+
+.Bill-title {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.Bill-subjects {
+  margin-top: 10px;
+}
+
+.Bill-subject {
+  color: #555;
+  font-size: 13px;
+  margin-right:12px;
+}
+
+.Bill-follow svg {
+  margin-right:10px;
+}
+.Bill-following svg {
+  color: rgb(252, 206, 0);
+}
+.Bill-follow {
+  align-items: center;
+  display:flex;
+  position: absolute;
+  background: white;
+  border: 1px solid #666;
+  color: #666;
+  font-size:14px;
+  border-radius: 3px;
+  right: 10px;
+  top:2px;
+  padding:5px 10px;
+  cursor: pointer;
+  font-weight:600;
+  outline: 0;
+}
+
+.Bill-follow:hover {
+  color: black;
+  border-color: black;
+}
+
+.Bill-section-header {
+  margin-top: 20px;
+  padding-bottom: 5px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #aaa;
+  font-size:15px;
+}
+
+.Bill-sponsors {
+  overflow-x: scroll;
+  display: flex;
+}
+
+.Bill-sponsors .PersonBox-representative{
+  width: 200px;
+  margin:0px;
+  margin-right:10px;
+  margin-bottom:10px;
+}
+
+.Bill-breadcrumbs {
+  font-size: 15px;
+  margin-bottom:15px;
+}
+
+.Bill-statusbar-status {
+  position: absolute;
+  bottom: -52px;
+  right: -4px;
+  transform: translate(-50%, 0);
+  background: black;
+  padding: 5px 10px;
+  color: white;
+  font-size: 13px;
+  border-radius: 3px;
+  font-weight: bold;
+  text-align:center;
+  white-space: nowrap;
+}
+
+.Bill-statusbar-status-date {
+  font-weight: 500;
+  font-style: italic;
+  font-size:11px;
+  margin-top:3px;
+}
+
+.Bill-statusbar {
+  margin: 60px 0px;
+  padding: 0px 2.5%;
+  display: flex;
+  position: relative;
+}
+.Bill-statusbar-group {
+  position: absolute;
+  border: 1px solid #333;
+  border-radius: 5px;
+  width: 28%;
+  left: 0;
+  top: -20px;
+  height: 40px;
+}
+.Bill-statusbar-group-name {
+  position: relative;
+  top: -17px;
+  width: 100%;
+  font-size: 12px;
+  font-style: italic;
+  text-align: center;
+}
+.Bill-statusbar-segment {
+  position: relative;
+  flex: 1;
+}
+.Bill-statusbar-segment-long {
+  flex: 2;
+}
+.Bill-statusbar-dot {
+  height: 5px;
+  width: 5px;
+  border-radius: 5px;
+  position: absolute;
+  left: 0px;
+  margin-top: -4px;
+  z-index: 1;
+  background: white;
+  border: 3px solid black;
+}
+.Bill-statusbar-dot.active {
+  background: green;
+  border-color: green;
+}
+
+.Bill-statusbar-line {
+  height:3px;
+  width: 100%;
+  background: black;
+}
+.Bill-statusbar-line.active {
+  background: green;
+}
+
+.Bill-dispatch-header {
+  margin-bottom:5px;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.Bill-dispatch-header-date {
+  font-weight:600;
+  font-style: normal;
+}
+
+.Bill-dispatch {
+  margin:15px 0px;
+}
+
+.Person-container {
+  margin:40px auto;
+  max-width: 760px;
+  padding:10px;
+}
+
+.Person-header {
+  margin-bottom:20px;
+  padding:20px 0px;
+  border-bottom: 1px solid #ddd;
+}
+
+.Person-title {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.Person-breadcrumbs {
+  font-size: 14px;
+  margin-bottom:20px;
+}
+
+.Person-bills {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.Person-bills-header {
+  font-weight: bold;
+  margin: 10px 5px;
+}
+
+.Person-bill {
+  display: inline-block;
+  margin: 5px;
+  width:70px;
+}
+
+.Subject-container {
+  margin:40px auto;
+  max-width: 760px;
+  padding:10px;
+}
+
+.Subject-header {
+  margin-bottom:20px;
+  padding:20px 0px;
+  border-bottom: 1px solid #ddd;
+}
+
+.Subject-title {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.Subject-breadcrumbs {
+  font-size: 14px;
+  margin-bottom:20px;
+}
+
+.Subject-bills {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.Subject-bills-header {
+  font-weight: bold;
+  margin: 10px 5px;
+}
+
+.Subject-bill {
+  display: inline-block;
+  margin: 5px;
+  width:70px;
+}
+
+.App-representatives {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin:20px 0px;
+}
+
+.PersonBox-representative {
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  margin: 10px;
+  min-width: 198px;
+  position: relative;
+  background: #f8f8f8;
+  font-size:14px;
+  color: #333;
+}
+
+.PersonBox-representative-name {
+  margin-bottom: 5px;
+}
+.PersonBox-representative-name a {
+  font-size:20px;
+  font-weight: 600;
+  color: black;
+}
+
+.PersonBox-contact-icons {
+  font-size:20px;
+  display: inline-block;
+  position: absolute;
+  right:5px;
+  bottom:5px;
+}
+
+.PersonBox-contact-icons a {
+  color: #666;
+  margin-left:5px;
+}
+.PersonBox-contact-icons a:hover {
+  color: black;
+}
+
+.App-bill {
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  margin: 10px 0px;
+  min-width: 198px;
+  position: relative;
+  background: #f8f8f8;
+  font-size:16px;
+  color: #333;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.App-bill:hover {
+  color: black;
+}
+
+.App-bill-name {
+  font-weight: 600;
+  display: inline-block;
+  flex: 0 0 100px;
+}
+
+.App-bill-status {
+  text-align: right;
+  margin-left:10px;
+  font-size: 12px;
+  font-style: italic;
+  font-weight: 600;
+}
+
+.App-bill-details {
+  flex: 1;
+}
+
+.App-bill-notes {
+  font-style: italic;
+  color: #666;
+  margin-top: 5px;
+}
+
+.App-bill-tags {
+  margin-top:10px;
+}
+.Tag {
+  background: lightblue;
+  border-radius: 10px;
+  padding:3px 10px;
+  margin: 0px 5px 5px 0px;
+  display: inline-block;
+  font-size:12px;
+  color: black;
+}
