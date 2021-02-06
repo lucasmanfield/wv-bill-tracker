@@ -88,7 +88,38 @@ function App({ scrapedData }) {
         <h1>W.Va's 2021 Legislative Session Tracker</h1>
         <div className="byline">By <a href="https://mountainstatespotlight.org/author/lucasmanfield/">Lucas Manfield</a>, Mountain State Spotlight. Updated Feb 1, 3:30 p.m.</div>
       </div>
+      <div className="App-localrep">
+        <div className="App-section-header">
+          <h2>Enter your address to find your local representatives</h2>
+        </div>
+        <input 
+          type="text"
+          placeholder="1900 Kanawha Blvd E, Charleston WV"
+          value={cookies.address || ''}
+          className="react-autosuggest__input"
+          onChange={(e) => {
+            const address = e.target.value
+            setCookie('address', address)
+            if (timeout) {
+              clearTimeout(timeout)
+            }
+            timeout = setTimeout(() => {
+              getRepresentatives(address)
+            }, 500);
+          }}
+        />
+        {representatives.length ? 
+        <div className="App-representatives">
+          {representatives.map(rep => (
+            <PersonBox {...rep} key={rep.name} />
+          ))}
+        </div>
+        : ''}
+      </div>
       <div className="App-search">
+        <div className="App-section-header">
+          <h2>Search for a specific bill or representative</h2>
+        </div>
         <Autosuggest
           suggestions={suggestions}
           onSuggestionsFetchRequested={({ value }) => {
@@ -112,34 +143,13 @@ function App({ scrapedData }) {
           }}
           renderSuggestion={renderSuggestion}
           inputProps={{
-            placeholder: 'Type to search for a bill or representative by name',
+            placeholder: 'e.g. SB 101, Amy Summers',
             value: searchValue || '',
             onChange: (e) => {
               setSearchValue(e.target.value)
             }
           }}
         />
-        <input 
-          type="text"
-          placeholder="Enter your address to look up your representatives"
-          value={cookies.address || ''}
-          className="react-autosuggest__input"
-          onChange={(e) => {
-            const address = e.target.value
-            setCookie('address', address)
-            if (timeout) {
-              clearTimeout(timeout)
-            }
-            timeout = setTimeout(() => {
-              getRepresentatives(address)
-            }, 500);
-          }}
-        />
-      </div>
-      <div className="App-representatives">
-        {representatives.map(rep => (
-          <PersonBox {...rep} />
-        ))}
       </div>
       {followingBills.length ?
         <div className="App-section">
@@ -162,7 +172,7 @@ function App({ scrapedData }) {
           </h2>
         </div>
         <div className="App-section-content">
-          {scrapedData.bills.filter(b => b.followingIdx != null).sort(b => b.followingIdx).map(bill => (
+          {scrapedData.bills.filter(b => b.followingIdx != null).sort((a, b) => a.followingIdx - b.followingIdx).map(bill => (
             <BillBox {...bill} key={bill.name}/>
           ))}
         </div>

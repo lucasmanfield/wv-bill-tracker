@@ -14,8 +14,6 @@ import {
   Route
 } from "react-router-dom";
 
-
-
 function Wrapper() {
   const scrapedData = require('./output.json')
   const base = new Airtable({apiKey: 'keyX0mQVFiAFPITWj'}).base('apphXzpbYfgPql6dw');
@@ -70,7 +68,6 @@ function Wrapper() {
         updateBillStatus(bill)
         if (billData.name == bill.name) {
           bill.followingIdx = idx
-          console.log("seting ", idx, bill.name)
           bill.notes = billData.notes
           bill.tags = billData.tags
         }

@@ -31,8 +31,6 @@ function Bill({ scrapedData }) {
     return <div />
   }
 
-  console.log(bill)
-
   const isFollowing = (cookies.following || '').split(',').includes(name)
 
   return (
@@ -52,15 +50,14 @@ function Bill({ scrapedData }) {
       <div className="Bill-header">
         <div className="Bill-title">{bill.title}</div>
         <div className="Bill-subjects">
-          {bill.subjects.map(subject => (
-            <Link key={subject} className="Bill-subject" to={`/subject/${subject}`}>{subject}</Link>
-          ))}
+          
           {(bill.tags || []).map(tag => (
             <div key={tag} className="Tag" style={{background: mapTagToColor(tag)}}>{tag}</div>
           ))}
         </div>
         <div className="Bill-url">
-          Source:&nbsp;&nbsp;<a href={bill.url} target="_blank">West Virginia Legislature <RiExternalLinkLine /></a>
+          Topics:&nbsp;&nbsp;{bill.subjects.map((subject, idx) => (<Link key={subject} className="Bill-subject" to={`/subject/${subject}`}>{subject}{idx < bill.subjects.length - 1 ? ', ' : ''}</Link>))} 
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Source:&nbsp;&nbsp;<a href={bill.url} target="_blank">West Virginia Legislature <RiExternalLinkLine /></a>
         </div>
       </div>
       <div className="Bill-statusbar">
@@ -145,20 +142,20 @@ function Bill({ scrapedData }) {
       </div>
       <div className="Bill-content">
         {(bill.committees || []).length ?
-        <div>
-          <div className="Bill-section-header">Committees</div>
-          <div className="Bill-section Bill-committees">
-            {bill.committees.map(committee => (
-              <div className="Bill-committee">
-                <div className="Bill-committee-chamber">{committee.chamber === 'senate' ? 'Sen.' : 'House'}</div>
-                <div className="Bill-committee-details">
-                  <div className="Bill-committee-name">{committee.name}</div>
-                  <div className="Bill-committee-status">{committee.status} {committee.status === 'Referred' ? moment(committee.date).fromNow() : ''}</div>
+          <div>
+            <div className="Bill-section-header">Committees</div>
+            <div className="Bill-section Bill-committees">
+              {bill.committees.map(committee => (
+                <div className="Bill-committee" key={`${committee.name}-${committee.chamber}`}>
+                  <div className="Bill-committee-chamber">{committee.chamber === 'senate' ? 'Sen.' : 'House'}</div>
+                  <div className="Bill-committee-details">
+                    <div className="Bill-committee-name">{committee.name}</div>
+                    <div className="Bill-committee-status">{committee.status} {committee.status === 'Referred' ? moment(committee.date).fromNow() : ''}</div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
         : ''}
         <div className="Bill-section-header">Sponsors</div>
         <div className="Bill-section Bill-sponsors">
@@ -180,7 +177,7 @@ function Bill({ scrapedData }) {
           <div className="Bill-section-header">Updates</div>
           <div className="Bill-dispatches Bill-section">
             {bill.dispatches.map(dispatch => (
-              <div key={dispatch.content} className="Bill-dispatch">
+              <div key={dispatch.date} className="Bill-dispatch">
                 <div className="Bill-dispatch-header">
                   <span className="Bill-dispatch-header-date">{moment(dispatch.date).fromNow()}</span> — {dispatch.reporter}
                 </div>

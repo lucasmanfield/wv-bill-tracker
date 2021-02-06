@@ -1,5 +1,4 @@
-import { isValidElement } from "react"
-
+import moment from 'moment'
 
 export function matchNameByLastName(name, lastname) {
   const names = name.split(' ')
@@ -13,7 +12,7 @@ export function matchNameByLastName(name, lastname) {
   return false
 }
 
-export function getPersonByLastName (people, lastname) {
+export function getPersonByLastName(people, lastname) {
   let output = null
   people.forEach(person => {
     if (matchNameByLastName(person.name, lastname)) {
@@ -36,6 +35,7 @@ export function updateBillStatus(bill) {
   bill.committees = []
   bill.actions.forEach(action => {
     bill.last_update = action.date
+    bill.last_update_parsed = moment(action.date)
     bill.current_chamber = action.chamber
     if (action['classification'] === 'filing') {
       bill.step = 0;
