@@ -8,14 +8,16 @@ import PersonBox from './PersonBox'
 import moment from 'moment'
 import { CgSpinner } from 'react-icons/cg'
 
-let timeout;
+let addressTimeout;
+let searchTimeout;
 function App({ scrapedData }) {
   const [suggestions, setSuggestions] = useState(null)
   const [address, setAddress] = useState([])
   const [searchValue, setSearchValue] = useState('')
   const [lastModified, setLastModified] = useState(null)
   const [representatives, setRepresentatives] = useState(null)
-  const [representativesError, setRepresentativesError] = useState([])
+  const [representativesError, setRepresentativesError] = useState(null)
+  const [searchError, setSearchError] = useState(null)
   const [cookies, setCookie, removeCookie] = useCookies(['following', 'address', 'welcome'])
 
 
@@ -71,20 +73,6 @@ function App({ scrapedData }) {
   }
 
   const history = useHistory()
-
-  // Use your imagination to render suggestions.
-  const renderSuggestion = suggestion => suggestion.type == 'bill' ? 
-    (
-      <div className="App-suggestion-bill">
-        {suggestion.name} {suggestion.title || suggestion.party}
-      </div>
-    ) 
-  :
-    (
-      <div className="App-suggestion-person">
-        {suggestion.name}
-      </div>
-    )
   
   let following = (cookies.following || '').split(',')
   let followingBills = []
@@ -111,7 +99,7 @@ function App({ scrapedData }) {
     <div className="App-container">
       <div className="App-header">
         <h1>W.Va's 2021 Legislative Session Tracker</h1>
-        <div className="byline">By <a href="https://mountainstatespotlight.org/author/lucasmanfield/">Lucas Manfield</a>, Mountain State Spotlight. {lastModified ? `Data updated ${lastModified.format('MMMM D, h:ss a').replace('pm', 'p.m.').replace('am', 'a.m.')}`: ''}</div>
+        <div className="byline">By <a href="https://mountainstatespotlight.org/author/lucasmanfield/">Lucas Manfield</a>, Mountain State Spotlight. {lastModified ? `Data updated ${lastModified.format('MMMM D, YYYY').replace('pm', 'p.m.').replace('am', 'a.m.')}.`: ''}</div>
         <div className="App-intro">
           <p>Keeping track of West Virginia's chaotic two months of lawmaking can be daunting. To help you decipher it, <a href="https://mountainstatespotlight.org">Mountain State Spotlight</a> is trying something new.</p>
           <p>Here, you can: get live updates from our reporters as they cover legislators' latest moves; keep tabs on all of the bills you are following in one place; and look up a bill to find out why it is stuck — or sailing through. If you have questions, there's <a href="https://mountainstatespotlight.org">a guide</a> to the tracker, or <a href="mailto:lucasmanfield@mountainstatespotlight.org">reach out</a>. We'd love to know what's working and what's not.</p>
@@ -165,15 +153,53 @@ function App({ scrapedData }) {
                 history.push('/person/' + suggestion.name)
               }
             }}
-            renderSuggestion={renderSuggestion}
+            renderSuggestion={suggestion => (
+                <div className="App-suggestion">
+                  {suggestion.type == 'bill' ? (
+                      <div className="App-suggestion-bill">
+                        <b>{suggestion.name}</b> {suggestion.title || suggestion.party}
+                        
+                      </div>
+                    ) : (
+                      <div className="App-suggestion-person">
+                        {suggestion.name}
+                        <div className="App-suggestion-view">View</div>
+                      </div>
+                    )
+                  }
+                  <div className="App-suggestion-view">View</div>
+                </div>
+              )
+            }
             inputProps={{
               placeholder: 'e.g. SB 101, Amy Summers',
               value: searchValue || '',
+              onBlur: (e) => {
+                setSearchError(null)
+              },
               onChange: (e) => {
                 setSearchValue(e.target.value)
+
+                if (searchTimeout) {
+                  clearTimeout(searchTimeout)
+                }
+                if (!e.target.value || !e.target.value.length) {
+                  setSearchError(null)
+                } else {
+                  setTimeout(() => {
+                    if (searchValue.length && suggestions && !suggestions.length) {
+                      setSearchError('No results found')
+                    }
+                  }, 500)
+                }
               }
             }}
           />
+          {searchError ? 
+            <div className="App-search-error">
+              {searchError}
+            </div>
+          : ''}
         </div>
         <div className="App-localrep">
           <div className="App-section-header">
@@ -181,14 +207,14 @@ function App({ scrapedData }) {
           </div>
           <input 
             type="text"
-            placeholder="1900 Kanawha Blvd E, Charleston WV"
+            placeholder="123 Main St, St Albans WV"
             value={address || ''}
             className="react-autosuggest__input"
             onChange={(e) => {
               const address = e.target.value
               setAddress(address)
-              if (timeout) {
-                clearTimeout(timeout)
+              if (addressTimeout) {
+                clearTimeout(addressTimeout)
               }
               if (address && address.length) {
                 setRepresentatives([])
@@ -196,7 +222,7 @@ function App({ scrapedData }) {
               } else {
                 setRepresentatives(null)
               }
-              timeout = setTimeout(() => {
+              addressTimeout = setTimeout(() => {
                 getRepresentatives(address)
               }, 500);
             }}
