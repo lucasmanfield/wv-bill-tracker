@@ -97,7 +97,7 @@ h2 {
 
 .App-container {
   margin:20px auto;
-  max-width: 860px;
+  max-width: 800px;
   padding: 10px;
 }
 
@@ -314,6 +314,10 @@ h2 {
 .App-suggestion {
   display: flex;
   align-items: center;
+}
+
+.App-suggestion-bill, .App-suggestion-person {
+  flex: 1;
 }
 
 .App-suggestion-view {
@@ -738,15 +742,22 @@ h2 {
   flex-wrap: wrap;
 }
 
-.Subject-bills-header {
-  font-weight: bold;
-  margin: 10px 5px;
-}
-
 .Subject-bill {
   display: inline-block;
   margin: 5px;
   width:70px;
+}
+
+.Subject-section-header {
+  margin-top: 20px;
+  padding-bottom: 5px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #aaa;
+  font-size:15px;
+}
+
+.Committee-leadership {
+  display: flex;
 }
 
 .App-representatives {
