@@ -1,47 +1,29 @@
 name: Production Build
+
 on:
   pull_request:
   push:
     branches:
       - main
   workflow_dispatch:
+
 defaults:
   run:
     working-directory: app
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    
-    # This is a basic workflow to help you get started with Actions
 
-name: CI
-
-# Controls when the action will run. 
-on:
-  # Triggers the workflow on push or pull request events but only for the main branch
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
-jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: Use Node.js 12.x
-        uses: actions/setup-node@v1
+      - uses: actions/setup-node@v1
         with:
           node-version: 12.x
 
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
       - uses: actions/checkout@v2
         with:
           path: main
@@ -51,11 +33,6 @@ jobs:
           path: openstates-scrapers
           repository: openstates/openstates-scrapers
 
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
-
-      # Runs a single command using the runners shell
       - name: Run openscraper
         working-directory: openstates-scrapers
         run: docker-compose run --rm scrape wv
@@ -68,7 +45,6 @@ jobs:
         working-directory: main
         run: cp bills.json ../../app/src
 
-      
       - name: Yarn Install
         working-directory: main
         run: |
