@@ -70,6 +70,13 @@ h2 {
   text-decoration: none;;
 }
 
+.Header-topics-dropdown {
+  display: none;
+}
+.Header-topics-button:hover .Header-topics-dropdown {
+  display: block;
+}
+
 .Header-button {
   background: #142C5A;
   opacity: .8;

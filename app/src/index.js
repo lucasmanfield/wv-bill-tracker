@@ -22,7 +22,6 @@ function Wrapper() {
   
   const base = new Airtable({apiKey: 'keyX0mQVFiAFPITWj'}).base('apphXzpbYfgPql6dw');
   const [loaded, setLoaded] = useState(false)
-  
 
   const joinAirtable = async () => {
     return Promise.all([
@@ -92,11 +91,19 @@ function Wrapper() {
         }
       })
     })
+  
     setLoaded(true)
   }, []);
 
   return (
     <Router>
+      <div className="Header">
+        <div className="Header-nav">
+          <a href="https://mountainstatespotlight.org"><img className="Header-logo" src={Logo} /></a>
+        </div>
+        <a className="Header-social" href="https://mountainstatespotlight.org/newsletter-sign-up/"><MdEmail /> SIGN UP</a>
+        <a className="Header-button" href="https://checkout.fundjournalism.org/memberform?org_id=mountainstatespotlight&campaign=7014W000001diQiQAI" target="_blank">Donate</a>
+      </div>
       <Switch>
         <Route exact path="/">
           <App scrapedData={scrapedData} loaded={loaded} />
@@ -120,21 +127,6 @@ function Wrapper() {
 
 ReactDOM.render(
   <div>
-    <div className="Header">
-      <div className="Header-nav">
-        <a href="https://mountainstatespotlight.org"><img className="Header-logo" src={Logo} /></a>
-        <a href="/" className="Header-nav-button">Home</a>
-        
-        <div className="Header-nav-button">
-          Topics
-          <div className="header-topics-dropdown">
-
-          </div>
-        </div>
-      </div>
-      <a className="Header-social" href="https://mountainstatespotlight.org/newsletter-sign-up/"><MdEmail /> SIGN UP</a>
-      <a className="Header-button" href="https://checkout.fundjournalism.org/memberform?org_id=mountainstatespotlight&campaign=7014W000001diQiQAI" target="_blank">Donate</a>
-    </div>
     <Wrapper />
   </div>,
   document.getElementById('root')
