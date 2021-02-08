@@ -1,21 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { getPersonByLastName } from './utilities'
+import React, { useState, useEffect, useLayoutEffect } from 'react';
+import { getPersonByLastName, capitalize } from './utilities'
 import { useCookies } from 'react-cookie'
 import {
   useParams,
   Link,
 } from "react-router-dom";
-import { BsStarFill, BsStar } from 'react-icons/bs';
+import { BsStarFill, BsStar, BsFileText } from 'react-icons/bs';
 import { RiExternalLinkLine } from 'react-icons/ri';
 import PersonBox from './PersonBox'
 import { mapTagToColor } from './utilities'
 import moment from 'moment'
+import { useHistory } from "react-router-dom";
 
 function Bill({ scrapedData }) {
   const { name } = useParams();
   const [bill, setBill] = useState(null)
   const [people, setPeople] = useState(null)
   const [cookies, setCookie, removeCookie] = useCookies(['following', 'address'])
+  let laidOut = false
+
+  const history = useHistory()
 
   useEffect(() => {
     setPeople(scrapedData.people)
@@ -24,8 +28,18 @@ function Bill({ scrapedData }) {
         setBill(bill)
       }
     })
-    setTimeout(() => window.twttr.widgets.load(), 0)
   }, []);
+
+  useLayoutEffect(() => {
+    if (!laidOut && bill) {
+      if (!window.twttr.widgets) {
+        window.twttr.ready(window.twttr.widgets.load)
+      } else {
+        window.twttr.widgets.load()
+      }
+      laidOut = true
+    }
+  })
 
   if (!bill) {
     return <div />
@@ -33,20 +47,27 @@ function Bill({ scrapedData }) {
 
   const isFollowing = (cookies.following || '').split(',').includes(name)
 
+  console.log(bill)
+
   return (
     <div className="Bill-container">
-      <div className="Bill-breadcrumbs">
-        <Link to="/">Search</Link><b>&nbsp;&nbsp;»&nbsp;&nbsp;{name}</b>
+      <div className='Bill-nav'>
+        <div className="Bill-breadcrumbs">
+          <Link to="/">Search</Link><b>&nbsp;&nbsp;»&nbsp;&nbsp;{name}</b>
+        </div>
+        <div className="Bill-buttons">
+          <a target="_blank" href={bill.versions[0].url}><BsFileText /> Bill Text</a>
+          <button className={`Bill-follow ${isFollowing ? 'Bill-following' : ''}`} onClick={() => {
+            if (isFollowing) {
+              setCookie('following', (cookies.following || '').replace(`${name},`, ''))
+            } else {
+              setCookie('following', `${cookies.following || ''}${name},`)
+            }
+          }}>
+            {isFollowing ? <BsStarFill /> : <BsStar />} {isFollowing ? 'Unfollow' : 'Follow'}
+          </button>
+        </div>
       </div>
-      <button className={`Bill-follow ${isFollowing ? 'Bill-following' : ''}`} onClick={() => {
-        if (isFollowing) {
-          setCookie('following', (cookies.following || '').replace(`${name},`, ''))
-        } else {
-          setCookie('following', `${cookies.following || ''}${name},`)
-        }
-      }}>
-        {isFollowing ? <BsStarFill /> : <BsStar />} {isFollowing ? 'Unfollow' : 'Follow'}
-      </button>
       <div className="Bill-header">
         <div className="Bill-title">{bill.title}</div>
         <div className="Bill-subjects">
@@ -74,7 +95,7 @@ function Bill({ scrapedData }) {
           {bill.step == 0 ?
             <div className='Bill-statusbar-status'>
               <div className='Bill-statusbar-status-name'>{bill.status}</div>
-              <div className='Bill-statusbar-status-date'>{bill.last_update}</div>
+              <div className='Bill-statusbar-status-date'>Since {bill.last_update_parsed.format('MMM D')}</div>
             </div>
           : ''}
           <div className={`Bill-statusbar-dot ${bill.step >= 1 ? 'active' : ''}`} />
@@ -84,7 +105,7 @@ function Bill({ scrapedData }) {
           {bill.step >= 1 && bill.step < 5 ?
             <div className='Bill-statusbar-status'>
               <div className='Bill-statusbar-status-name'>{bill.status}</div>
-              <div className='Bill-statusbar-status-date'>{bill.last_update}</div>
+              <div className='Bill-statusbar-status-date'>Since {bill.last_update_parsed.format('MMM D')}</div>
             </div>
           : ''}
           <div className={`Bill-statusbar-dot ${bill.step >= 2 ? 'active' : ''}`} />
@@ -94,7 +115,7 @@ function Bill({ scrapedData }) {
           {bill.step == 5 ?
             <div className='Bill-statusbar-status'>
               <div className='Bill-statusbar-status-name'>{bill.status}</div>
-              <div className='Bill-statusbar-status-date'>{bill.last_update}</div>
+              <div className='Bill-statusbar-status-date'>Since {bill.last_update_parsed.format('MMM D')}</div>
             </div>
           : ''}
           <div className={`Bill-statusbar-dot ${bill.step >= 5 ? 'active' : ''}`} />
@@ -104,7 +125,7 @@ function Bill({ scrapedData }) {
           {bill.step == 6 ?
             <div className='Bill-statusbar-status'>
               <div className='Bill-statusbar-status-name'>{bill.status}</div>
-              <div className='Bill-statusbar-status-date'>{bill.last_update}</div>
+              <div className='Bill-statusbar-status-date'>Since {bill.last_update_parsed.format('MMM D')}</div>
             </div>
           : ''}
           <div className={`Bill-statusbar-dot ${bill.step >= 6 ? 'active' : ''}`} />
@@ -114,7 +135,7 @@ function Bill({ scrapedData }) {
           {bill.step >= 6 && bill.step < 10 ?
             <div className='Bill-statusbar-status'>
               <div className='Bill-statusbar-status-name'>{bill.status}</div>
-              <div className='Bill-statusbar-status-date'>{bill.last_update}</div>
+              <div className='Bill-statusbar-status-date'>Since {bill.last_update_parsed.format('MMM D')}</div>
             </div>
           : ''}
           <div className={`Bill-statusbar-dot ${bill.step >= 7 ? 'active' : ''}`} />
@@ -124,7 +145,7 @@ function Bill({ scrapedData }) {
           {bill.step == 10 ?
             <div className='Bill-statusbar-status'>
               <div className='Bill-statusbar-status-name'>{bill.status}</div>
-              <div className='Bill-statusbar-status-date'>{bill.last_update}</div>
+              <div className='Bill-statusbar-status-date'>Since {bill.last_update_parsed.format('MMM D')}</div>
             </div>
           : ''}
           <div className={`Bill-statusbar-dot ${bill.step >= 10 ? 'active' : ''}`} />
@@ -134,7 +155,7 @@ function Bill({ scrapedData }) {
           {bill.step >= 11 ?
             <div className='Bill-statusbar-status'>
               <div className='Bill-statusbar-status-name'>{bill.status}</div>
-              <div className='Bill-statusbar-status-date'>{bill.last_update}</div>
+              <div className='Bill-statusbar-status-date'>On {bill.last_update_parsed.format('MMM D')}</div>
             </div>
           : ''}
           <div className={`Bill-statusbar-dot ${bill.step == 12 ? 'active' : ''}`} />
@@ -146,7 +167,7 @@ function Bill({ scrapedData }) {
             <div className="Bill-section-header">Committees</div>
             <div className="Bill-section Bill-committees">
               {bill.committees.map(committee => (
-                <div className="Bill-committee" key={`${committee.name}-${committee.chamber}`}>
+                <div className="Bill-committee" key={`${committee.name}-${committee.chamber}`} onClick={() => history.push(`/committee/${committee.chamber}/${committee.name}`)}>
                   <div className="Bill-committee-chamber">{committee.chamber === 'senate' ? 'Sen.' : 'House'}</div>
                   <div className="Bill-committee-details">
                     <div className="Bill-committee-name">{committee.name}</div>
@@ -176,10 +197,10 @@ function Bill({ scrapedData }) {
         <div>
           <div className="Bill-section-header">Updates</div>
           <div className="Bill-dispatches Bill-section">
-            {bill.dispatches.map(dispatch => (
+            {bill.dispatches.sort((a,b) => moment(b.date).unix() - moment(a.date).unix()).map(dispatch => (
               <div key={dispatch.date} className="Bill-dispatch">
                 <div className="Bill-dispatch-header">
-                  <span className="Bill-dispatch-header-date">{moment(dispatch.date).fromNow()}</span> — {dispatch.reporter}
+                  <span className="Bill-dispatch-header-date">{capitalize(moment(dispatch.date).format('MMM D, h:ss a'))}</span> — {dispatch.reporter}
                 </div>
                 <div className="Bill-dispatch-content" dangerouslySetInnerHTML={{__html: dispatch.content}} />
               </div>

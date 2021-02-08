@@ -3,15 +3,18 @@ import {
   useParams,
   Link,
 } from "react-router-dom";
-import { matchNameByLastName } from './utilities'
+import { matchNameByLastName, roleToNumber } from './utilities'
 import BillBox from './BillBox'
 import { RiExternalLinkLine } from 'react-icons/ri';
 import { MdPhone, MdEmail } from 'react-icons/md';
+import { useHistory } from "react-router-dom";
 
 function Person({ scrapedData, loaded }) {
   const { name } = useParams();
   const [person, setPerson] = useState(null)
   const [bills, setBills] = useState(null)
+
+  const history = useHistory()
 
   useEffect(() => {
     scrapedData.people.forEach(p => {
@@ -38,16 +41,25 @@ function Person({ scrapedData, loaded }) {
     return <div />
   }
 
+  console.log(person)
+
   return (
     <div className="Person-container">
       <div className="Person-breadcrumbs">
         <Link to="/">Search</Link>&nbsp;&nbsp;»&nbsp;&nbsp;{person.name}
       </div>
       <div className="Person-header">
+        <img src={person.photo}/>
         <div className="Person-header-details">
-          <div className="Person-name">{person.name}</div>
-          <div className="Person-office">
-            {person.party == 'Democrat' ? 'Democratic' : person.party} {person.office} from District {person.district}</div>
+          <div className="Person-name">{person.name} ({person.party[0]} - {person.district_name})</div>
+          <div className="Person-office">{person.office.replace("WV ", '')}, District {person.district}</div>
+          {person.positions.length ? 
+            <div className="Person-positions">
+              {person.positions.map(position => (
+                <div className="Person-position">{position}</div>
+              ))}
+            </div>
+          : ''}
           <div className="Person-contact">
             {person.email ? <a href={`mailto:${person.email}`}><MdEmail /> {person.email}</a> : ''}
             {person.phone ? <a href={`tel:${person.phone}`}><MdPhone/> {person.phone}</a> : ''}
@@ -56,16 +68,26 @@ function Person({ scrapedData, loaded }) {
             Source:&nbsp;&nbsp;<a href={person.url} target="_blank">West Virginia Legislature <RiExternalLinkLine /></a>
           </div>
         </div>
-        <div className="Person-header-map">
-          <a target="_blank" href={`http://www.wvlegislature.gov/districts/maps.cfm#${person.office.includes('Senator') ? 'S' : 'H'}D${person.district < 10 ? '0' : ''}${person.district}`}>
-            <img src={`http://www.wvlegislature.gov/images/senate/districts/2010/${person.office.includes('Senator') ? 'S' : 'H'}D_${person.district < 10 ? '0' : ''}${person.district}.png`} />
-          </a>
-        </div>
       </div>
       <div className="Person-content">
+        {(person.committees || []).length ?
+          <div>
+            <div className="Person-section-header">Committees</div>
+            <div className="Person-committees-container">
+              <div className="Person-committees">
+                {person.committees.sort((a,b) => roleToNumber(b.role) - roleToNumber(a.role)).map(committee => (
+                  <div className="Person-committee" key={committee.name} onClick={() => history.push(`/committee/${person.chamber}/${committee.name}`)}>
+                    <div className="Person-committee-name">{committee.name}</div>
+                    <div className="Person-committee-role">{committee.role}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        : ''}
         {bills ?
           <div>
-            <div className="Person-bills-header"><h2>Sponsored</h2></div>
+            <div className="Person-section-header">Sponsored Bills</div>
             <div className="Person-bills">
               {bills.map(bill => (
                 <BillBox {...bill} key={bill.name} />

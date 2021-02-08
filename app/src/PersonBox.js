@@ -9,7 +9,9 @@ function PersonBox({ name, email, phone, party, district, office, tag }) {
     <div 
       className="PersonBox-representative" 
       key={name} 
-      onClick={() => history.push(`/person/${encodeURIComponent(name)}`)}
+      onClick={e => {
+        history.push(`/person/${encodeURIComponent(name)}`)
+      }} 
     >
       <div className="PersonBox-representative-name">{party ? `${party[0]} - ` : ''}{name}</div>
       <div className="PersonBox-representative-office">

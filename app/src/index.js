@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import Person from './Person';
 import Bill from './Bill';
+import Committee from './Committee';
 import Subject from './Subject';
 import Logo from "./JUN20-MSS-Logo-Banner.png"
 import Airtable  from 'airtable'
@@ -15,9 +16,12 @@ import {
 } from "react-router-dom";
 
 function Wrapper() {
-  const scrapedData = require('./output.json')
+  const scrapedData = require('./bills.json')
+  scrapedData.bills.forEach(b => updateBillStatus(b))
+  
   const base = new Airtable({apiKey: 'keyX0mQVFiAFPITWj'}).base('apphXzpbYfgPql6dw');
   const [loaded, setLoaded] = useState(false)
+  
 
   const joinAirtable = async () => {
     return Promise.all([
@@ -62,10 +66,13 @@ function Wrapper() {
   }
 
   useEffect(async () => {
+    const scrapedLegislators = require('./legislators.json')
+    scrapedData.people.forEach(person => {
+      Object.assign(person, scrapedLegislators[person.name])
+    })
     const output = await joinAirtable()
     output[0].forEach((billData, idx) => {
       scrapedData.bills.forEach(bill => {
-        updateBillStatus(bill)
         if (billData.name == bill.name) {
           bill.followingIdx = idx
           bill.notes = billData.notes
@@ -102,6 +109,9 @@ function Wrapper() {
         <Route path="/subject/:name">
           <Subject scrapedData={scrapedData} loaded={loaded} />
         </Route>
+        <Route path="/committee/:chamber/:name">
+          <Committee scrapedData={scrapedData} loaded={loaded} />
+        </Route>
       </Switch>
     </Router>
   )
@@ -110,7 +120,17 @@ function Wrapper() {
 ReactDOM.render(
   <div>
     <div className="Header">
-      <a href="https://mountainstatespotlight.org"><img className="Header-logo" src={Logo} /></a>
+      <div className="Header-nav">
+        <a href="https://mountainstatespotlight.org"><img className="Header-logo" src={Logo} /></a>
+        <a href="/" className="Header-nav-button">Home</a>
+        
+        <div className="Header-nav-button">
+          Topics
+          <div className="header-topics-dropdown">
+
+          </div>
+        </div>
+      </div>
       <a className="Header-button" href="https://checkout.fundjournalism.org/memberform?org_id=mountainstatespotlight&campaign=7014W000001diQiQAI" target="_blank">Donate</a>
     </div>
     <Wrapper />

@@ -6,7 +6,7 @@ body {
 h1 {
   font-weight:900;
   font-size:42px;
-  margin:15px 0px;
+  margin:20px 0px;
 }
 
 h2 {
@@ -24,17 +24,37 @@ h2 {
  }
 
 .Header {
-  background: #ddd;
+  border-bottom: 1px solid #eee;
   padding:5px 20px;
+  display: flex;
+  align-items: center;
 }
 
 .Header-logo {
   height: 40px;
+  margin-right:20px;
+}
+
+.Header-nav {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.Header-nav-button {
+  color: #333;
+  margin-left:20px;
+  font-weight: 600;
+  font-size:14px;
+  cursor: pointer;
+}
+.Header-nav-button:hover {
+  color: black;
+  text-decoration: none;;
 }
 
 .Header-button {
-  float: right;
-  background: #0037b5;
+  background: #142C5A;
   opacity: .8;
   font-size: 14px;
   border-radius: 3px;
@@ -60,11 +80,23 @@ h2 {
 .byline {
   font-style: italic;
   color: #666;
+  font-size: 14px;
+  margin:20px 0px;
 }
 
 .App-header {
   text-align: center;
-  margin-bottom:40px;
+}
+
+.App-intro {
+  line-height: 22px;
+  text-align: left;
+  max-width:600px;
+  margin:20px auto;
+}
+
+.App-intro p {
+  margin:10px 0px;
 }
 
 .App-section {
@@ -74,6 +106,124 @@ h2 {
 .App-section-header {
   margin-bottom:10px;
   margin-left:2px;
+}
+
+.App-timeline {
+  position: relative;
+  height:70px;
+  margin:50px 30px 10px 30px;
+}
+
+.App-timeline-line {
+  height:1px;
+  background:black;
+}
+
+.App-timeline-today {
+  position: absolute;
+  top:-7px;
+  width:0px;
+  height:14px;
+  background:#142C5A;
+  border-radius:2px;
+}
+
+.App-timeline-today-label {
+  font-size: 12px;
+  border-radius: 3px;
+  padding: 3px 5px;
+  position: relative;
+  top:-22px;
+  width:32px;
+  margin-left:-19px;
+  text-align: center;
+  font-weight:bold;
+  background: #142C5A;
+  color: white;
+  border-radius: 3px;
+}
+
+.App-timeline-today-arrow {
+  width: 0; 
+  height: 0; 
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent; 
+  border-top: 6px solid #142C5A;
+  top:-23px;
+  position: relative;
+  right:3px;
+}
+
+.App-timeline-deadline-tooltip {
+  display: none;
+  font-size: 12px;
+  border-radius: 3px;
+  padding: 3px 5px;
+  position: absolute;
+  bottom:20px;
+  width:140px;
+  margin-left:-70px;
+  text-align: center;
+  font-weight:bold;
+  background: black;
+  color: white;
+  border-radius: 3px;
+  z-index: 3;
+}
+
+.App-timeline-deadline-tooltip-arrow {
+  z-index: 3;
+  display: none;
+  width: 0; 
+  height: 0; 
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent; 
+  border-top: 6px solid black;
+  bottom: 16px;
+  position: absolute;
+  right:-5px;
+}
+
+.App-timeline-deadline {
+  position: absolute;
+  top:-5px;
+  width:1px;
+  height:10px;
+  background:black;
+  cursor: pointer;
+}
+
+.App-timeline-hoverspot {
+  position: absolute;
+  top:-5px;
+  left: -10px;
+  width:20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.App-timeline-deadline:hover .App-timeline-deadline-tooltip {
+  display: block;
+}
+
+.App-timeline-deadline:hover .App-timeline-deadline-tooltip-arrow {
+  display: block;
+}
+
+.App-timeline-deadline-label {
+  white-space: nowrap;
+  font-size: 12px;
+  color: #333;
+  position: relative;
+  top:15px;
+  width: max-content;
+  transform: translate(calc(-50% + 0px), 0);
+}
+
+@media only screen and (max-width: 500px) {
+  .App-timeline-deadline-label  b {
+    display: none;
+  }
 }
 
 .react-autosuggest__container {
@@ -185,6 +335,43 @@ h2 {
   color: black;
 }
 
+.Bill-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom:15px;
+}
+
+.Bill-buttons {
+  display: flex;
+  align-items: center;
+}
+
+.Bill-buttons a {
+  align-items: center;
+  display:flex;
+  background: white;
+  border: 1px solid #666;
+  color: #666;
+  font-size:14px;
+  border-radius: 3px;
+  padding:5px 10px;
+  cursor: pointer;
+  font-weight:600;
+  outline: 0;
+  line-height: 1.2em;
+  margin-right: 10px;
+}
+
+.Bill-buttons a svg {
+  margin-right:8px;
+}
+.Bill-buttons a:hover {
+  color: black;
+  border-color: black;
+  text-decoration: none;;
+}
+
 .Bill-follow svg {
   margin-right:10px;
 }
@@ -192,16 +379,14 @@ h2 {
   color: rgb(252, 206, 0);
 }
 .Bill-follow {
+  line-height: 1.2em;
   align-items: center;
   display:flex;
-  position: absolute;
   background: white;
   border: 1px solid #666;
   color: #666;
   font-size:14px;
   border-radius: 3px;
-  right: 10px;
-  top:2px;
   padding:5px 10px;
   cursor: pointer;
   font-weight:600;
@@ -226,6 +411,7 @@ h2 {
 }
 
 .Bill-committee {
+  cursor: pointer;
   display: flex;
   align-items: center;
   font-size:14px;
@@ -270,14 +456,12 @@ h2 {
 
 .Bill-breadcrumbs {
   font-size: 15px;
-  margin-bottom:15px;
 }
 
 .Bill-statusbar-status {
   position: absolute;
   bottom: -52px;
-  right: -4px;
-  transform: translate(-50%, 0);
+  transform: translate(calc(-50% + 5px), 0);
   background: black;
   padding: 5px 10px;
   color: white;
@@ -353,6 +537,7 @@ h2 {
   margin-bottom:5px;
   font-weight: 400;
   font-style: italic;
+  font-size: 14px;
 }
 
 .Bill-dispatch-header-date {
@@ -361,7 +546,9 @@ h2 {
 }
 
 .Bill-dispatch {
-  margin:15px 0px;
+  margin: 0;
+  border-radius: 3px;
+  padding: 10px 15px;
 }
 
 .Person-container {
@@ -371,12 +558,16 @@ h2 {
 }
 
 .Person-header {
-  border-bottom: 1px solid #ddd;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid #aaa;
   font-size:14px;
   margin:20px 0px;
-  padding:20px 0px;
+  padding:20px 0px 0px 0px;
   display: flex;
+}
+
+.Person-header img {
+  height: 120px;
+  margin-right: 20px;
 }
 
 .Person-header-details {
@@ -396,6 +587,16 @@ h2 {
   font-weight: bold;
   font-size: 20px;
   margin-bottom:4px;
+}
+
+.Person-position {
+  background: #333;
+  border-radius: 3px;
+  padding:3px 10px;
+  margin-top: 10px;
+  display: inline-block;
+  font-size:12px;
+  color: white;
 }
 
 .Person-contact {
@@ -423,12 +624,50 @@ h2 {
   margin-bottom:20px;
 }
 
+.Person-committees-container {
+  overflow-x: scroll;
+}
+
+.Person-committees {
+
+}
+
+.Person-committee {
+  cursor: pointer;
+  font-size: 14px;
+  padding: 5px 10px;
+  min-width: 160px;
+  display: inline-block;
+  width: 220px;
+  vertical-align: top;
+  background: #f8f8f8;
+  border: 1px solid #eee;
+  border-radius: 3px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  height: 48px;
+  cursor: pointer;
+}
+.Person-committee:hover {
+  background: #f1f1f1;
+}
+
+.Person-committee-role {
+  font-style: italic;
+  font-size: 12px;
+  color: #666;
+}
+
 .Person-bills {
   margin-top:10px;
 }
 
-.Person-bills-header {
-  margin-left:2px;
+.Person-section-header {
+  margin-top: 20px;
+  padding-bottom: 5px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #aaa;
+  font-size:15px;
 }
 
 .Person-bill {
@@ -465,18 +704,45 @@ h2 {
 }
 
 .App-representatives {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-top:20px;
-  margin-bottom: -10px;
+  padding: 20px 10px 10px 20px;
+  background: white;
+  box-shadow: 0 0 5px rgb(0 0 0 / 5%);
+  border: 1px solid #e1e1e1;
+  position: absolute;
+  z-index: 2;
+  width: 300px;
 }
 
+.App-representatives-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding-bottom: 10px;
+}
+
+.App-representatives-spinner svg {
+  animation: fa-spin .5s infinite linear;
+}
+@keyframes fa-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(359deg);
+  }
+}
+
+.App-search-container {
+  display: flex;
+}
 .App-search {
   background: #fff2ef;
   border-radius: 3px;
   padding: 10px 20px 20px 20px;
   margin:20px 0px;
+  flex: 1;
+  margin-right: 10px;
 }
 
 .App-localrep {
@@ -484,7 +750,18 @@ h2 {
   border-radius: 3px;
   padding: 10px 20px 20px 20px;
   margin:20px 0px;
+  flex: 1;
 }
+
+@media only screen and (max-width: 600px) {
+  .App-search-container {
+    display: block;
+  }
+  .App-search {
+    margin-right: 0;
+  }
+}
+
 
 .App-localrep h2, .App-search h2 {
   margin-bottom:15px;
@@ -505,9 +782,14 @@ h2 {
   cursor: pointer;
 }
 
+.PersonBox-representative:hover {
+  background: #f1f1f1;
+  color: black;
+}
+
 .PersonBox-representative-name {
   margin-bottom: 5px;
-  font-size:20px;
+  font-size:18px;
   font-weight: 600;
   color: black;
 }
@@ -558,6 +840,7 @@ h2 {
 
 .BillBox:hover {
   color: black;
+  background: #f1f1f1;
 }
 
 .BillBox-name {
@@ -573,6 +856,7 @@ h2 {
   font-style: italic;
   font-weight: 600;
   padding-top:5px;
+  min-width: 70px;
 }
 
 .BillBox-details {
@@ -628,6 +912,21 @@ h2 {
 }
 .BillBox-statusbar-line.active {
   background: green;
+}
+
+@media only screen and (max-width: 500px) {
+  .BillBox {
+    display: block;
+    padding: 10px;
+  }
+  .BillBox-status {
+    text-align: left;
+    margin: 0;
+  }
+
+  .BillBox-statusbar {
+    display: none;
+  }
 }
 
 .Tag {

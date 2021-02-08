@@ -7,17 +7,6 @@ import BillBox from './BillBox'
 
 function Subject({ scrapedData }) {
   const { name } = useParams();
-  const [bills, setBills] = useState([])
-
-  useEffect(() => {
-    scrapedData.bills.forEach(b => {
-      b.subjects.forEach(s => {
-        if (s == name) {
-          setBills(oldBills => [...oldBills, b])
-        }
-      })
-    })
-  }, []);
 
   return (
     <div className="Subject-container">
@@ -25,8 +14,7 @@ function Subject({ scrapedData }) {
         <Link to="/">Search</Link>&nbsp;&nbsp;»&nbsp;&nbsp;{name}
       </div>
       <div className="Subject-content">
-      <div className="Subject-bills-header"><h2>Related Bills</h2></div>
-        {bills.map(bill => (
+        {scrapedData.bills.filter(b => b.subjects.includes(name)).map(bill => (
           <BillBox {...bill} key={bill.name} />
         ))}
       </div>
