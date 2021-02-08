@@ -8,6 +8,7 @@ import Committee from './Committee';
 import Subject from './Subject';
 import Logo from "./JUN20-MSS-Logo-Banner.png"
 import Airtable  from 'airtable'
+import { MdEmail } from 'react-icons/md';
 import { updateBillStatus } from './utilities'
 import {
   BrowserRouter as Router,
@@ -131,6 +132,7 @@ ReactDOM.render(
           </div>
         </div>
       </div>
+      <a className="Header-social" href="https://mountainstatespotlight.org/newsletter-sign-up/"><MdEmail /> SIGN UP</a>
       <a className="Header-button" href="https://checkout.fundjournalism.org/memberform?org_id=mountainstatespotlight&campaign=7014W000001diQiQAI" target="_blank">Donate</a>
     </div>
     <Wrapper />

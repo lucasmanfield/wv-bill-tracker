@@ -41,6 +41,23 @@ h2 {
   flex: 1;
 }
 
+.Header-social {
+  position: relative;
+  color: #333;
+  margin-right: 10px;
+  font-weight: 700;
+}
+.Header-social:hover {
+  color:black;
+  text-decoration: none;
+}
+
+.Header-social svg {
+  font-size: 20px;
+  position: absolute;
+  left: -24px;
+}
+
 .Header-nav-button {
   color: #333;
   margin-left:20px;

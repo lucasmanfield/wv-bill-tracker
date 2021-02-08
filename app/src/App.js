@@ -10,7 +10,7 @@ import { CgSpinner } from 'react-icons/cg'
 
 let timeout;
 function App({ scrapedData }) {
-  const [suggestions, setSuggestions] = useState([])
+  const [suggestions, setSuggestions] = useState(null)
   const [address, setAddress] = useState([])
   const [searchValue, setSearchValue] = useState('')
   const [lastModified, setLastModified] = useState(null)
@@ -145,7 +145,7 @@ function App({ scrapedData }) {
             <h2>Look up a bill or representative by name</h2>
           </div>
           <Autosuggest
-            suggestions={suggestions}
+            suggestions={suggestions || []}
             onSuggestionsFetchRequested={({ value }) => {
               let bills = scrapedData.bills.filter(bill => {
                 return bill.title.toLowerCase().includes(value.toLowerCase()) || bill.name.toLowerCase().includes(value.toLowerCase())
@@ -157,7 +157,7 @@ function App({ scrapedData }) {
               people.forEach(p => p.type = 'person')
               setSuggestions(bills.slice(0, 5).concat(people.slice(0,5)))
             }}
-            onSuggestionsClearRequested={() => setSuggestions([])}
+            onSuggestionsClearRequested={() => setSuggestions(null)}
             getSuggestionValue={suggestion => {
               if (suggestion.type == 'bill') {
                 history.push('/bill/' + suggestion.name)
