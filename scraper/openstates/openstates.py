@@ -9,6 +9,7 @@ bills = {}
 organizations = {}
 people = {}
 memberships = []
+votes = []
 
 for filename in glob.glob(path): 
     with open(filename, 'r') as f:
@@ -52,6 +53,9 @@ for filename in glob.glob(path):
 
         if 'membership_' in filename:
             memberships.append(data)
+
+        if 'vote_' in filename:
+            votes.append(data)
 
 for membership in memberships:
     person = people[membership['person_id']]

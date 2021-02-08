@@ -36,15 +36,15 @@ jobs:
 
       - name: Run openscraper
         working-directory: openstates-scrapers
-        run: docker-compose run --rm scrape wv bills people --scrape
+        run: docker-compose run --rm scrape wv bills people --scrape --fastmode
 
       - name: Merge it
         working-directory: main
-        run: python openstates.py "${{ github.workspace }}/openstates-scrapers/_data/wv/*"
+        run: python scraper/openstates/openstates.py "${{ github.workspace }}/openstates-scrapers/_data/wv/*"
 
       - name: Copy output
         working-directory: main
-        run: cp bills.json ../../app/src
+        run: cp scraper/openstates/bills.json app/src
 
       - name: Yarn Install
         working-directory: main
