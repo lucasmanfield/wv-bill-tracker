@@ -36,7 +36,7 @@ jobs:
 
       - name: Run openscraper
         working-directory: openstates-scrapers
-        run: docker-compose run --rm scrape wv --scrape
+        run: docker-compose run --rm scrape wv bills people --scrape
 
       - name: Merge it
         working-directory: main

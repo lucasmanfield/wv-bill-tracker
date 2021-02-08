@@ -425,9 +425,7 @@ h2 {
 .Bill-follow svg {
   margin-right:10px;
 }
-.Bill-following svg {
-  color: rgb(252, 206, 0);
-}
+
 .Bill-follow {
   line-height: 1.2em;
   align-items: center;
@@ -442,10 +440,24 @@ h2 {
   font-weight:600;
   outline: 0;
 }
-
 .Bill-follow:hover {
   color: black;
   border-color: black;
+}
+
+.Bill-following {
+  background: #333;
+  border-color: #333;
+  color: white;
+}
+.Bill-following:hover {
+  background: black;
+  color: white;
+  border-color: black;
+}
+
+.Bill-following svg {
+  color: rgb(252, 206, 0);
 }
 
 .Bill-section-header {

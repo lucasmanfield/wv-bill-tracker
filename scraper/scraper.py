@@ -3,6 +3,45 @@ from urllib.request import urlopen
 from urllib.parse import urlencode, quote_plus, quote
 import json
 
+# Now pull fiscal notes
+
+fiscal_notes = []
+
+html_doc = urlopen('http://www.wvlegislature.gov/Bill_Status/bills_fiscal.cfm?year=2020&sessiontype=RS&btype=bill&note=fiscal')
+soup = BeautifulSoup(html_doc, 'html.parser')
+
+for tr in soup.find_all('table')[2].find_all('tr')[1:]:
+  cells = tr.find_all('td')
+  bill_name = cells[1].string.strip() if len(cells[1].string.strip()) else cells[2].string.strip()
+  if not len(bill_name):
+    continue
+
+  bill_agency_anchor = cells[4].find('a')
+  if bill_agency_anchor and bill_agency_anchor != -1:
+    fiscal_notes.append({
+      'agency': bill_agency_anchor.string,
+      'url': bill_agency_anchor.get('href')
+    })
+
+for note in fiscal_notes:
+  url = 'http://www.wvlegislature.gov' + note['url']
+  print("Loading %s" % url)
+  html_doc = urlopen(url)
+  soup = BeautifulSoup(html_doc, 'html.parser')
+  fiscal_note_table = soup.find_all('table')[2]
+
+  try:
+    note['annual_cost'] = float(fiscal_note_table.find_all('tr')[2].find_all('td')[2].string.replace(',',''))
+    note['annual_revenue'] = float(fiscal_note_table.find_all('tr')[8].find_all('td')[2].string.replace(',',''))
+  except:
+    print("Unable to parse %s" % url)
+    pass
+  
+
+with open("fiscal_notes.json", "w") as f:
+    f.write(json.dumps({'fiscal_notes': fiscal_notes}))
+
+
 chambers = {
   'house': {
     'name': 'House',
@@ -95,3 +134,5 @@ for name, chamber in chambers.items():
   members.update(chamber['members'])
 with open("legislators.json", "w") as f:
     f.write(json.dumps(members))
+
+  

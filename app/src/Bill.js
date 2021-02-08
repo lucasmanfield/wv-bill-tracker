@@ -64,7 +64,7 @@ function Bill({ scrapedData }) {
               setCookie('following', `${cookies.following || ''}${name},`)
             }
           }}>
-            {isFollowing ? <BsStarFill /> : <BsStar />} {isFollowing ? 'Unfollow' : 'Follow'}
+            {isFollowing ? <BsStarFill /> : <BsStar />} {isFollowing ? 'Following' : 'Follow'}
           </button>
         </div>
       </div>
