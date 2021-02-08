@@ -66,14 +66,16 @@ export function updateBillStatus(bill) {
     }
     if (action['classification'] == 'referral-committee') {
       bill.status = 'In committee'
-      const name = action.description.replace('To ', '').replace('House ', '').replace('Senate ', '')
-      if (!(bill.committees || []).find(c => name == c.name.replace('House ', '').replace('Senate ', ''))) {
-        bill.committees.push({
-          name,
-          chamber: action.chamber,
-          status: 'Referred',
-          date: action.date
-        })
+      if (!action.description.includes(' then ')) {
+        const name = action.description.replace('To ', '').replace('House ', '').replace('Senate ', '')
+        if (!(bill.committees || []).find(c => name == c.name.replace('House ', '').replace('Senate ', ''))) {
+          bill.committees.push({
+            name,
+            chamber: action.chamber,
+            status: 'Referred',
+            date: action.date
+          })
+        }
       }
     }
     if (action['classification'] === 'executive-receipt') {
@@ -127,10 +129,10 @@ export const deadlines = [
   },
   {
     date: moment('3/31/21'),
-    name: 'Consideration Deadline',
+    name: 'Crossover Day',
     prose: 'the last day to consider bills on the floor',
     padding: 45,
-    description: "Last day to consider bill on third reading in house of origin."
+    description: "Last day for a bill to pass in its chamber of origin."
   },
   {
     date: moment('4/10/21'),

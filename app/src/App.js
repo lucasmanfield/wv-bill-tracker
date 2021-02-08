@@ -158,12 +158,10 @@ function App({ scrapedData }) {
                   {suggestion.type == 'bill' ? (
                       <div className="App-suggestion-bill">
                         <b>{suggestion.name}</b> {suggestion.title || suggestion.party}
-                        
                       </div>
                     ) : (
                       <div className="App-suggestion-person">
                         {suggestion.name}
-                        <div className="App-suggestion-view">View</div>
                       </div>
                     )
                   }
