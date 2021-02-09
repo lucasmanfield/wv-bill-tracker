@@ -57,7 +57,6 @@ jobs:
           CI=false yarn build
 
       - name: Deploy to S3
-        working-directory: main/app
         uses: jakejarvis/s3-sync-action@v0.5.1
         with:
           args: --acl public-read --delete
@@ -66,4 +65,4 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: 'us-east-1'
-          SOURCE_DIR: "build"
+          SOURCE_DIR: "main/app/build"
