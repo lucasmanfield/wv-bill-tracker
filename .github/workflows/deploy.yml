@@ -32,11 +32,11 @@ jobs:
       - uses: actions/checkout@v2
         with:
           path: openstates-scrapers
-          repository: openstates/openstates-scrapers
+          repository: lucasmanfield/openstates-scrapers
 
       - name: Run openscraper
         working-directory: openstates-scrapers
-        run: docker-compose run --rm scrape wv bills people --scrape --fastmode
+        run: docker-compose run --rm scrape wv bills people --scrape
 
       - name: Merge it
         working-directory: main
@@ -44,7 +44,7 @@ jobs:
 
       - name: Copy output
         working-directory: main
-        run: cp scraper/openstates/bills.json app/src
+        run: cp bills.json app/src
 
       - name: Yarn Install
         working-directory: main/app
