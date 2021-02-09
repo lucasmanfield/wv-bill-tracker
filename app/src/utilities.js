@@ -62,7 +62,7 @@ export function updateBillStatus(bill) {
     }
     if (action['classification'] === 'passage') {
       bill.step = bill.from_chamber === bill.current_chamber ? 5 : 10
-      bill.status = 'Passed'
+      bill.status = 'Passed ' + capitalize(bill.current_chamber)
     }
     if (action['classification'] == 'referral-committee') {
       bill.status = 'In committee'

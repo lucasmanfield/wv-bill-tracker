@@ -773,13 +773,18 @@ h2 {
 }
 
 .App-representatives {
-  padding: 20px 10px 10px 20px;
-  background: white;
-  box-shadow: 0 0 5px rgb(0 0 0 / 5%);
-  border: 1px solid #e1e1e1;
-  position: absolute;
-  z-index: 2;
-  width: 300px;
+
+}
+
+.App-representatives-error {
+  margin-top: 20px;
+  font-style: italic;
+  color: #666;
+}
+
+.App-representatives .PersonBox-representative {
+  margin: 0;
+  margin-top: 10px;
 }
 
 .App-representatives-spinner {
@@ -804,6 +809,7 @@ h2 {
 
 .App-search-container {
   display: flex;
+  align-items: flex-start;
 }
 .App-search {
   background: #fff2ef;
@@ -813,7 +819,6 @@ h2 {
   flex: 1;
   margin-right: 10px;
 }
-
 .App-search-error {
   padding: 20px;
   background: white;

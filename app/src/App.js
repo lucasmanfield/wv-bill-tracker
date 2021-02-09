@@ -7,6 +7,7 @@ import BillBox from './BillBox'
 import PersonBox from './PersonBox'
 import moment from 'moment'
 import { CgSpinner } from 'react-icons/cg'
+import PlacesAutocomplete from 'react-places-autocomplete';
 
 let addressTimeout;
 let searchTimeout;
@@ -36,12 +37,12 @@ function App({ scrapedData }) {
       .then(response => response.json())
       .then(data => {
         if (data.error) {
-          setRepresentativesError(data.error)
+          setRepresentativesError(data.error.message)
           setRepresentatives([])
           return
         }
         if (!data.divisions) {
-          setRepresentativesError('Address not specific.')
+          setRepresentativesError('No information found at this address')
           setRepresentatives([])
           return
         }
@@ -64,7 +65,7 @@ function App({ scrapedData }) {
           })
         })
         if (!newRepresentatives.length) {
-          setRepresentativesError('Address not specific.')
+          setRepresentativesError('No information found at this address')
           setRepresentatives([])
           return
         }
@@ -145,14 +146,18 @@ function App({ scrapedData }) {
               people.forEach(p => p.type = 'person')
               setSuggestions(bills.slice(0, 5).concat(people.slice(0,5)))
             }}
-            onSuggestionsClearRequested={() => setSuggestions(null)}
-            getSuggestionValue={suggestion => {
+            onSuggestionsClearRequested={() => {
+              setSuggestions(null)
+            }}
+            onSuggestionSelected={(e, { suggestion }) => {
               if (suggestion.type == 'bill') {
                 history.push('/bill/' + suggestion.name)
               } else {
                 history.push('/person/' + suggestion.name)
               }
             }}
+            highlightFirstSuggestion={true}
+            getSuggestionValue={suggestion => suggestion}
             renderSuggestion={suggestion => (
                 <div className="App-suggestion">
                   {suggestion.type == 'bill' ? (
@@ -203,37 +208,52 @@ function App({ scrapedData }) {
           <div className="App-section-header">
             <h2>Look up your local representatives by address</h2>
           </div>
-          <input 
-            type="text"
-            placeholder="123 Main St, St Albans WV"
-            value={address || ''}
-            className="react-autosuggest__input"
-            onChange={(e) => {
-              const address = e.target.value
+          <PlacesAutocomplete
+            value={address}
+            onChange={address => {
               setAddress(address)
-              if (addressTimeout) {
-                clearTimeout(addressTimeout)
-              }
-              if (address && address.length) {
-                setRepresentatives([])
-                setRepresentativesError(null)
-              } else {
+              if (!address || !address.length) {
                 setRepresentatives(null)
               }
-              addressTimeout = setTimeout(() => {
-                getRepresentatives(address)
-              }, 500);
             }}
-            onFocus={e => {
-              if (e.target.value && e.target.value.length) {
-                setRepresentatives([])
-                getRepresentatives(e.target.value)
-              }
+            highlightFirstSuggestion={true}
+            onSelect={address => {
+              setAddress(address)
+              setRepresentatives(null)
+              getRepresentatives(address)
             }}
-            onBlur={e => {
-              setTimeout(() => setRepresentatives(null), 100)
-            }}
-          />
+          >
+            {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+              <div className="react-autosuggest__container">
+                <input
+                  {...getInputProps({
+                    placeholder: '123 Main St, St Albans',
+                    className: 'react-autosuggest__input',
+                  })}
+                />
+                {suggestions && suggestions.length ?
+                <div className="react-autosuggest__suggestions-container react-autosuggest__suggestions-container--open ">
+                  <ul className="react-autosuggest__suggestions-list">
+                    {suggestions.map(suggestion => {
+                      const className = suggestion.active
+                        ? 'react-autosuggest__suggestion react-autosuggest__suggestion--highlighted'
+                        : 'react-autosuggest__suggestion';
+
+                      return (
+                        <li
+                          {...getSuggestionItemProps(suggestion, { className })}
+                        >
+                          {suggestion.description}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+                : ''}
+              </div>
+            )}
+          </PlacesAutocomplete>
+
           {representatives ? 
             <div className="App-representatives">
               {representatives.length ?
@@ -243,7 +263,7 @@ function App({ scrapedData }) {
               : 
                 <div className="App-representatives-spinner">
                 {representativesError ?
-                  <span>Address not found.</span> 
+                    <span className="App-representatives-error">{representativesError}</span> 
                   :
                     <CgSpinner />
                 }
