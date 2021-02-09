@@ -16,7 +16,7 @@ for filename in glob.glob(path):
         data = json.loads(f.read())
         if 'bill_' in filename:
             name = data['identifier']
-            bills[data['_id']] = {
+            bills[name] = {
                 'name': data['identifier'],
                 'title': data['title'],
                 'legislative_session': data['legislative_session'],
@@ -36,7 +36,8 @@ for filename in glob.glob(path):
                 'versions': [{
                     'note': d['note'], 
                     'url': d['links'][0]['url']
-                } for d in data['versions']]
+                } for d in data['versions']],
+                'votes': []
             }
 
         if 'person_' in filename:
@@ -72,6 +73,20 @@ for membership in memberships:
     if membership['post_id']:
         postData = json.loads(membership['post_id'][1:].encode('utf-8').decode('unicode_escape'))
         person['district'] = postData['label']
+
+for vote in votes:
+    if vote['bill_identifier'] not in bills.keys():
+        print("Could not find ", vote['bill_identifier'])
+        continue
+    bills[vote['bill_identifier']]['votes'].append({
+        'name': vote['motion_text'],
+        'result': vote['result'],
+        'chamber': 'house' if 'lower' in vote['organization'] else 'senate',
+        'date': vote['start_date'],
+        'no_votes': len([v for v in vote['votes'] if v['option'] == 'no']),
+        'yes_votes': len([v for v in vote['votes'] if v['option'] == 'yes']),
+        'other_votes': len([v for v in vote['votes'] if v['option'] == 'other'])
+    })
 
 with open("bills.json", "w") as f:
     f.write(json.dumps({

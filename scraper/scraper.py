@@ -19,6 +19,7 @@ for tr in soup.find_all('table')[2].find_all('tr')[1:]:
   bill_agency_anchor = cells[4].find('a')
   if bill_agency_anchor and bill_agency_anchor != -1:
     fiscal_notes.append({
+      'bill': bill_name,
       'agency': bill_agency_anchor.string,
       'url': bill_agency_anchor.get('href')
     })
