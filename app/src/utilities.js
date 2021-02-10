@@ -22,13 +22,14 @@ export function getPersonByLastName(people, lastname) {
   return output
 }
 
-export function mapTagToColor(tag) {
+export function styleForTag(tag) {
   if (tag === 'Sponsored by leadership') {
-    return 'lightblue';
+    return {background: '#fff2ef'}
   }
   if (tag === 'Too many committees') {
-    return 'pink'
+    return {background: '#fff2ef'}
   }
+  return {background: 'white', border: '1px solid black'}
 }
 
 export function updateBillStatus(bill) {

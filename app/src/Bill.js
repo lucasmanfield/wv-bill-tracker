@@ -8,7 +8,7 @@ import {
 import { BsStarFill, BsStar, BsFileText } from 'react-icons/bs';
 import { RiExternalLinkLine } from 'react-icons/ri';
 import PersonBox from './PersonBox'
-import { mapTagToColor } from './utilities'
+import { styleForTag } from './utilities'
 import moment from 'moment'
 import { useHistory } from "react-router-dom";
 
@@ -73,7 +73,7 @@ function Bill({ scrapedData }) {
         <div className="Bill-subjects">
           
           {(bill.tags || []).map(tag => (
-            <div key={tag} className="Tag" style={{background: mapTagToColor(tag)}}>{tag}</div>
+            <div key={tag} className="Tag" style={styleForTag(tag)}>{tag}</div>
           ))}
         </div>
         <div className="Bill-url">
@@ -201,6 +201,11 @@ function Bill({ scrapedData }) {
               <div key={dispatch.date} className="Bill-dispatch">
                 <div className="Bill-dispatch-header">
                   <span className="Bill-dispatch-header-date">{capitalize(moment(dispatch.date).format('MMM D, h:ss a'))}</span> — {dispatch.reporter}
+                  {dispatch.tag && dispatch.tag.length ?
+                    <div className="Bill-dispatch-tags">
+                      <div key={dispatch.tag} className="Tag" style={styleForTag(dispatch.tag)}>{dispatch.tag}</div>
+                    </div>
+                  : ''}
                 </div>
                 <div className="Bill-dispatch-content" dangerouslySetInnerHTML={{__html: dispatch.content}} />
               </div>

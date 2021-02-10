@@ -602,6 +602,10 @@ h2 {
   font-size: 14px;
 }
 
+.Bill-dispatch-tags {
+  margin-top: 8px;
+}
+
 .Bill-dispatch-header-date {
   font-weight:600;
   font-style: normal;
@@ -956,7 +960,7 @@ h2 {
 }
 
 .BillBox-tags {
-  margin-top:10px;
+  margin-top:8px;
 }
 
 .BillBox-statusbar {
@@ -1014,11 +1018,11 @@ h2 {
 }
 
 .Tag {
-  background: lightblue;
   border-radius: 10px;
   padding:3px 10px;
   margin: 0px 5px 1px 0px;
   display: inline-block;
   font-size:12px;
   color: black;
+  font-style: italic;
 }
