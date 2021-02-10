@@ -10,7 +10,7 @@ function Bill({ name, title, status, notes, tags, step }) {
         <div className="BillBox-name">{name}</div>
         <div className="BillBox-details">
           <div className="BillBox-title">{title}</div>
-          {notes ? <div className="BillBox-notes">{notes}</div> : ''}
+          {notes && notes.length ? <div className="BillBox-notes">{notes}</div> : ''}
           {tags && tags.length ? <div className="BillBox-tags">
             {(tags || []).map(tag => (
               <div className="Tag" style={styleForTag(tag)}>{tag}</div>
