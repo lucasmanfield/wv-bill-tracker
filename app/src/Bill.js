@@ -119,7 +119,7 @@ function Bill({ scrapedData }) {
             </div>
           : ''}
           <div className={`Bill-statusbar-dot ${bill.step >= 5 ? 'active' : ''}`} />
-          <div className={`Bill-statusbar-line ${bill.step >= 5 ? 'active' : ''}`} />
+          <div className={`Bill-statusbar-line ${bill.step >= 6 ? 'active' : ''}`} />
         </div>
         <div className="Bill-statusbar-segment">
           {bill.step == 6 ?
