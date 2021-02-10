@@ -23,7 +23,7 @@ function App({ scrapedData }) {
 
 
   useEffect(() => {
-    fetch('https://wvlegislaturetracker.org', {
+    fetch('https://capitoltracker.mountainstatespotlight.org/', {
       method: 'HEAD'
     })
     .then(response => {
@@ -109,7 +109,7 @@ function App({ scrapedData }) {
       <div className="App-timeline">
         <div className="App-timeline-line"></div>
         <div className="App-timeline-today" style={{
-          left: ((moment().unix() - deadlines[0].date.unix()) / sessionLength * 100) + '%'
+          left: ((moment(moment().format('YYYY-MM-DD') + ' 00:01:00').unix() - deadlines[0].date.unix()) / sessionLength * 100) + '%'
         }}>
           <div className="App-timeline-today-label">Today</div>
           <div className="App-timeline-today-arrow"></div>

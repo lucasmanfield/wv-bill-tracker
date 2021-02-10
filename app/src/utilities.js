@@ -97,11 +97,6 @@ export function capitalize(string) {
 
 export const deadlines = [
   {
-    date: moment('1/13/21'),
-    name: 'Opening Day',
-    description: "Legislators perform house-keeping and publish election results."
-  },
-  {
     date: moment('2/10/21'),
     name: 'First Day',
     prose: 'the first day of the session',
