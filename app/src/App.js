@@ -13,7 +13,7 @@ let addressTimeout;
 let searchTimeout;
 function App({ scrapedData }) {
   const [suggestions, setSuggestions] = useState(null)
-  const [address, setAddress] = useState([])
+  const [address, setAddress] = useState(null)
   const [searchValue, setSearchValue] = useState('')
   const [lastModified, setLastModified] = useState(null)
   const [representatives, setRepresentatives] = useState(null)
@@ -209,7 +209,7 @@ function App({ scrapedData }) {
             <h2>Look up your local representatives by address</h2>
           </div>
           <PlacesAutocomplete
-            value={address}
+            value={address || ''}
             onChange={address => {
               setAddress(address)
               if (!address || !address.length) {
@@ -241,6 +241,7 @@ function App({ scrapedData }) {
 
                       return (
                         <li
+                          key={suggestion.description}
                           {...getSuggestionItemProps(suggestion, { className })}
                         >
                           {suggestion.description}
