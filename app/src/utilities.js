@@ -4,16 +4,17 @@ export function matchNameByLastName(name, lastname) {
 
 
   let firstInitial = null
-  let lastName
+  let lastNameSplit0 = null
   const lastNames = lastname.split(' ')
   if (lastNames.length >= 2) {
-    lastname = lastNames[0]
+    lastNameSplit0 = lastNames[0].replace(',','')
     firstInitial = lastNames[1][0]
   }
   const names = name.split(' ')
 
   if (firstInitial) {
-    if (names[names.length - 1] === lastname && names[0][0] == firstInitial) {
+
+    if (names[names.length - 1] === lastNameSplit0 && names[0][0] == firstInitial) {
       return true
     }
     return false
