@@ -1,14 +1,25 @@
 import moment from 'moment'
 
 export function matchNameByLastName(name, lastname) {
+
+
+  let firstInitial = null
+  if (lastname.split(' ').length > 1) {
+    lastname = lastname.split(' ')[0]
+    firstInitial = lastname.split(' ')[1][0]
+  }
   const names = name.split(' ')
-  if (names[1] === lastname) {
+
+  if (firstInitial) {
+    if (names[names.length - 1] === lastname && names[0][0] == firstInitial) {
+      return true
+    }
+    return false
+  }
+  if (names[names.length - 1] === lastname) {
     return true
   }
 
-  if (names.length > 2 && names[2] === lastname) {
-    return true
-  }
   return false
 }
 

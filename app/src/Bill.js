@@ -32,9 +32,7 @@ function Bill({ scrapedData }) {
 
   useLayoutEffect(() => {
     if (!laidOut && bill) {
-      if (!window.twttr.widgets) {
-        window.twttr.ready(window.twttr.widgets.load)
-      } else {
+      if (window.twttr.widgets) {
         window.twttr.widgets.load()
       }
       laidOut = true

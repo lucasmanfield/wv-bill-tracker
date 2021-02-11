@@ -198,7 +198,7 @@ function App({ scrapedData }) {
               }
             }}
           />
-          {searchError ? 
+          {searchError && !suggestions.length ? 
             <div className="App-search-error">
               {searchError}
             </div>
