@@ -99,11 +99,11 @@ function App({ scrapedData }) {
   return (
     <div className="App-container">
       <div className="App-header">
-        <h1>W.Va's 2021 Legislative Session Tracker</h1>
+        <h1>West Virginia's 2021 Capitol Tracker</h1>
         <div className="byline">By <a href="https://mountainstatespotlight.org/author/lucasmanfield/">Lucas Manfield</a>, Mountain State Spotlight. {lastModified ? `Data updated ${lastModified.format('MMMM D, YYYY').replace('pm', 'p.m.').replace('am', 'a.m.')}.`: ''}</div>
         <div className="App-intro">
           <p>Keeping track of West Virginia's chaotic two months of lawmaking can be daunting. To help you decipher it, our nonprofit investigative newsroom at <a href="https://mountainstatespotlight.org">Mountain State Spotlight</a> is trying something new.</p>
-          <p>Here, you can: get live updates from our reporters as they cover legislators' latest moves; contact your elected representatives; keep tabs on all of the bills you’re following in one place; and look up a bill to find out why it is stuck — or sailing through. If you have questions, check out <a href="https://mountainstatespotlight.org/2021/02/14/introducing-mountain-state-spotlights-legislature-tracker">our guide to the tracker here</a>, or reach out. We'd love to know what's working and what's not.</p>
+          <p>Here, you can: get live updates from our reporters as they cover legislators' latest moves; contact your elected representatives; keep tabs on all of the bills you’re following in one place; and look up a bill to find out why it is stuck — or sailing through. If you have questions, check out <a href="https://mountainstatespotlight.org/2021/02/14/introducing-mountain-state-spotlights-legislature-tracker">our guide to the tracker here</a>, or <a href="mailto:lucasmanfield@mountainstatespotlight.org">reach out</a>. We'd love to know what's working and what's not.</p>
         </div>
       </div>
       <div className="App-timeline">
