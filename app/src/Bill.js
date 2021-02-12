@@ -11,6 +11,9 @@ import PersonBox from './PersonBox'
 import { styleForTag } from './utilities'
 import moment from 'moment'
 import { useHistory } from "react-router-dom";
+import showdown from 'showdown'
+
+var markdownConverter = new showdown.Converter()
 
 function Bill({ scrapedData }) {
   const { name } = useParams();
@@ -205,7 +208,7 @@ function Bill({ scrapedData }) {
                     </div>
                   : ''}
                 </div>
-                <div className="Bill-dispatch-content" dangerouslySetInnerHTML={{__html: dispatch.content}} />
+                <div className="Bill-dispatch-content" dangerouslySetInnerHTML={{__html: markdownConverter.makeHtml(dispatch.content)}} />
               </div>
             ))}
           </div>
