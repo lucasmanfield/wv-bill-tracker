@@ -138,13 +138,21 @@ function App({ scrapedData }) {
             onSuggestionsFetchRequested={({ value }) => {
               let bills = scrapedData.bills.filter(bill => {
                 return bill.title.toLowerCase().includes(value.toLowerCase()) || bill.name.toLowerCase().includes(value.toLowerCase())
+              }).sort((a,b) => {
+                if (a.name == value) {
+                  return -1;
+                }
+                if (a.name.split(' ')[1] == value) {
+                  return -1
+                }
+                return 1
               })
               bills.forEach(bill => bill.type = 'bill')
               let people = scrapedData.people.filter(p => {
                 return p.name.toLowerCase().includes(value.toLowerCase())
               })
               people.forEach(p => p.type = 'person')
-              setSuggestions(bills.slice(0, 5).concat(people.slice(0,5)))
+              setSuggestions(bills.slice(0, 8).concat(people.slice(0,6)))
             }}
             onSuggestionsClearRequested={() => {
               setSuggestions(null)

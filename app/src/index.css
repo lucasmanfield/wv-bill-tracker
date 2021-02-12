@@ -96,7 +96,7 @@ h2 {
 }
 
 .App-container {
-  margin:20px auto;
+  margin:10px auto;
   max-width: 800px;
   padding: 10px;
 }
@@ -135,7 +135,7 @@ h2 {
 .App-timeline {
   position: relative;
   height:70px;
-  margin:50px 30px 10px 30px;
+  margin:55px 30px 10px 30px;
 }
 
 .App-timeline-line {
