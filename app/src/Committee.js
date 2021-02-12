@@ -25,11 +25,13 @@ function Committee({ scrapedData, loaded }) {
           <div className="Committee-leadership">
             {scrapedData.people.map(person => {
               let role = null
-              person.committees.forEach(committee => {
-                if (committee.name == name && person.chamber.toLowerCase() == chamber.toLowerCase()) {
-                  role = committee.role
-                }
-              })
+              if (person.committees) {
+                person.committees.forEach(committee => {
+                  if (committee.name == name && person.chamber.toLowerCase() == chamber.toLowerCase()) {
+                    role = committee.role
+                  }
+                })
+              }
               if (role == 'Chair' || role == 'Vice Chair') {
                 return <PersonBox {...person} tag={role} key={role}/>
               }

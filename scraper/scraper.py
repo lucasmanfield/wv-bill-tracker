@@ -7,7 +7,7 @@ import json
 
 fiscal_notes = []
 
-html_doc = urlopen('http://www.wvlegislature.gov/Bill_Status/bills_fiscal.cfm?year=2020&sessiontype=RS&btype=bill&note=fiscal')
+html_doc = urlopen('http://www.wvlegislature.gov/Bill_Status/bills_fiscal.cfm?year=2021&sessiontype=RS&btype=bill&note=fiscal')
 soup = BeautifulSoup(html_doc, 'html.parser')
 
 for tr in soup.find_all('table')[2].find_all('tr')[1:]:
