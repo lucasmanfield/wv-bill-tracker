@@ -102,7 +102,7 @@ function Wrapper() {
           <a href="https://mountainstatespotlight.org"><img className="Header-logo" src={Logo} /></a>
           <a className="Header-nav-button" href="/">Home</a>
           <a className="Header-nav-button" href="https://mountainstatespotlight.org/category/legislature/">Latest News</a>
-          <a className="Header-nav-button" href="https://mountainstatespotlight.org/2021/02/14/introducing-mountain-state-spotlights-legislature-tracker">About</a>
+          <a className="Header-nav-button" href="https://mountainstatespotlight.org/2021/02/14/introducing-mountain-state-spotlights-west-virginia-capitol-tracker/">About</a>
         </div>
         <a className="Header-social" href="https://mountainstatespotlight.org/newsletter-sign-up/"><MdEmail /> SIGN UP</a>
         <a className="Header-button" href="https://checkout.fundjournalism.org/memberform?org_id=mountainstatespotlight&campaign=7014W000001diQiQAI" target="_blank">Donate</a>

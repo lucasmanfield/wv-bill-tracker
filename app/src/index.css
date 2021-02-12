@@ -774,6 +774,8 @@ h2 {
 
 .Committee-leadership {
   display: flex;
+  max-width: 100%;
+  overflow: scroll;
 }
 
 .App-representatives {
