@@ -19,6 +19,9 @@ export function matchNameByLastName(name, lastname) {
     }
     return false
   }
+  if (names.length > 2 && names[names.length - 2] === lastname) {
+    return true
+  }
   if (names[names.length - 1] === lastname) {
     return true
   }
