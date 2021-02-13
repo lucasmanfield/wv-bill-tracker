@@ -106,12 +106,7 @@ function Bill({ scrapedData }) {
           <div className={`Bill-statusbar-line ${bill.step >= 5 ? 'active' : ''}`} />
         </div>
         <div className="Bill-statusbar-segment Bill-statusbar-segment-long">
-          {bill.step == 5 ?
-            <div className='Bill-statusbar-status'>
-              <div className='Bill-statusbar-status-name'>{capitalize(bill.status.step)}</div>
-              <div className='Bill-statusbar-status-date'>Since {bill.last_update_parsed.format('MMM D')}</div>
-            </div>
-          : ''}
+          {bill.step == 5 ? statusBox : ''}
           <div className={`Bill-statusbar-dot ${bill.step >= 5 ? 'active' : ''}`} />
           <div className={`Bill-statusbar-line ${bill.step >= 6 ? 'active' : ''}`} />
         </div>
@@ -157,7 +152,7 @@ function Bill({ scrapedData }) {
             <div className="Bill-detail-item">
               <div className="Bill-detail-item-header">Projected Fiscal Impact</div>
               <div className="Bill-detail-item-content">
-                {currencyFormat(bill.fiscal_note.annual_cost - bill.fiscal_note.annual_revenue)}
+                {currencyFormat(bill.fiscal_note.annual_cost - bill.fiscal_note.annual_revenue)} per year
                 <div className="Bill-fiscal-note">
                   Source: &nbsp;&nbsp;<a href={bill.fiscal_note.url} target="_blank">{bill.fiscal_note.agency} <RiExternalLinkLine /></a>
                 </div>
