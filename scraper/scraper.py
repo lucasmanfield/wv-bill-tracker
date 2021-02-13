@@ -116,7 +116,7 @@ for tr in soup.find_all(id='wrapper')[1].find_all('tr')[1:]:
 
   cells = tr.find_all('td')
   bill_name = cells[0].find('a').string.strip()
-  url = cells[0].find('a').get('href')
+  url = 'http://www.wvlegislature.gov/Bill_Status/' + cells[0].find('a').get('href')
 
   if cells[2].string.strip() == 'Signed':
     status = {
@@ -130,7 +130,7 @@ for tr in soup.find_all(id='wrapper')[1].find_all('tr')[1:]:
     }
 
   print("Loading " + url)
-  html_doc = urlopen('http://www.wvlegislature.gov/Bill_Status/' + url)
+  html_doc = urlopen( + url)
   soup = BeautifulSoup(html_doc, 'html.parser')
 
   bill_table = soup.find_all('table')[1]

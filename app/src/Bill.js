@@ -81,10 +81,10 @@ function Bill({ scrapedData }) {
       </div>
       <div className="Bill-statusbar">
         <div className="Bill-statusbar-group">
-          <div className="Bill-statusbar-group-name">{bill.from_chamber == 'house' ? 'House' : 'Senate'}</div>
+          <div className="Bill-statusbar-group-name">{bill.name.includes('HB') ? 'House' : 'Senate'}</div>
         </div>
         <div className="Bill-statusbar-group" style={{left: '42%'}}>
-          <div className="Bill-statusbar-group-name">{bill.from_chamber == 'house' ? 'Senate' : 'House'}</div>
+          <div className="Bill-statusbar-group-name">{bill.name.includes('HB') ? 'Senate' : 'House'}</div>
         </div>
         <div className="Bill-statusbar-group" style={{left: '80.5%', width: '14%'}}>
           <div className="Bill-statusbar-group-name">Governor</div>
@@ -168,7 +168,7 @@ function Bill({ scrapedData }) {
                 <div className="Bill-committee-chamber">{bill.status.chamber === 'senate' ? 'Sen.' : 'House'}</div>
                 <div className="Bill-committee-details">
                   <div className="Bill-committee-name">{bill.status.committee}</div>
-                  <div className="Bill-committee-status">Since {moment(bill.last_action_date).fromNow()}</div>
+                  <div className="Bill-committee-status">Since {bill.last_update_parsed.format('MMM D')}</div>
                 </div>
               </div>
             </div>

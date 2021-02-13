@@ -460,10 +460,15 @@ h2 {
   color: rgb(252, 206, 0);
 }
 
+.Bill-section-half {
+  min-width: 240px;
+  display: inline-block;
+}
+
 .Bill-section-header {
   margin-top: 20px;
   padding-bottom: 5px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   border-bottom: 1px solid #aaa;
   font-size:15px;
 }
@@ -542,7 +547,7 @@ h2 {
 }
 
 .Bill-statusbar {
-  margin: 60px 0px;
+  margin: 60px 0px 70px 0px;
   padding: 0px 2.5%;
   display: flex;
   position: relative;
