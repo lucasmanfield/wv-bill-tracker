@@ -144,7 +144,7 @@ for tr in soup.find_all(id='wrapper')[1].find_all('tr')[1:]:
       'name': bill_table.find_all('tr')[3].find_all('td')[1].find('a').string.strip(),
       'classification': 'primary'
     }],
-    'bill_text': bill_table.find_all('tr')[5].find_all('td')[1].find_all('a')[1].get('href'),
+    'bill_text': 'http://www.wvlegislature.gov' + bill_table.find_all('tr')[5].find_all('td')[1].find_all('a')[1].get('href'),
     'subjects': []
   }
   if len(bill_table.find_all('tr')) >= 16 and len(bill_table.find_all('tr')[15].find_all('td')) >= 2:
