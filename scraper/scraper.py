@@ -130,7 +130,7 @@ for tr in soup.find_all(id='wrapper')[1].find_all('tr')[1:]:
     }
 
   print("Loading " + url)
-  html_doc = urlopen( + url)
+  html_doc = urlopen(url)
   soup = BeautifulSoup(html_doc, 'html.parser')
 
   bill_table = soup.find_all('table')[1]
