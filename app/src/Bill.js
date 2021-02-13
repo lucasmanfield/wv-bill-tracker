@@ -47,6 +47,13 @@ function Bill({ scrapedData }) {
 
   console.log(bill)
 
+  const statusBox = (
+    <div className='Bill-statusbar-status'>
+      <div className='Bill-statusbar-status-name'>{bill.status.step == 'committee' ? `In committee` : capitalize(bill.status.step)}</div>
+      <div className='Bill-statusbar-status-date'>{bill.status.step == 'committee' ? 'Since' : ''} {bill.last_update_parsed.format('MMM D')}</div>
+    </div>
+  )
+
   return (
     <div className="Bill-container">
       <div className='Bill-nav'>
@@ -89,22 +96,12 @@ function Bill({ scrapedData }) {
           <div className="Bill-statusbar-group-name">Governor</div>
         </div>
         <div className="Bill-statusbar-segment">
-          {bill.step == 0 ?
-            <div className='Bill-statusbar-status'>
-              <div className='Bill-statusbar-status-name'>{capitalize(bill.status.step)}</div>
-              <div className='Bill-statusbar-status-date'>Since {bill.last_update_parsed.format('MMM D')}</div>
-            </div>
-          : ''}
+          {bill.step == 0 ? statusBox : ''}
           <div className={`Bill-statusbar-dot ${bill.step >= 1 ? 'active' : ''}`} />
           <div className={`Bill-statusbar-line ${bill.step >= 1 ? 'active' : ''}`} />
         </div>
         <div className="Bill-statusbar-segment">
-          {bill.step >= 1 && bill.step < 5 ?
-            <div className='Bill-statusbar-status'>
-              <div className='Bill-statusbar-status-name'>{capitalize(bill.status.step)}</div>
-              <div className='Bill-statusbar-status-date'>Since {bill.last_update_parsed.format('MMM D')}</div>
-            </div>
-          : ''}
+          {bill.step >= 1 && bill.step < 5 ? statusBox : ''}
           <div className={`Bill-statusbar-dot ${bill.step >= 2 ? 'active' : ''}`} />
           <div className={`Bill-statusbar-line ${bill.step >= 5 ? 'active' : ''}`} />
         </div>
@@ -119,42 +116,22 @@ function Bill({ scrapedData }) {
           <div className={`Bill-statusbar-line ${bill.step >= 6 ? 'active' : ''}`} />
         </div>
         <div className="Bill-statusbar-segment">
-          {bill.step == 6 ?
-            <div className='Bill-statusbar-status'>
-              <div className='Bill-statusbar-status-name'>{capitalize(bill.status.step)}</div>
-              <div className='Bill-statusbar-status-date'>Since {bill.last_update_parsed.format('MMM D')}</div>
-            </div>
-          : ''}
+          {bill.step == 6 ? statusBox: ''}
           <div className={`Bill-statusbar-dot ${bill.step >= 6 ? 'active' : ''}`} />
           <div className={`Bill-statusbar-line ${bill.step >= 6 ? 'active' : ''}`} />
         </div>
         <div className="Bill-statusbar-segment">
-          {bill.step >= 6 && bill.step < 10 ?
-            <div className='Bill-statusbar-status'>
-              <div className='Bill-statusbar-status-name'>{capitalize(bill.status.step)}</div>
-              <div className='Bill-statusbar-status-date'>Since {bill.last_update_parsed.format('MMM D')}</div>
-            </div>
-          : ''}
+          {bill.step >= 6 && bill.step < 10 ? statusBox : ''}
           <div className={`Bill-statusbar-dot ${bill.step >= 7 ? 'active' : ''}`} />
           <div className={`Bill-statusbar-line ${bill.step >= 7 ? 'active' : ''}`} />
         </div>
         <div className="Bill-statusbar-segment Bill-statusbar-segment-long">
-          {bill.step == 10 ?
-            <div className='Bill-statusbar-status'>
-              <div className='Bill-statusbar-status-name'>{capitalize(bill.status.step)}</div>
-              <div className='Bill-statusbar-status-date'>Since {bill.last_update_parsed.format('MMM D')}</div>
-            </div>
-          : ''}
+          {bill.step == 10 ? statusBox : ''}
           <div className={`Bill-statusbar-dot ${bill.step >= 10 ? 'active' : ''}`} />
           <div className={`Bill-statusbar-line ${bill.step >= 11 ? 'active' : ''}`} />
         </div>
         <div className="Bill-statusbar-segment">
-          {bill.step >= 11 ?
-            <div className='Bill-statusbar-status'>
-              <div className='Bill-statusbar-status-name'>{capitalize(bill.status.step)}</div>
-              <div className='Bill-statusbar-status-date'>On {bill.last_update_parsed.format('MMM D')}</div>
-            </div>
-          : ''}
+          {bill.step >= 11 ? statusBox : ''}
           <div className={`Bill-statusbar-dot ${bill.step == 12 ? 'active' : ''}`} />
         </div>
       </div>
