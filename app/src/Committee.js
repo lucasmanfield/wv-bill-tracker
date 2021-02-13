@@ -11,7 +11,8 @@ import { capitalize } from './utilities'
 
 function Committee({ scrapedData, loaded }) {
   const { name, chamber } = useParams();
-  const bills = scrapedData.bills.filter(b => b.committees.find(c => c.name == name && c.chamber == chamber)).sort((a,b) => a.step - b.step)
+
+  const bills = scrapedData.bills.filter(b => b.status.committee == name && b.status.chamber == chamber)
 
   return (
     <div className="Subject-container">

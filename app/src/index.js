@@ -18,8 +18,20 @@ import {
 
 function Wrapper() {
   const scrapedData = require('./bills.json')
-  scrapedData.bills.forEach(b => updateBillStatus(b))
-  
+  const bills = []
+  Object.keys(scrapedData.bills).forEach(k => {
+    bills.push({name: k, ...scrapedData.bills[k]})
+  })
+  bills.forEach(b => updateBillStatus(b))
+  scrapedData.bills = bills
+
+  const scrapedLegislators = require('./legislators.json')
+  const people = []
+  Object.keys(scrapedLegislators).forEach(k => {
+    people.push({name: k, ...scrapedLegislators[k]})
+  })
+  scrapedData.people = people
+
   const base = new Airtable({apiKey: 'keyX0mQVFiAFPITWj'}).base('apphXzpbYfgPql6dw');
   const [loaded, setLoaded] = useState(false)
 
@@ -66,10 +78,7 @@ function Wrapper() {
   }
 
   useEffect(async () => {
-    const scrapedLegislators = require('./legislators.json')
-    scrapedData.people.forEach(person => {
-      Object.assign(person, scrapedLegislators[person.name])
-    })
+
     const output = await joinAirtable()
     output[0].forEach((billData, idx) => {
       scrapedData.bills.forEach(bill => {

@@ -28,23 +28,21 @@ jobs:
       - uses: actions/checkout@v2
         with:
           path: main
-      
-      - uses: actions/checkout@v2
-        with:
-          path: openstates-scrapers
-          repository: lucasmanfield/openstates-scrapers
 
-      - name: Run openscraper
-        working-directory: openstates-scrapers
-        run: docker-compose run --rm scrape wv bills people --scrape
+      - name: Install pip
+        working-directory: main/scraper
+        run: python -m pip install --upgrade pip
 
-      - name: Merge it
-        working-directory: main
-        run: python scraper/openstates/openstates.py "${{ github.workspace }}/openstates-scrapers/_data/wv/*"
+      - name: Install bs
+        working-directory: main/scraper
+        run: pip install bs4
+
+      - name: Run scaper
+        working-directory: main/scraper
+        run: python scraper.py
 
       - name: Copy output
-        working-directory: main
-        run: cp bills.json app/src
+        run: cp main/scraper/bills.json app/src
 
       - name: Yarn Install
         working-directory: main/app

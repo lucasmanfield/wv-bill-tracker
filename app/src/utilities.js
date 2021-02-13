@@ -47,63 +47,39 @@ export function styleForTag(tag) {
 }
 
 export function updateBillStatus(bill) {
-  bill.committees = []
-  bill.actions.forEach(action => {
-    bill.last_update = action.date
-    bill.last_update_parsed = moment(action.date)
-    bill.current_chamber = action.chamber
-    if (action['classification'] === 'filing') {
-      bill.step = 0;
-      bill.status = 'Filed'
+  bill.last_update_parsed = moment(bill.last_action_date)
+  if (bill.status.step == 'signed') {
+    bill.step = 12;
+  } else if (bill.status.step.toLowerCase() == 'committee') {
+    bill.step = 6
+    if (bill.name.includes('HB') && bill.status.chamber == 'house') {
+      bill.step = 1
     }
-    if (action['classification'] === 'introduction') {
-      bill.step = bill.from_chamber === bill.current_chamber ? 1 : 6
-      bill.status = 'Introduced'
+    if (bill.name.includes('SB') && bill.status.chamber == 'senate') {
+      bill.step = 1
     }
-    if (action['classification'] === 'reading-1') {
-      bill.step = bill.from_chamber === bill.current_chamber ? 2 : 7
-      bill.status = 'On floor'
-      bill.committees.filter(c => c.chamber == bill.current_chamber).forEach(c => {
-        c.status = 'Passed'
-      })
+  } else if (bill.status.step.toLowerCase() == '1st reading') {
+    if (bill.name.includes('HB') && bill.status.chamber == 'house') {
+      bill.step = 2
     }
-    if (action['classification'] === 'reading-2') {
-      bill.step = bill.from_chamber === bill.current_chamber ? 3 : 8
-      bill.status = 'On floor'
+    if (bill.name.includes('SB') && bill.status.chamber == 'senate') {
+      bill.step = 7
     }
-    if (action['classification'] === 'reading-3') {
-      bill.step = bill.from_chamber === bill.current_chamber ? 4 : 9
-      bill.status = 'On floor'
+  } else if (bill.status.step.toLowerCase() == '2nd reading') {
+    if (bill.name.includes('HB') && bill.status.chamber == 'house') {
+      bill.step = 3
     }
-    if (action['classification'] === 'passage') {
-      bill.step = bill.from_chamber === bill.current_chamber ? 5 : 10
-      bill.status = 'Passed ' + capitalize(bill.current_chamber)
+    if (bill.name.includes('SB') && bill.status.chamber == 'senate') {
+      bill.step = 8
     }
-    if (action['classification'] == 'referral-committee') {
-      bill.status = 'In committee'
-      if (!action.description.includes(' then ')) {
-        const name = action.description.replace('To ', '').replace('House ', '').replace('Senate ', '')
-        if (!(bill.committees || []).find(c => name == c.name.replace('House ', '').replace('Senate ', ''))) {
-          bill.committees.push({
-            name,
-            chamber: action.chamber,
-            status: 'Referred',
-            date: action.date
-          })
-        }
-      }
+  } else if (bill.status.step.toLowerCase() == '3rd reading') {
+    if (bill.name.includes('HB') && bill.status.chamber == 'house') {
+      bill.step = 4
     }
-    if (action['classification'] === 'executive-receipt') {
-      bill.current_chamber = null
-      bill.step = 11
-      bill.status = 'Awaiting signature'
+    if (bill.name.includes('SB') && bill.status.chamber == 'senate') {
+      bill.step = 9
     }
-    if (action['classification'] === 'executive-signature') {
-      bill.current_chamber = null
-      bill.step = 12
-      bill.status = 'Signed'
-    }
-  })
+  }
 }
 
 export function capitalize(string) {

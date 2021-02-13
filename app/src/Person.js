@@ -52,7 +52,7 @@ function Person({ scrapedData, loaded }) {
         <img src={person.photo}/>
         <div className="Person-header-details">
           <div className="Person-name">{person.name} ({person.party[0]} - {person.district_name})</div>
-          <div className="Person-office">{person.office.replace("WV ", '')}, District {person.district}</div>
+          <div className="Person-office">{person.chamber == 'house' ? 'Delegate' : 'Senator'}, District {person.district}</div>
           {person.positions.length ? 
             <div className="Person-positions">
               {person.positions.map(position => (

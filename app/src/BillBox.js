@@ -1,6 +1,6 @@
 import React from 'react';
 import { useHistory } from "react-router-dom";
-import { styleForTag } from './utilities'
+import { styleForTag, capitalize } from './utilities'
 
 function Bill({ name, title, status, notes, tags, step }) {
     const history = useHistory()
@@ -18,7 +18,7 @@ function Bill({ name, title, status, notes, tags, step }) {
           </div> : ''}
         </div>
         <div className="BillBox-status">
-          {status}
+          {capitalize(status.step)}
           <div className="BillBox-statusbar">
             <div className="BillBox-statusbar-segment">
               <div className={`BillBox-statusbar-dot ${step >= 1 ? 'active' : ''}`} />

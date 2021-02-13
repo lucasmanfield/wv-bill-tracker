@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
-import { getPersonByLastName, capitalize } from './utilities'
+import { getPersonByLastName, capitalize, styleForTag } from './utilities'
 import { useCookies } from 'react-cookie'
 import {
   useParams,
@@ -8,7 +8,6 @@ import {
 import { BsStarFill, BsStar, BsFileText } from 'react-icons/bs';
 import { RiExternalLinkLine } from 'react-icons/ri';
 import PersonBox from './PersonBox'
-import { styleForTag } from './utilities'
 import moment from 'moment'
 import { useHistory } from "react-router-dom";
 import showdown from 'showdown'
@@ -18,14 +17,12 @@ var markdownConverter = new showdown.Converter()
 function Bill({ scrapedData }) {
   const { name } = useParams();
   const [bill, setBill] = useState(null)
-  const [people, setPeople] = useState(null)
   const [cookies, setCookie, removeCookie] = useCookies(['following', 'address'])
   let laidOut = false
 
   const history = useHistory()
 
   useEffect(() => {
-    setPeople(scrapedData.people)
     scrapedData.bills.forEach(bill => {
       if (bill.name == name) {
         setBill(bill)
@@ -57,7 +54,7 @@ function Bill({ scrapedData }) {
           <Link to="/">Search</Link><b>&nbsp;&nbsp;»&nbsp;&nbsp;{name}</b>
         </div>
         <div className="Bill-buttons">
-          <a target="_blank" href={bill.versions[0].url}><BsFileText /> Bill Text</a>
+          <a target="_blank" href={bill.bill_text}><BsFileText /> Bill Text</a>
           <button className={`Bill-follow ${isFollowing ? 'Bill-following' : ''}`} onClick={() => {
             if (isFollowing) {
               setCookie('following', (cookies.following || '').replace(`${name},`, ''))
@@ -95,7 +92,7 @@ function Bill({ scrapedData }) {
         <div className="Bill-statusbar-segment">
           {bill.step == 0 ?
             <div className='Bill-statusbar-status'>
-              <div className='Bill-statusbar-status-name'>{bill.status}</div>
+              <div className='Bill-statusbar-status-name'>{capitalize(bill.status.step)}</div>
               <div className='Bill-statusbar-status-date'>Since {bill.last_update_parsed.format('MMM D')}</div>
             </div>
           : ''}
@@ -105,17 +102,17 @@ function Bill({ scrapedData }) {
         <div className="Bill-statusbar-segment">
           {bill.step >= 1 && bill.step < 5 ?
             <div className='Bill-statusbar-status'>
-              <div className='Bill-statusbar-status-name'>{bill.status}</div>
+              <div className='Bill-statusbar-status-name'>{capitalize(bill.status.step)}</div>
               <div className='Bill-statusbar-status-date'>Since {bill.last_update_parsed.format('MMM D')}</div>
             </div>
           : ''}
           <div className={`Bill-statusbar-dot ${bill.step >= 2 ? 'active' : ''}`} />
-          <div className={`Bill-statusbar-line ${bill.step >= 2 ? 'active' : ''}`} />
+          <div className={`Bill-statusbar-line ${bill.step >= 5 ? 'active' : ''}`} />
         </div>
         <div className="Bill-statusbar-segment Bill-statusbar-segment-long">
           {bill.step == 5 ?
             <div className='Bill-statusbar-status'>
-              <div className='Bill-statusbar-status-name'>{bill.status}</div>
+              <div className='Bill-statusbar-status-name'>{capitalize(bill.status.step)}</div>
               <div className='Bill-statusbar-status-date'>Since {bill.last_update_parsed.format('MMM D')}</div>
             </div>
           : ''}
@@ -125,7 +122,7 @@ function Bill({ scrapedData }) {
         <div className="Bill-statusbar-segment">
           {bill.step == 6 ?
             <div className='Bill-statusbar-status'>
-              <div className='Bill-statusbar-status-name'>{bill.status}</div>
+              <div className='Bill-statusbar-status-name'>{capitalize(bill.status.step)}</div>
               <div className='Bill-statusbar-status-date'>Since {bill.last_update_parsed.format('MMM D')}</div>
             </div>
           : ''}
@@ -135,7 +132,7 @@ function Bill({ scrapedData }) {
         <div className="Bill-statusbar-segment">
           {bill.step >= 6 && bill.step < 10 ?
             <div className='Bill-statusbar-status'>
-              <div className='Bill-statusbar-status-name'>{bill.status}</div>
+              <div className='Bill-statusbar-status-name'>{capitalize(bill.status.step)}</div>
               <div className='Bill-statusbar-status-date'>Since {bill.last_update_parsed.format('MMM D')}</div>
             </div>
           : ''}
@@ -145,7 +142,7 @@ function Bill({ scrapedData }) {
         <div className="Bill-statusbar-segment Bill-statusbar-segment-long">
           {bill.step == 10 ?
             <div className='Bill-statusbar-status'>
-              <div className='Bill-statusbar-status-name'>{bill.status}</div>
+              <div className='Bill-statusbar-status-name'>{capitalize(bill.status.step)}</div>
               <div className='Bill-statusbar-status-date'>Since {bill.last_update_parsed.format('MMM D')}</div>
             </div>
           : ''}
@@ -155,7 +152,7 @@ function Bill({ scrapedData }) {
         <div className="Bill-statusbar-segment">
           {bill.step >= 11 ?
             <div className='Bill-statusbar-status'>
-              <div className='Bill-statusbar-status-name'>{bill.status}</div>
+              <div className='Bill-statusbar-status-name'>{capitalize(bill.status.step)}</div>
               <div className='Bill-statusbar-status-date'>On {bill.last_update_parsed.format('MMM D')}</div>
             </div>
           : ''}
@@ -163,19 +160,17 @@ function Bill({ scrapedData }) {
         </div>
       </div>
       <div className="Bill-content">
-        {(bill.committees || []).length ?
-          <div>
-            <div className="Bill-section-header">Committees</div>
+        {bill.status.committee && bill.status.committee.length ?
+          <div className="Bill-section-half">
+            <div className="Bill-section-header">Current Committee</div>
             <div className="Bill-section Bill-committees">
-              {bill.committees.map(committee => (
-                <div className="Bill-committee" key={`${committee.name}-${committee.chamber}`} onClick={() => history.push(`/committee/${committee.chamber}/${committee.name}`)}>
-                  <div className="Bill-committee-chamber">{committee.chamber === 'senate' ? 'Sen.' : 'House'}</div>
-                  <div className="Bill-committee-details">
-                    <div className="Bill-committee-name">{committee.name}</div>
-                    <div className="Bill-committee-status">{committee.status} {committee.status === 'Referred' ? moment(committee.date).fromNow() : ''}</div>
-                  </div>
+              <div className="Bill-committee" key={`${bill.status.committee}-${bill.status.chamber}`} onClick={() => history.push(`/committee/${bill.status.chamber}/${bill.status.committee}`)}>
+                <div className="Bill-committee-chamber">{bill.status.chamber === 'senate' ? 'Sen.' : 'House'}</div>
+                <div className="Bill-committee-details">
+                  <div className="Bill-committee-name">{bill.status.committee}</div>
+                  <div className="Bill-committee-status">Since {moment(bill.last_action_date).fromNow()}</div>
                 </div>
-              ))}
+              </div>
             </div>
           </div>
         : ''}
@@ -183,7 +178,7 @@ function Bill({ scrapedData }) {
         <div className="Bill-section Bill-sponsors">
           <div className="Bill-sponsors-container" style={{width: bill.sponsors.length * 232 + 'px'}}>
             {bill.sponsors.map(sponsor => {
-              const person = getPersonByLastName(people, sponsor.name)
+              const person = getPersonByLastName(scrapedData.people, sponsor.name)
               if (!person) {
                 return <span className="Bill-sponsor" key={sponsor.name}>{sponsor.name}</span>
               }
