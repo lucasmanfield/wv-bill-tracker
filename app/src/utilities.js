@@ -143,3 +143,7 @@ export function roleToNumber(role) {
   }
   return 0;
 }
+
+export function currencyFormat(num) {
+  return '$' + num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
-import { getPersonByLastName, capitalize, styleForTag } from './utilities'
+import { getPersonByLastName, capitalize, styleForTag, currencyFormat } from './utilities'
 import { useCookies } from 'react-cookie'
 import {
   useParams,
@@ -75,8 +75,7 @@ function Bill({ scrapedData }) {
           ))}
         </div>
         <div className="Bill-url">
-          Topics:&nbsp;&nbsp;{bill.subjects.map((subject, idx) => (<Link key={subject} className="Bill-subject" to={`/subject/${subject}`}>{subject}{idx < bill.subjects.length - 1 ? ', ' : ''}</Link>))} 
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Source:&nbsp;&nbsp;<a href={bill.url} target="_blank">West Virginia Legislature <RiExternalLinkLine /></a>
+          Source:&nbsp;&nbsp;<a href={bill.url} target="_blank">West Virginia Legislature <RiExternalLinkLine /></a>
         </div>
       </div>
       <div className="Bill-statusbar">
@@ -160,20 +159,36 @@ function Bill({ scrapedData }) {
         </div>
       </div>
       <div className="Bill-content">
-        {bill.status.committee && bill.status.committee.length ?
-          <div className="Bill-section-half">
-            <div className="Bill-section-header">Current Committee</div>
-            <div className="Bill-section Bill-committees">
-              <div className="Bill-committee" key={`${bill.status.committee}-${bill.status.chamber}`} onClick={() => history.push(`/committee/${bill.status.chamber}/${bill.status.committee}`)}>
-                <div className="Bill-committee-chamber">{bill.status.chamber === 'senate' ? 'Sen.' : 'House'}</div>
-                <div className="Bill-committee-details">
-                  <div className="Bill-committee-name">{bill.status.committee}</div>
-                  <div className="Bill-committee-status">Since {bill.last_update_parsed.format('MMM D')}</div>
+        <div className="Bill-details">
+          {bill.status.committee && bill.status.committee.length ?
+            <div className="Bill-detail-item">
+              <div className="Bill-detail-item-header">Committee</div>
+              <div className="Bill-detail-item-content">
+                <a href={`/committee/${bill.status.chamber}/${bill.status.committee}`}>{capitalize(bill.status.chamber)} {bill.status.committee}</a>
+              </div>
+            </div>
+          : ''}
+          {bill.subjects.length ?
+            <div className="Bill-detail-item">
+              <div className="Bill-detail-item-header">Subject</div>
+              <div className="Bill-detail-item-content">
+                {bill.subjects.map((subject, idx) => (<Link key={subject} to={`/subject/${subject}`}>{subject}{idx < bill.subjects.length - 1 ? ', ' : ''}</Link>))}
+              </div>
+            </div>
+          : ''}
+          {bill.fiscal_note && 'annual_cost' in bill.fiscal_note ? 
+            <div className="Bill-detail-item">
+              <div className="Bill-detail-item-header">Projected Fiscal Impact</div>
+              <div className="Bill-detail-item-content">
+                {currencyFormat(bill.fiscal_note.annual_cost - bill.fiscal_note.annual_revenue)}
+                <div className="Bill-fiscal-note">
+                  Source: &nbsp;&nbsp;<a href={bill.fiscal_note.url} target="_blank">{bill.fiscal_note.agency} <RiExternalLinkLine /></a>
                 </div>
               </div>
             </div>
-          </div>
-        : ''}
+          : ''}
+        </div>
+        
         <div className="Bill-section-header">Sponsors</div>
         <div className="Bill-section Bill-sponsors">
           <div className="Bill-sponsors-container" style={{width: bill.sponsors.length * 232 + 'px'}}>

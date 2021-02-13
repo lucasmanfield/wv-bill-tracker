@@ -460,9 +460,52 @@ h2 {
   color: rgb(252, 206, 0);
 }
 
-.Bill-section-half {
-  min-width: 240px;
+.Bill-details {
+  margin-top:-5px;
+  font-size: 14px;
+}
+
+.Bill-detail-item {
+  margin-right:50px;
+  margin-top: 15px;
   display: inline-block;
+  vertical-align: top;
+}
+
+.Bill-detail-item-header {
+  display: inline;
+  font-weight: bold;
+}
+
+.Bill-detail-item-content {
+  display: inline;
+  margin-left: 10px;
+}
+
+.Bill-detail-item-content a {
+  color: #333;
+  text-decoration: underline;
+  text-underline-position: under;
+}
+.Bill-detail-item-content a:hover {
+  color: black;
+}
+
+.Bill-fiscal-note {
+  font-size:11px;
+  color: #777;
+  font-style: italic;
+  margin-top: 3px;
+}
+.Bill-fiscal-note a {
+  color: #777;
+  text-decoration: none;
+}
+.Bill-fiscal-note svg {
+  position:relative;
+  top:1px;
+  font-size:11px;
+  margin-left:2px;
 }
 
 .Bill-section-header {
@@ -470,7 +513,8 @@ h2 {
   padding-bottom: 5px;
   margin-bottom: 10px;
   border-bottom: 1px solid #aaa;
-  font-size:15px;
+  font-weight:bold;
+  font-size:14px;
 }
 
 .Bill-committees {

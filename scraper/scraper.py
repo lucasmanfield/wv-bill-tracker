@@ -123,11 +123,25 @@ for tr in soup.find_all(id='wrapper')[1].find_all('tr')[1:]:
       'step': 'signed',
     }
   else:
+    committee = cells[3].find('a').string.replace('Senate', '').replace('House', '').strip()
+    if committee == 'FD':
+      committee = 'Fire Departments and EMS'
+    elif committee == 'T&I':
+      committee = 'Technology and Infrastructure'
+    elif committee == 'WORK':
+      committee = 'Workforce'
+    elif committee == 'DA':
+      committee = "Substance Abuse"
+    elif committee == 'WD':
+      committee = "Workforce Development"
+    elif committee == 'ENG':
+      committee = "Energy"
     status = {
-      'committee': cells[3].find('a').string.replace('Senate', '').replace('House', '').strip(),
+      'committee': committee,
       'step': cells[4].string.strip().lower(),
       'last_action_date': cells[5].string.strip()
     }
+
 
   print("Loading " + url)
   html_doc = urlopen(url)
