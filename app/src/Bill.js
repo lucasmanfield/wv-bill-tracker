@@ -96,12 +96,12 @@ function Bill({ scrapedData }) {
           <div className="Bill-statusbar-group-name">Governor</div>
         </div>
         <div className="Bill-statusbar-segment">
-          {bill.step == 0 ? statusBox : ''}
+          {bill.step < 2 ? statusBox : ''}
           <div className={`Bill-statusbar-dot ${bill.step >= 1 ? 'active' : ''}`} />
-          <div className={`Bill-statusbar-line ${bill.step >= 1 ? 'active' : ''}`} />
+          <div className={`Bill-statusbar-line ${bill.step >= 2 ? 'active' : ''}`} />
         </div>
         <div className="Bill-statusbar-segment">
-          {bill.step >= 1 && bill.step < 5 ? statusBox : ''}
+          {bill.step >= 2 && bill.step < 5 ? statusBox : ''}
           <div className={`Bill-statusbar-dot ${bill.step >= 2 ? 'active' : ''}`} />
           <div className={`Bill-statusbar-line ${bill.step >= 5 ? 'active' : ''}`} />
         </div>
@@ -113,12 +113,12 @@ function Bill({ scrapedData }) {
         <div className="Bill-statusbar-segment">
           {bill.step == 6 ? statusBox: ''}
           <div className={`Bill-statusbar-dot ${bill.step >= 6 ? 'active' : ''}`} />
-          <div className={`Bill-statusbar-line ${bill.step >= 6 ? 'active' : ''}`} />
+          <div className={`Bill-statusbar-line ${bill.step >= 7 ? 'active' : ''}`} />
         </div>
         <div className="Bill-statusbar-segment">
           {bill.step >= 6 && bill.step < 10 ? statusBox : ''}
           <div className={`Bill-statusbar-dot ${bill.step >= 7 ? 'active' : ''}`} />
-          <div className={`Bill-statusbar-line ${bill.step >= 7 ? 'active' : ''}`} />
+          <div className={`Bill-statusbar-line ${bill.step >= 10 ? 'active' : ''}`} />
         </div>
         <div className="Bill-statusbar-segment Bill-statusbar-segment-long">
           {bill.step == 10 ? statusBox : ''}

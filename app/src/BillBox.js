@@ -4,6 +4,11 @@ import { styleForTag, capitalize } from './utilities'
 
 function Bill({ name, title, status, notes, tags, step }) {
     const history = useHistory()
+
+    let statusDescription = status.step
+    if (statusDescription.includes('reading')) {
+      statusDescription = 'on floor'
+    }
   
     return (
       <div className="BillBox" onClick={() => history.push(`/bill/${name}`)}>
@@ -18,7 +23,7 @@ function Bill({ name, title, status, notes, tags, step }) {
           </div> : ''}
         </div>
         <div className="BillBox-status">
-          {capitalize(status.step)}
+          {capitalize(statusDescription)}
           <div className="BillBox-statusbar">
             <div className="BillBox-statusbar-segment">
               <div className={`BillBox-statusbar-dot ${step >= 1 ? 'active' : ''}`} />
