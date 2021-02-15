@@ -123,24 +123,37 @@ for tr in soup.find_all(id='wrapper')[1].find_all('tr')[1:]:
       'step': 'signed',
     }
   else:
-    committee = cells[3].find('a').string.replace('Senate', '').replace('House', '').strip()
-    if committee == 'FD':
-      committee = 'Fire Departments and EMS'
-    elif committee == 'T&I':
-      committee = 'Technology and Infrastructure'
-    elif committee == 'WORK':
-      committee = 'Workforce'
-    elif committee == 'DA':
-      committee = "Substance Abuse"
-    elif committee == 'WD':
-      committee = "Workforce Development"
-    elif committee == 'ENG':
-      committee = "Energy"
-    status = {
-      'committee': committee,
-      'step': cells[4].string.strip().lower(),
-      'last_action_date': cells[5].string.strip()
-    }
+    if len(cells) == 5:
+      status = {
+        'step': cells[3].string.strip().lower(),
+        'last_action_date': cells[4].string.strip()
+      }
+    elif len(cells) == 6:
+      status = {
+        'step': cells[4].string.strip().lower(),
+        'last_action_date': cells[5].string.strip()
+      }
+
+      committeeCell = cells[3].find('a')
+      if committeeCell: 
+        committee = committeeCell.string.replace('Senate', '').replace('House', '').strip()
+        if committee == 'FD':
+          committee = 'Fire Departments and EMS'
+        elif committee == 'T&I':
+          committee = 'Technology and Infrastructure'
+        elif committee == 'WORK':
+          committee = 'Workforce'
+        elif committee == 'DA':
+          committee = "Substance Abuse"
+        elif committee == 'WD':
+          committee = "Workforce Development"
+        elif committee == 'ENG':
+          committee = "Energy"
+        status['committee'] = committee
+
+    else:
+      raise Exception("ERROR READING BILL LIST AT %s" % cells)
+
 
 
   print("Loading " + url)

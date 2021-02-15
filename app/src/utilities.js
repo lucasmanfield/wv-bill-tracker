@@ -87,6 +87,8 @@ export function updateBillStatus(bill) {
     if (bill.name.includes('SB') && bill.status.chamber == 'senate') {
       bill.step = 9
     }
+  } else if (bill.status.step.includes('introduction')) {
+    bill.step = 5
   }
 }
 
