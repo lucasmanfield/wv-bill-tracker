@@ -1,11 +1,17 @@
 import moment from 'moment'
 
 export function matchNameByLastName(name, lastname) {
-
-
+  let lastName = lastname
+  const n = lastName.indexOf('(')
+  if (n != -1) {
+    
+    lastName = lastName.substring(0, n - 1)
+    console.log(n, lastName)
+  }
+  
   let firstInitial = null
   let lastNameSplit0 = null
-  const lastNames = lastname.split(' ')
+  const lastNames = lastName.split(' ')
   if (lastNames.length >= 2) {
     lastNameSplit0 = lastNames[0].replace(',','')
     firstInitial = lastNames[1][0]
@@ -13,16 +19,15 @@ export function matchNameByLastName(name, lastname) {
   const names = name.split(' ')
 
   if (firstInitial) {
-
     if (names[names.length - 1] === lastNameSplit0 && names[0][0] == firstInitial) {
       return true
     }
     return false
   }
-  if (names.length > 2 && names[names.length - 2] === lastname) {
+  if (names.length > 2 && names[names.length - 2] === lastName) {
     return true
   }
-  if (names[names.length - 1] === lastname) {
+  if (names[names.length - 1] === lastName) {
     return true
   }
 

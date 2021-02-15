@@ -175,6 +175,8 @@ for tr in soup.find_all(id='wrapper')[1].find_all('tr')[1:]:
     bill['status']['chamber'] = 'house'
   elif bill['last_action'].startswith('S '):
     bill['status']['chamber'] = 'senate'
+
+    
   
   bills[bill_name] = bill
 

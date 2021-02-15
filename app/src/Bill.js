@@ -144,7 +144,12 @@ function Bill({ scrapedData }) {
             <div className="Bill-detail-item">
               <div className="Bill-detail-item-header">Subject</div>
               <div className="Bill-detail-item-content">
-                {bill.subjects.map((subject, idx) => (<Link key={subject} to={`/subject/${subject}`}>{subject}{idx < bill.subjects.length - 1 ? ', ' : ''}</Link>))}
+                {bill.subjects.map((subject, idx) => (
+                  <span>
+                    <Link key={subject} to={`/subject/${subject}`}>{subject}</Link>
+                    {idx < bill.subjects.length - 1 ? ', ' : ''}  
+                  </span>
+                ))}
               </div>
             </div>
           : ''}

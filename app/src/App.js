@@ -233,6 +233,11 @@ function App({ scrapedData }) {
           >
             {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
               <div className="react-autosuggest__container">
+                <div className={`App-localrep-searchbutton ${!address || !address.length ? 'disabled' : ''}`} onClick={() => {
+                  setAddress(address)
+                  setRepresentatives(null)
+                  getRepresentatives(address)
+                }}>Search</div>
                 <input
                   {...getInputProps({
                     placeholder: '123 Main St, St Albans',
