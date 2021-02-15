@@ -27,7 +27,7 @@ function Bill({ name, title, status, notes, tags, step }) {
           <div className="BillBox-statusbar">
             <div className="BillBox-statusbar-segment">
               <div className={`BillBox-statusbar-dot ${step >= 1 ? 'active' : ''}`} />
-              <div className={`BillBox-statusbar-line ${step >= 6 ? 'active' : ''}`} />
+              <div className={`BillBox-statusbar-line ${step >= 5 ? 'active' : ''}`} />
             </div>
             <div className="BillBox-statusbar-segment">
               <div className={`BillBox-statusbar-dot ${step >= 6 ? 'active' : ''}`} />

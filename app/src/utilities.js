@@ -6,7 +6,6 @@ export function matchNameByLastName(name, lastname) {
   if (n != -1) {
     
     lastName = lastName.substring(0, n - 1)
-    console.log(n, lastName)
   }
   
   let firstInitial = null
@@ -67,28 +66,35 @@ export function updateBillStatus(bill) {
       bill.step = 1
     }
   } else if (bill.status.step.toLowerCase() == '1st reading') {
+    bill.step = 7
     if (bill.name.includes('HB') && bill.status.chamber == 'house') {
       bill.step = 2
     }
     if (bill.name.includes('SB') && bill.status.chamber == 'senate') {
-      bill.step = 7
+      bill.step = 2
     }
   } else if (bill.status.step.toLowerCase() == '2nd reading') {
+    bill.step = 8
     if (bill.name.includes('HB') && bill.status.chamber == 'house') {
       bill.step = 3
     }
     if (bill.name.includes('SB') && bill.status.chamber == 'senate') {
-      bill.step = 8
+      bill.step = 3
     }
   } else if (bill.status.step.toLowerCase() == '3rd reading') {
+    bill.step = 9
     if (bill.name.includes('HB') && bill.status.chamber == 'house') {
       bill.step = 4
     }
     if (bill.name.includes('SB') && bill.status.chamber == 'senate') {
-      bill.step = 9
+      bill.step = 4
     }
-  } else if (bill.status.step.includes('introduction')) {
+  } else if (bill.status.step.includes('senate introduction')) {
     bill.step = 5
+    bill.status.step = 'To Senate'
+  } else if (bill.status.step.includes('house introduction')) {
+    bill.step = 5
+    bill.status.step = 'To House'
   }
 }
 
