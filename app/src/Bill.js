@@ -156,7 +156,7 @@ function Bill({ scrapedData }) {
             <div className="Bill-detail-item">
               <div className="Bill-detail-item-header">Projected Fiscal Impact</div>
               <div className="Bill-detail-item-content">
-                {currencyFormat(bill.fiscal_note.annual_cost - bill.fiscal_note.annual_revenue)} per year
+                {currencyFormat(bill.fiscal_note.annual_revenue - bill.fiscal_note.annual_cost)} per year
                 <div className="Bill-fiscal-note">
                   Source: &nbsp;&nbsp;<a href={bill.fiscal_note.url} target="_blank">{bill.fiscal_note.agency} <RiExternalLinkLine /></a>
                 </div>
@@ -173,7 +173,7 @@ function Bill({ scrapedData }) {
               if (!person) {
                 return <span className="Bill-sponsor" key={sponsor.name}>{sponsor.name}</span>
               }
-    
+
               return (
                 <PersonBox {...person} tag={sponsor.classification == 'primary' ? 'Lead Sponsor' : null} key={person.name}/>
               )
