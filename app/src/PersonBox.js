@@ -3,7 +3,7 @@ import React from 'react';
 import { MdPhone, MdEmail } from 'react-icons/md';
 import { useHistory } from "react-router-dom";
 
-function PersonBox({ name, email, phone, party, district, office, tag }) {
+function PersonBox({ name, email, phone, party, district, chamber, tag }) {
   const history = useHistory()
   return (
     <div 
@@ -15,7 +15,7 @@ function PersonBox({ name, email, phone, party, district, office, tag }) {
     >
       <div className="PersonBox-representative-name">{party ? `${party[0]} - ` : ''}{name}</div>
       <div className="PersonBox-representative-office">
-        {office == 'WV State Senator' ? 'Senator' : 'Delegate'}{district ? `, District ${district}` : ''}
+        {chamber == 'Senate' ? 'Senator' : 'Delegate'}{district ? `, District ${district}` : ''}
       </div>
       {tag ? <div className="PersonBox-tag">{tag}</div> : ''} 
       <div className="PersonBox-contact-icons">

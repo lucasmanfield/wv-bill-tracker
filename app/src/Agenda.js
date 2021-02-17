@@ -40,6 +40,9 @@ const agendaItem = (scrapedData, {name, url, date, bills}) => (
 )
 
 function Agenda({ scrapedData, loaded }) {
+  if (!loaded) {
+    return <div />
+  }
   return (
     <div className="Agenda-container">
       {

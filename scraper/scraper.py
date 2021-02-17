@@ -70,7 +70,7 @@ def parse_calendar(url):
   
 def parse_bill(url):
   print("Loading " + url)
-  html_doc = requests.get(url).text
+  html_doc = load_page(url)
   soup = BeautifulSoup(html_doc, 'html.parser')
 
   bill_table = soup.find_all('table')[1]
@@ -114,10 +114,16 @@ def parse_bill(url):
       type = parts[1]
       sponsors = parts[2].split(',')
       
+        
+      
       num = 1
       for i in range(10):
         if '_%s' % str(i) in name:
           num = i
+
+      
+      date = re.findall(r'[0-9]+-[0-9]+', name)[0]
+      amendment_id = "%s|%s|%s" % (','.join(sponsors), num, date)
       
       url = 'https://wvlegislature.gov' + a.get('href')
 
@@ -126,24 +132,25 @@ def parse_bill(url):
         'url': url,
         'sponsors': sponsors,
         'number': num,
-        'status': status
+        'status': status,
+        'id': amendment_id
       })
     
     sorted_amendments = sorted(amendments, key=lambda a: statuses.index(a['status']))
-    #print('\n'.join(["%s:%s:%s:%s" % (a['sponsors'], a['number'], a['status'], a['url']) for a in sorted_amendments]))
+    print('\n'.join([a['id'] for a in sorted_amendments]))
     for amendment in sorted_amendments:
       added = False
       for added_amendment in bill['amendments']:
         # if this is an updated version, then update it
-        if amendment['sponsors'] == added_amendment['sponsors'] and amendment['number'] == added_amendment['number']:
-          #print("Overwriting ", ["%s:%s" % (a['url'], a['status']) for a in [added_amendment, amendment]])
+        if amendment['id'] == added_amendment['id']:
+          print("Overwriting ", [a['id']  for a in [added_amendment, amendment]])
           added_amendment['status'] = amendment['status']
           added_amendment['url'] = amendment['url']
           added = True
           break
       if not added:
         bill['amendments'].append(amendment)
-    #print('\n'.join(["%s:%s" % (a['url'], a['status']) for a in bill['amendments']]))
+    print('\n'.join([a['id'] for a in bill['amendments']]))
   return bill
 
 #test_parse = parse_bill('http://www.wvlegislature.gov/Bill_Status/Bills_history.cfm?input=2002&year=2021&sessiontype=RS&btype=bill')
