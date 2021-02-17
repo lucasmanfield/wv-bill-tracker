@@ -6,17 +6,17 @@ import { RiExternalLinkLine } from 'react-icons/ri';
 
 const agendaItem = (scrapedData, {name, url, date, bills}) => (
   <div className="Agenda">
-    <a href={url} target="_blank">
-      <div className="Agenda-title">
-        {name}
+    <div className="Agenda-header">
+      <div>
+        <div className="Agenda-title">
+          {name}
+        </div>
+        <div className="Agenda-date">
+          {moment(date).format('MMMM D, YYYY — h:mm a').replace('am', 'a.m.').replace('pm', 'p.m.')}
+        </div>
       </div>
-      <div className="Agenda-date">
-        {moment(date).format('MMMM D, YYYY')}
-      </div>
-      <div className="Agenda-url">
-      Source:&nbsp;&nbsp;West Virginia Legislature <RiExternalLinkLine />
-      </div>
-    </a>
+      <a className="Agenda-url" href={url} target="_blank"><RiExternalLinkLine /> View</a>
+    </div>
     {bills.length ?
       <div className="Agenda-bills">
         {bills.map(name => {

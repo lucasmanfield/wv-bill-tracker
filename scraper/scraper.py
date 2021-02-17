@@ -40,6 +40,34 @@ def load_page(url, wait=None, retries=5):
       continue
   raise Exception("%s failed" % url)
 
+def parse_calendar(url):
+  html_doc = requests.get(url).text
+  soup = BeautifulSoup(html_doc, 'html.parser')
+  
+  date = None
+  container = soup.find(id='wraprightcolxr')
+  for span in container.find_all('span'):
+    content = span.string.strip().replace('&nbsp;', '')
+    if len(content) and 'CALENDAR' not in content:
+      date = content.replace('\r\n', ' ')
+      break
+  
+  for span in container.find_all('span'):
+    if not span.string:
+      continue
+    content = span.string.lower().strip().replace('&nbsp;', '')
+    if 'am' in content or 'pm' in content or 'a. m.' in content or 'p. m.' in content or 'a.m.' in content or 'p.m.' in content:
+      date = date + ' ' + content
+      break
+  
+  calendar_bills = [b.replace('H. B.', 'HB').replace('S. B.', 'SB') for b in re.findall(r'\w. B. [0-9]+', container.getText())]
+  print("Got calendar for %s: %s" % (date, calendar_bills))
+  return {
+    'date': date,
+    'bills': calendar_bills,
+    'url': url
+  }
+  
 def parse_bill(url):
   print("Loading " + url)
   html_doc = requests.get(url).text
@@ -117,9 +145,8 @@ def parse_bill(url):
 
   return bill
 
-test_parse = parse_bill('http://www.wvlegislature.gov/Bill_Status/bills_history.cfm?INPUT=2002&year=2021&sessiontype=RS')
-print(test_parse)  
-
+#test_parse = parse_calendar('http://www.wvlegislature.gov/Bulletin_Board/house_calendar_daily.cfm?ses_year=2021&sesstype=RS&headtype=dc&houseorig=h')
+#print(test_parse)  
 
 ### scrape bills
 
@@ -235,26 +262,6 @@ for tr in soup.find_all('table')[2].find_all('tr')[1:]:
 
 
 ### scrape agendas
-
-def parse_calendar(url):
-  html_doc = requests.get(url).text
-  soup = BeautifulSoup(html_doc, 'html.parser')
-  
-  date = None
-  container = soup.find(id='wraprightcolxr')
-  for span in container.find_all('span'):
-    content = span.string.strip().replace('&nbsp;', '')
-    if len(content) and 'CALENDAR' not in content:
-      date = content.replace('\r\n', ' ')
-      break
-  
-  calendar_bills = [b.replace('H. B.', 'HB').replace('S. B.', 'SB') for b in re.findall(r'\w. B. [0-9]+', container.getText())]
-  print("Got calendar for %s: %s" % (date, calendar_bills))
-  return {
-    'date': date,
-    'bills': calendar_bills,
-    'url': url
-  }
 
 agendas = [
   {

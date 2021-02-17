@@ -377,16 +377,16 @@ h2 {
   font-style: italic;
   color: #777;
 }
-.Bill-url svg, .Person-url svg, .Agenda-url svg {
+.Bill-url svg, .Person-url svg{
   position:relative;
   top:1px;
   font-size:11px;
   margin-left:2px;
 }
-.Bill-url a, .Person-url a, .Agenda-url a {
+.Bill-url a, .Person-url a {
   color: #777;
 }
-.Bill-url a:hover, .Person-url a:hover, .Agenda-url a:hover {
+.Bill-url a:hover, .Person-url a:hover {
   color: black;
 }
 
@@ -1151,6 +1151,42 @@ h2 {
   font-style: italic;
 }
 
+.Agenda-header {
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.Agenda-url {
+  align-items: center;
+  display:flex;
+  background: white;
+  border: 1px solid #666;
+  color: #333;
+  font-size:14px;
+  border-radius: 3px;
+  padding:4px 8px;
+  cursor: pointer;
+  font-weight:600;
+  outline: 0;
+  line-height: 1.2em;
+  margin-right: 10px;
+}
+.Agenda-url:hover {
+  color: black;
+  border-color: black;
+  text-decoration: none;
+}
+
+.Agenda-url:hover svg {
+  color: black;
+}
+
+.Agenda-url svg {
+  margin-right:8px;
+  color:#333;
+}
+
 .Agenda-container {
   margin:20px auto;
   padding:10px;
@@ -1168,15 +1204,10 @@ h2 {
 }
 
 .Agenda-date {
+  font-size: 14px;
+  margin-top: 3px;
 }
 
-.Agenda-url {
-  cursor: pointer;
-  margin-top: 5px;
-  font-size:12px;
-  font-style: italic;
-  color: #777;
-}
 
 .Agenda-bills {
   margin-top: 15px;
@@ -1184,17 +1215,4 @@ h2 {
 
 .Agenda-bills .BillBox-agenda {
   display: none;
-}
-
-.Agenda a {
-  color: inherit;
-  color: #222;
-}
-.Agenda a:hover {
-  color: black;
-  text-decoration: inherit;
-}
-.Agenda a:hover .Agenda-url {
-  color: inherit;
-  text-decoration: underline;
 }
