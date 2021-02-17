@@ -72,16 +72,17 @@ def parse_bill(url):
 
   amendment_row = bill_table.find_all('tr')[10]
   if len(amendment_row.find_all('td')):
-    for a in reversed(amendment_row.find_all('td')[1].find_all('a')):
+    amendments = []
+    statuses = ['introduced', 'amended', 'rejected', 'withdrawn', 'adopted']
+    for a in amendment_row.find_all('td')[1].find_all('a'):
       status = 'introduced'
       name = a.string.replace(' _ ', ',').strip().lower()
-      statuses = ['introduced', 'amended', 'rejected', 'withdrawn', 'adopted']
+      
       for s in statuses:
         if s in name:
           status = s
           name = name.replace(' ' + s, '').replace(s, '')
       parts = name.split(' ')
-      print(parts)
       type = parts[1]
       sponsors = parts[2].split(',')
       num = 1
@@ -90,25 +91,29 @@ def parse_bill(url):
         num = int(num_parts[1])
       
       url = 'https://wvlegislature.gov' + a.get('href')
+
+      amendments.append({
+        'type': type,
+        'url': url,
+        'sponsors': sponsors,
+        'number': num,
+        'status': status
+      })
+    
+    sorted_amendments = sorted(amendments, key=lambda a: statuses.index(a['status']))
+    #print('\n'.join([a['url'] for a in sorted_amendments]))
+    for amendment in sorted_amendments:
       added = False
-      for amendment in bill['amendments']:
+      for added_amendment in bill['amendments']:
         # if this is an updated version, then update it
-        if amendment['sponsors'] == sponsors and amendment['number'] == num:
-          print("Overwriting amendment status %s: %s" % (status, url))
-          amendment['status'] = status
-          amendment['url'] = url
+        if amendment['sponsors'] == added_amendment['sponsors'] and amendment['number'] == added_amendment['number']:
+          print("Overwriting amendment status %s: %s" % (amendment['status'], url))
+          added_amendment['status'] = amendment['status']
+          added_amendment['url'] = amendment['url']
           added = True
           break
-      
-      # otherwise, it's a new one, so add it
       if not added:
-        bill['amendments'].append({
-          'type': type,
-          'url': url,
-          'sponsors': sponsors,
-          'number': num,
-          'status': status
-        })
+        bill['amendments'].append(amendment)
 
   return bill
 
@@ -281,7 +286,7 @@ for name, chamber in chambers.items():
     if link and 'com_agendas' in link:
       url = chamber['committees'] + link.replace(' ', '+')
       print("Loading", url)
-      html_doc = load_page(url)
+      html_doc = load_page(url, wait=3)
       agendaSoup = BeautifulSoup(html_doc, 'html.parser')
       committee = last_comm_name
       if agendaSoup.blockquote:
