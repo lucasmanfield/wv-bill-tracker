@@ -106,10 +106,11 @@ def parse_bill(url):
       'name': bill_table.find_all('tr')[3].find_all('td')[1].find('a').string.strip(),
       'classification': 'primary'
     }],
-    'bill_text': 'http://www.wvlegislature.gov' + bill_table.find_all('tr')[5].find_all('td')[1].find_all('a')[-1].get('href'),
     'subjects': [],
     'amendments': []
   }
+  if len(bill_table.find_all('tr')[5].find_all('td')[1].find_all('a')):
+    bill['bill_text'] = 'http://www.wvlegislature.gov' + bill_table.find_all('tr')[5].find_all('td')[1].find_all('a')[-1].get('href')
   if len(bill_table.find_all('tr')) >= 16 and len(bill_table.find_all('tr')[15].find_all('td')) >= 2:
     bill['subjects'] = [a.string for a in bill_table.find_all('tr')[15].find_all('td')[1].find_all('a')]
   else:
