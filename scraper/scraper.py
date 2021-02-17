@@ -87,167 +87,32 @@ def parse_bill(url):
       num_parts = parts[-1].replace('.htm', '').split('_')
       if num_parts and len(num_parts) > 1:
         num = int(num_parts[1])
-      bill['amendments'].append({
-        'type': 'floor title' if type == 'HFAT' else 'floor',
-        'url': 'https://wvlegislature.gov' + a.get('href'),
-        'sponsors': sponsors,
-        'number': num,
-        'status': status
-      })
+      
+      url = 'https://wvlegislature.gov' + a.get('href')
+      added = False
+      for amendment in bill['amendments']:
+        # if this is an updated version, then update it
+        if amendment['sponsors'] == sponsors and amendment['number'] == num:
+          amendment['status'] = status
+          amendment['url'] = url
+          added = True
+          break
+      
+      # otherwise, it's a new one, so add it
+      if not added:
+        bill['amendments'].append({
+          'type': type,
+          'url': url,
+          'sponsors': sponsors,
+          'number': num,
+          'status': status
+        })
 
   return bill
 
 #test_parse = parse_bill('http://www.wvlegislature.gov/Bill_Status/bills_history.cfm?INPUT=2002&year=2021&sessiontype=RS')
 #print(test_parse)  
 
-
-### scrape agendas
-
-def parse_calendar(url):
-  html_doc = requests.get(url).text
-  soup = BeautifulSoup(html_doc, 'html.parser')
-  
-  date = None
-  container = soup.find(id='wraprightcolxr')
-  for span in container.find_all('span'):
-    content = span.string.strip().replace('&nbsp;', '')
-    if len(content) and 'CALENDAR' not in content:
-      date = content.replace('\r\n', ' ')
-      break
-  
-  bills = [b.replace('H. B.', 'HB').replace('S. B.', 'SB') for b in re.findall(r'\w. B. [0-9]+', container.getText())]
-  print("Got calendar for %s: %s" % (date, bills))
-  return {
-    'date': date,
-    'bills': bills,
-    'url': url
-  }
-
-for name, chamber in chambers.items():
-  html_doc = requests.get(chamber['committees'] + 'main.cfm').text
-  soup = BeautifulSoup(html_doc, 'html.parser')
-  last_comm_name = None
-  for a in soup.find_all('a'):
-    link = a.get('href')
-    if link and 'com_agendas' in link:
-      url = chamber['committees'] + link.replace(' ', '+')
-      print("Loading", url)
-      html_doc = load_page(url)
-      agendaSoup = BeautifulSoup(html_doc, 'html.parser')
-      title = last_comm_name
-      if agendaSoup.blockquote:
-        bills = [b.replace('H. B.', 'HB').replace('S. B.', 'SB') for b in re.findall(r'\w. B. [0-9]+', agendaSoup.blockquote.getText())]
-        agenda = {
-          'date': agendaSoup.h1.string.strip(),
-          'bills': bills
-        }
-        chamber['agendas'][title] = agenda
-        print("Wrote agenda for %s: %s" % (title, agenda))
-      else:
-        print("No agenda found for", title)
-    else:
-      last_comm_name = a.string
-calendars = {
-  'senate': {
-    'calendar': parse_calendar(chambers['senate']['calendar']),
-    'agendas': chambers['senate']['agendas']
-  },
-  'house': {
-    'calendar': parse_calendar(chambers['house']['calendar']),
-    'special_calendar': parse_calendar(chambers['house']['special_calendar']),
-    'agendas': chambers['house']['agendas']
-  }
-}
-
-"""
-
-### scrape legislators
-
-for name, chamber in chambers.items():
-  #extract leadership for each chamber
-  leadership = {}
-  url = chamber['root'] + 'roster.cfm'
-  print("Loading " + url)
-  html_doc = requests.get(url).text
-  soup = BeautifulSoup(html_doc, 'html.parser')
-
-  title = None
-  members = []
-  for child in soup.find(id='wrapleftcol').contents:
-    if child.name == 'strong':
-      if title:
-        leadership[title] = members
-      title = child.text.rstrip(':').replace('Whips', 'Whip')
-      members = []
-    if child.name == 'a':
-      members.append(child.text)
-  leadership[title] = members
-  chamber['leadership'] = leadership
-
-  #extract list of members from table with link
-  members = {}
-  for tr in soup.table.find_all('tr')[2:]:
-    cells = tr.find_all('td')
-    link = cells[0].find_all('a')[1]
-    if link.text not in members.keys():
-      members[link.text] = {
-        'url': link.get('href').replace(' ', '%20'),
-        'positions': [],
-        'chamber': chamber['name'],
-        'party': cells[1].string,
-        'district': int(cells[2].string),
-        'address': cells[3].string,
-        'phone': cells[4].string,
-        'email': cells[5].string
-      }
-  chamber['members'] = members
-
-  # extract info from each members' page
-  for name, member in members.items():
-    member['url'] = chamber['root'] + member['url']
-    print("Loading " + member['url'])
-    html_doc = requests.get(member['url']).text
-    soup = BeautifulSoup(html_doc, 'html.parser')
-
-    member['biography'] = soup.find(class_='popup').div.text
-    title = soup.h2.text
-    district_name = title[(title.find('-') + 2):title.find(',')]
-    member['district_name'] = district_name
-    member['photo'] = soup.find(id='wrapleftcolr').img.get('src').replace('../..', 'http://www.wvlegislature.gov')
-    committees = []
-    role = None
-    for item in soup.find(id='wraprightcolr').contents:
-      if not item.string:
-        continue
-      if 'VICE CHAIR' in str(item.string):
-        role = 'Vice Chair'
-      elif 'CHAIR' in str(item.string):
-        role = 'Chair'
-      elif 'NONVOTING' in str(item.string):
-        role = 'Nonvoting'
-      elif item.name == 'a':
-        committees.append({
-          'name': str(item.string).strip(),
-          'role': role or 'Member'
-        })
-        role = None
-    member['committees'] = committees
-
-    print(member)
-  
-  # move leadership positions into the member objects
-  for position, members in leadership.items():
-    for name in members:
-      chamber['members'][name]['positions'].append(position)
-
-# Extract just members
-members = {}
-for name, chamber in chambers.items():
-  members.update(chamber['members'])
-with open("legislators.json", "w") as f:
-    f.write(json.dumps(members))
-
-"""
 
 ### scrape bills
 
@@ -360,12 +225,178 @@ for tr in soup.find_all('table')[2].find_all('tr')[1:]:
     print("Loaded fiscal note %d of %d: %s" % (note_num, note_count, note))
   else:
     print("Skipping fiscal note for %s" % bill_name)
+
+
+### scrape agendas
+
+def parse_calendar(url):
+  html_doc = requests.get(url).text
+  soup = BeautifulSoup(html_doc, 'html.parser')
+  
+  date = None
+  container = soup.find(id='wraprightcolxr')
+  for span in container.find_all('span'):
+    content = span.string.strip().replace('&nbsp;', '')
+    if len(content) and 'CALENDAR' not in content:
+      date = content.replace('\r\n', ' ')
+      break
+  
+  calendar_bills = [b.replace('H. B.', 'HB').replace('S. B.', 'SB') for b in re.findall(r'\w. B. [0-9]+', container.getText())]
+  print("Got calendar for %s: %s" % (date, calendar_bills))
+  return {
+    'date': date,
+    'bills': calendar_bills,
+    'url': url
+  }
+
+agendas = [
+  {
+    'name': 'Senate Calendar',
+    'chamber': 'senate',
+    'type': 'floor',
+    **parse_calendar(chambers['senate']['calendar'])
+  },
+  {
+    'name': 'House Special Calendar',
+    'chamber': 'house',
+    'type': 'special',
+    **parse_calendar(chambers['house']['special_calendar'])
+  },
+  {
+    'name': 'House Calendar',
+    'chamber': 'house',
+    'type': 'floor',
+    **parse_calendar(chambers['house']['calendar'])
+  },
+]
+
+for name, chamber in chambers.items():
+  html_doc = requests.get(chamber['committees'] + 'main.cfm').text
+  soup = BeautifulSoup(html_doc, 'html.parser')
+  last_comm_name = None
+  for a in soup.find_all('a'):
+    link = a.get('href')
+    if link and 'com_agendas' in link:
+      url = chamber['committees'] + link.replace(' ', '+')
+      print("Loading", url)
+      html_doc = load_page(url)
+      agendaSoup = BeautifulSoup(html_doc, 'html.parser')
+      committee = last_comm_name
+      if agendaSoup.blockquote:
+        agenda_bills = re.findall(r'\wB [0-9]+', agendaSoup.blockquote.getText())
+        agenda_bills.extend([b.upper().replace('H. B.', 'HB').replace('S. B.', 'SB') for b in re.findall(r'\w. B. [0-9]+', agendaSoup.blockquote.getText())])
+        agenda_bills.extend([b.upper().replace('HOUSE BILL', 'HB').replace('SENATE BILL', 'SB') for b in re.findall(r'(?:House|house|Senate|senate) (?:Bill|bill) [0-9]+', agendaSoup.blockquote.getText())])
+        agenda = {
+          'date': agendaSoup.h1.string.strip(),
+          'bills': agenda_bills,
+          'url': url,
+          'chamber': name,
+          'type': 'committee',
+          'committee': committee,
+          'name': "%s %s Committee Agenda" % (name.capitalize(), committee)
+        }
+        agendas.append(agenda)
+        print("Wrote agenda for %s: %s" % (committee, agenda))
+      else:
+        print("No agenda found for", committee)
+    else:
+      last_comm_name = a.string
+
+"""
+
+### scrape legislators
+
+for name, chamber in chambers.items():
+  #extract leadership for each chamber
+  leadership = {}
+  url = chamber['root'] + 'roster.cfm'
+  print("Loading " + url)
+  html_doc = requests.get(url).text
+  soup = BeautifulSoup(html_doc, 'html.parser')
+
+  title = None
+  members = []
+  for child in soup.find(id='wrapleftcol').contents:
+    if child.name == 'strong':
+      if title:
+        leadership[title] = members
+      title = child.text.rstrip(':').replace('Whips', 'Whip')
+      members = []
+    if child.name == 'a':
+      members.append(child.text)
+  leadership[title] = members
+  chamber['leadership'] = leadership
+
+  #extract list of members from table with link
+  members = {}
+  for tr in soup.table.find_all('tr')[2:]:
+    cells = tr.find_all('td')
+    link = cells[0].find_all('a')[1]
+    if link.text not in members.keys():
+      members[link.text] = {
+        'url': link.get('href').replace(' ', '%20'),
+        'positions': [],
+        'chamber': chamber['name'],
+        'party': cells[1].string,
+        'district': int(cells[2].string),
+        'address': cells[3].string,
+        'phone': cells[4].string,
+        'email': cells[5].string
+      }
+  chamber['members'] = members
+
+  # extract info from each members' page
+  for name, member in members.items():
+    member['url'] = chamber['root'] + member['url']
+    print("Loading " + member['url'])
+    html_doc = requests.get(member['url']).text
+    soup = BeautifulSoup(html_doc, 'html.parser')
+
+    member['biography'] = soup.find(class_='popup').div.text
+    title = soup.h2.text
+    district_name = title[(title.find('-') + 2):title.find(',')]
+    member['district_name'] = district_name
+    member['photo'] = soup.find(id='wrapleftcolr').img.get('src').replace('../..', 'http://www.wvlegislature.gov')
+    committees = []
+    role = None
+    for item in soup.find(id='wraprightcolr').contents:
+      if not item.string:
+        continue
+      if 'VICE CHAIR' in str(item.string):
+        role = 'Vice Chair'
+      elif 'CHAIR' in str(item.string):
+        role = 'Chair'
+      elif 'NONVOTING' in str(item.string):
+        role = 'Nonvoting'
+      elif item.name == 'a':
+        committees.append({
+          'name': str(item.string).strip(),
+          'role': role or 'Member'
+        })
+        role = None
+    member['committees'] = committees
+
+    print(member)
+  
+  # move leadership positions into the member objects
+  for position, members in leadership.items():
+    for name in members:
+      chamber['members'][name]['positions'].append(position)
+
+# Extract just members
+members = {}
+for name, chamber in chambers.items():
+  members.update(chamber['members'])
+with open("legislators.json", "w") as f:
+    f.write(json.dumps(members))
+
+"""
   
 with open("bills.json", "w") as f:
-    f.write(json.dumps({
-      'bills': bills,
-      'calendars': calendars
-    }))
+  f.write(json.dumps({
+    'bills': bills,
+    'agendas': agendas
+  }))
 
 
 

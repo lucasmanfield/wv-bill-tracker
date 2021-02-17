@@ -1,8 +1,8 @@
 import React from 'react';
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import { styleForTag, capitalize } from './utilities'
 
-function Bill({ name, title, status, notes, tags, step }) {
+function Bill({ name, title, status, notes, tags, step, agendas }) {
     const history = useHistory()
 
     let statusDescription = status.step
@@ -12,7 +12,12 @@ function Bill({ name, title, status, notes, tags, step }) {
   
     return (
       <div className="BillBox" onClick={() => history.push(`/bill/${name}`)}>
-        <div className="BillBox-name">{name}</div>
+        <div className="BillBox-name">
+          {name}
+          {agendas.length ?
+            <a onClick={e => e.stopPropagation()} className="BillBox-agenda" href={agendas[0].url} target="_blank">Scheduled</a>
+          : ''}
+        </div>
         <div className="BillBox-details">
           <div className="BillBox-title">{title}</div>
           {notes && notes.trim().length ? <div className="BillBox-notes">{notes}</div> : ''}

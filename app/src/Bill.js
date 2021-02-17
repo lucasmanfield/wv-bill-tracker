@@ -6,6 +6,7 @@ import {
   Link,
 } from "react-router-dom";
 import { BsStarFill, BsStar, BsFileText } from 'react-icons/bs';
+import { FaRegClipboard } from 'react-icons/fa'
 import { RiExternalLinkLine } from 'react-icons/ri';
 import PersonBox from './PersonBox'
 import moment from 'moment'
@@ -61,7 +62,10 @@ function Bill({ scrapedData }) {
           <Link to="/">Search</Link><b>&nbsp;&nbsp;»&nbsp;&nbsp;{name}</b>
         </div>
         <div className="Bill-buttons">
-          <a target="_blank" href={bill.bill_text}><BsFileText /> Bill Text</a>
+          {bill.agendas.length ?
+            <a onClick={e => e.stopPropagation()} href={bill.agendas[0].url} target="_blank"><FaRegClipboard /> View Agenda</a>
+          : ''}
+          <a target="_blank" href={bill.bill_text}><BsFileText /> Read Text</a>
           <button className={`Bill-follow ${isFollowing ? 'Bill-following' : ''}`} onClick={() => {
             if (isFollowing) {
               setCookie('following', (cookies.following || '').replace(`${name},`, ''))
@@ -164,7 +168,25 @@ function Bill({ scrapedData }) {
             </div>
           : ''}
         </div>
-        
+        {bill.amendments.length ?
+          <div>
+            <div className="Bill-section-header">Amendments</div>
+            <div className="Bill-section Bill-amendments">
+              {bill.amendments.map(amendment => {
+                return (
+                  <a className="Bill-amendment" href={amendment.url} target="_blank">
+                    <div className="Bill-amendment-sponsors">
+                      {amendment.sponsors.map(s => capitalize(s)).join(', ')}
+                    </div>
+                    <div className="Bill-amendment-status">
+                    {capitalize(amendment.type.substring(0,1)) == 'H' ? 'House' : 'Senate'}, {capitalize(amendment.status)}
+                    </div>
+                  </a>
+                )
+              })}
+            </div>
+          </div>
+        : ''}
         <div className="Bill-section-header">Sponsors</div>
         <div className="Bill-section Bill-sponsors">
           <div className="Bill-sponsors-container" style={{width: bill.sponsors.length * 232 + 'px'}}>

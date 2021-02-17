@@ -1,11 +1,13 @@
 import React, { useState, useEffect, } from 'react';
 import ReactDOM from 'react-dom';
+import moment from 'moment'
 import './index.css';
 import App from './App';
 import Person from './Person';
 import Bill from './Bill';
 import Committee from './Committee';
 import Subject from './Subject';
+import Agenda from './Agenda';
 import Logo from "./JUN20-MSS-Logo-Banner.png"
 import Airtable  from 'airtable'
 import { MdEmail } from 'react-icons/md';
@@ -22,7 +24,10 @@ function Wrapper() {
   Object.keys(scrapedData.bills).forEach(k => {
     bills.push({name: k, ...scrapedData.bills[k]})
   })
-  bills.forEach(b => updateBillStatus(b))
+  bills.forEach(b => {
+    updateBillStatus(b)
+    b.agendas = scrapedData.agendas.filter(a => a.bills.includes(b.name) && moment().diff(moment(a.date), 'hours') < 24)
+  })
   scrapedData.bills = bills
 
   const scrapedLegislators = require('./legislators.json')
@@ -112,6 +117,7 @@ function Wrapper() {
           <a className="Header-nav-button" href="/">Home</a>
           <a className="Header-nav-button" href="https://mountainstatespotlight.org/category/legislature/">Latest News</a>
           <a className="Header-nav-button" href="https://mountainstatespotlight.org/2021/02/14/introducing-mountain-state-spotlights-west-virginia-capitol-tracker/">Guide</a>
+          <a className="Header-nav-button" href="/agenda">Agendas</a>
         </div>
         <a className="Header-social" href="https://mountainstatespotlight.org/newsletter-sign-up/"><MdEmail /> SIGN UP</a>
         <a className="Header-button" href="https://checkout.fundjournalism.org/memberform?org_id=mountainstatespotlight&campaign=7014W000001diQiQAI" target="_blank">Donate</a>
@@ -119,6 +125,9 @@ function Wrapper() {
       <Switch>
         <Route exact path="/">
           <App scrapedData={scrapedData} loaded={loaded} />
+        </Route>
+        <Route exact path="/agenda">
+          <Agenda scrapedData={scrapedData} loaded={loaded} />
         </Route>
         <Route path="/bill/:name">
           <Bill scrapedData={scrapedData} loaded={loaded} />
