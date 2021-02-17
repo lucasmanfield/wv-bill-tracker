@@ -76,7 +76,7 @@ function Person({ scrapedData, loaded }) {
             <div className="Person-committees-container">
               <div className="Person-committees">
                 {person.committees.sort((a,b) => roleToNumber(b.role) - roleToNumber(a.role)).map(committee => (
-                  <div className="Person-committee" key={committee.name} onClick={() => history.push(`/committee/${person.chamber}/${committee.name}`)}>
+                  <div className="Person-committee" key={committee.name} onClick={() => history.push(`/committee/${person.chamber.toLowerCase()}/${committee.name}`)}>
                     <div className="Person-committee-name">{committee.name}</div>
                     <div className="Person-committee-role">{committee.role}</div>
                   </div>
