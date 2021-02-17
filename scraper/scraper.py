@@ -40,6 +40,29 @@ def load_page(url, wait=None, retries=5):
       continue
   raise Exception("%s failed" % url)
 
+def parse_agenda(url):
+  print("Loading", url)
+  html_doc = load_page(url, wait=3)
+  agendaSoup = BeautifulSoup(html_doc, 'html.parser')
+  
+  if agendaSoup.blockquote:
+    agenda_text = agendaSoup.find(id='wrapleftcol').getText()
+    agenda_bills = re.findall(r'\wB [0-9]+', agenda_text)
+    agenda_bills.extend([b.upper().replace('H. B.', 'HB').replace('S. B.', 'SB') for b in re.findall(r'\w. B. [0-9]+', agenda_text)])
+    agenda_bills.extend([b.upper().replace('HOUSE BILL', 'HB').replace('SENATE BILL', 'SB') for b in re.findall(r'(?:House|house|Senate|senate) (?:Bill|bill) [0-9]+', agenda_text)])
+    agenda = {
+      'date': agendaSoup.h1.string.strip(),
+      'bills': agenda_bills,
+      'url': url,
+      'type': 'committee'
+    }
+    
+    print("Wrote agenda for %s: %s" % (url, agenda))
+    return agenda
+  else:
+    print("No agenda found for", committee)
+  return None
+
 def parse_calendar(url):
   html_doc = requests.get(url).text
   soup = BeautifulSoup(html_doc, 'html.parser')
@@ -155,6 +178,9 @@ def parse_bill(url):
 
 #test_parse = parse_bill('http://www.wvlegislature.gov/Bill_Status/Bills_history.cfm?input=2002&year=2021&sessiontype=RS&btype=bill')
 #print(test_parse)  
+
+#test_agenda = parse_agenda('http://www.wvlegislature.gov/committees/senate/senate_com_agendas.cfm?input=2/18/21&Chart=fin')
+#print(test_agenda)  
 
 
 ### scrape bills
@@ -300,27 +326,16 @@ for name, chamber in chambers.items():
     link = a.get('href')
     if link and 'com_agendas' in link:
       url = chamber['committees'] + link.replace(' ', '+')
-      print("Loading", url)
-      html_doc = load_page(url, wait=3)
-      agendaSoup = BeautifulSoup(html_doc, 'html.parser')
       committee = last_comm_name
-      if agendaSoup.blockquote:
-        agenda_bills = re.findall(r'\wB [0-9]+', agendaSoup.blockquote.getText())
-        agenda_bills.extend([b.upper().replace('H. B.', 'HB').replace('S. B.', 'SB') for b in re.findall(r'\w. B. [0-9]+', agendaSoup.blockquote.getText())])
-        agenda_bills.extend([b.upper().replace('HOUSE BILL', 'HB').replace('SENATE BILL', 'SB') for b in re.findall(r'(?:House|house|Senate|senate) (?:Bill|bill) [0-9]+', agendaSoup.blockquote.getText())])
-        agenda = {
-          'date': agendaSoup.h1.string.strip(),
-          'bills': agenda_bills,
-          'url': url,
-          'chamber': name,
-          'type': 'committee',
-          'committee': committee,
-          'name': "%s %s Committee Agenda" % (name.capitalize(), committee)
-        }
+
+
+      agenda = parse_agenda(url)
+      if agenda:
+        agenda['committee'] = committee
+        agenda['chamber'] = name
+        agenda['name'] = "%s %s Committee Agenda" % (agenda['chamber'].capitalize(), agenda['committee'])
         agendas.append(agenda)
-        print("Wrote agenda for %s: %s" % (committee, agenda))
-      else:
-        print("No agenda found for", committee)
+      
     else:
       last_comm_name = a.string
 
