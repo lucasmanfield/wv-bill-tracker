@@ -28,7 +28,7 @@ function Committee({ scrapedData, loaded }) {
               let role = null
               if (person.committees) {
                 person.committees.forEach(committee => {
-                  if (committee.name == name && person.chamber.toLowerCase() == chamber.toLowerCase()) {
+                  if (committee.name.replace('&', 'and').toLowerCase() == name.toLowerCase() && person.chamber.toLowerCase() == chamber.toLowerCase()) {
                     role = committee.role
                   }
                 })

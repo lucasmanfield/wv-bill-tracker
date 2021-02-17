@@ -13,7 +13,7 @@ function Bill({ name, title, status, notes, tags, step, agendas }) {
     return (
       <div className="BillBox" onClick={() => history.push(`/bill/${name}`)}>
         <div className="BillBox-name">
-          {name}
+          <span>{name}</span>
           {agendas.length ?
             <a onClick={e => e.stopPropagation()} className="BillBox-agenda" href={agendas[0].url} target="_blank">{agendas[0].type == 'committee' ? 'On agenda' : 'On calendar'}</a>
           : ''}
