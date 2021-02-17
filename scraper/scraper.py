@@ -72,10 +72,11 @@ def parse_bill(url):
 
   amendment_row = bill_table.find_all('tr')[10]
   if len(amendment_row.find_all('td')):
-    for a in amendment_row.find_all('td')[1].find_all('a'):
+    for a in reversed(amendment_row.find_all('td')[1].find_all('a')):
       status = 'introduced'
       name = a.string.replace(' _ ', ',').strip().lower()
-      for s in ['amended', 'rejected', 'withdrawn', 'adopted']:
+      statuses = ['introduced', 'amended', 'rejected', 'withdrawn', 'adopted']
+      for s in statuses:
         if s in name:
           status = s
           name = name.replace(' ' + s, '').replace(s, '')
@@ -93,6 +94,7 @@ def parse_bill(url):
       for amendment in bill['amendments']:
         # if this is an updated version, then update it
         if amendment['sponsors'] == sponsors and amendment['number'] == num:
+          print("Overwriting amendment status %s: %s" % (status, url))
           amendment['status'] = status
           amendment['url'] = url
           added = True
@@ -110,8 +112,8 @@ def parse_bill(url):
 
   return bill
 
-#test_parse = parse_bill('http://www.wvlegislature.gov/Bill_Status/bills_history.cfm?INPUT=2002&year=2021&sessiontype=RS')
-#print(test_parse)  
+test_parse = parse_bill('http://www.wvlegislature.gov/Bill_Status/bills_history.cfm?INPUT=2002&year=2021&sessiontype=RS')
+print(test_parse)  
 
 
 ### scrape bills
