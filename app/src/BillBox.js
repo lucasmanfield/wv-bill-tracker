@@ -15,7 +15,7 @@ function Bill({ name, title, status, notes, tags, step, agendas }) {
         <div className="BillBox-name">
           {name}
           {agendas.length ?
-            <a onClick={e => e.stopPropagation()} className="BillBox-agenda" href={agendas[0].url} target="_blank">Scheduled</a>
+            <a onClick={e => e.stopPropagation()} className="BillBox-agenda" href={agendas[0].url} target="_blank">{agendas[0].type == 'committee' ? 'On agenda' : 'On calendar'}</a>
           : ''}
         </div>
         <div className="BillBox-details">
