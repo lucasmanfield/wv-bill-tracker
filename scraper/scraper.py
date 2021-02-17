@@ -340,8 +340,6 @@ for name, chamber in chambers.items():
     else:
       last_comm_name = a.string
 
-"""
-
 ### scrape legislators
 
 for name, chamber in chambers.items():
@@ -408,7 +406,7 @@ for name, chamber in chambers.items():
         role = 'Nonvoting'
       elif item.name == 'a':
         committees.append({
-          'name': str(item.string).strip(),
+          'name': str(item.string).strip().replace('&', 'and'),
           'role': role or 'Member'
         })
         role = None
@@ -428,7 +426,6 @@ for name, chamber in chambers.items():
 with open("legislators.json", "w") as f:
     f.write(json.dumps(members))
 
-"""
   
 with open("bills.json", "w") as f:
   f.write(json.dumps({
