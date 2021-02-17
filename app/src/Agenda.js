@@ -44,7 +44,7 @@ function Agenda({ scrapedData, loaded }) {
     <div className="Agenda-container">
       {
         scrapedData.agendas
-          .filter(a => moment().diff(moment(a.date), 'hours') < 24)
+          .filter(a => moment().diff(moment(a.date), 'hours') < 12)
           .map(agenda => agendaItem(scrapedData, agenda))
       }
     </div>

@@ -210,12 +210,12 @@ function Bill({ scrapedData }) {
             {bill.dispatches.sort((a,b) => moment(b.date).unix() - moment(a.date).unix()).map(dispatch => (
               <div key={dispatch.date} className="Bill-dispatch">
                 <div className="Bill-dispatch-header">
-                  <span className="Bill-dispatch-header-date">{capitalize(moment(dispatch.date).format('MMM D, h:mm a'))}</span> — {dispatch.reporter}
                   {dispatch.tag && dispatch.tag.length ?
                     <div className="Bill-dispatch-tags">
                       <div key={dispatch.tag} className="Tag" style={styleForTag(dispatch.tag)}>{dispatch.tag}</div>
                     </div>
                   : ''}
+                  <span className="Bill-dispatch-header-date">{capitalize(moment(dispatch.date).format('MMM D, h:mm a'))}</span> — {dispatch.reporter}
                 </div>
                 <div className="Bill-dispatch-content" dangerouslySetInnerHTML={{__html: markdownConverter.makeHtml(dispatch.content)}} />
               </div>

@@ -57,7 +57,7 @@ def parse_calendar(url):
       continue
     content = span.string.lower().strip().replace('&nbsp;', '')
     if 'am' in content or 'pm' in content or 'a. m.' in content or 'p. m.' in content or 'a.m.' in content or 'p.m.' in content:
-      date = date + ' ' + content
+      date = date + ' ' + content.replace('a. m.', 'am').replace('p. m.', 'pm').replace('a.m.', 'am').replace('p.m.', 'pm')
       break
   
   calendar_bills = [b.replace('H. B.', 'HB').replace('S. B.', 'SB') for b in re.findall(r'\w. B. [0-9]+', container.getText())]
@@ -146,8 +146,9 @@ def parse_bill(url):
     #print('\n'.join(["%s:%s" % (a['url'], a['status']) for a in bill['amendments']]))
   return bill
 
-test_parse = parse_bill('http://www.wvlegislature.gov/Bill_Status/Bills_history.cfm?input=2002&year=2021&sessiontype=RS&btype=bill')
-print(test_parse)  
+#test_parse = parse_bill('http://www.wvlegislature.gov/Bill_Status/Bills_history.cfm?input=2002&year=2021&sessiontype=RS&btype=bill')
+#print(test_parse)  
+
 
 ### scrape bills
 
@@ -260,7 +261,6 @@ for tr in soup.find_all('table')[2].find_all('tr')[1:]:
     print("Loaded fiscal note %d of %d: %s" % (note_num, note_count, note))
   else:
     print("Skipping fiscal note for %s" % bill_name)
-
 
 ### scrape agendas
 

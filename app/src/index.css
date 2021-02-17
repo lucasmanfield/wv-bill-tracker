@@ -686,6 +686,8 @@ h2 {
 
 .Bill-dispatch-tags {
   margin-top: 8px;
+  display: inline-block;
+  margin-right:5px;
 }
 
 .Bill-dispatch-header-date {
@@ -1188,7 +1190,7 @@ h2 {
 }
 
 .Agenda-container {
-  margin:20px auto;
+  margin:0px auto;
   padding:10px;
   max-width: 800px;
 }

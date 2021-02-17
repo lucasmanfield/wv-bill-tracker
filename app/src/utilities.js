@@ -50,6 +50,9 @@ export function styleForTag(tag) {
   if (tag === 'Too many committees') {
     return {background: '#fff2ef'}
   }
+  if (tag === 'Major support') {
+    return {background: '#9bffb1'}
+  }
   return {background: 'white', border: '1px solid black'}
 }
 
