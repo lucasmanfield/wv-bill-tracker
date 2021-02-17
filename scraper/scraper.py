@@ -104,7 +104,7 @@ def parse_bill(url):
     statuses = ['introduced', 'amended', 'rejected', 'withdrawn', 'adopted']
     for a in amendment_row.find_all('td')[1].find_all('a'):
       status = 'introduced'
-      name = a.string.replace(' _ ', ',').strip().lower()
+      name = a.string.replace(' _ ', ',').replace(' AND ', ',').strip().lower()
       
       for s in statuses:
         if s in name:
@@ -113,10 +113,11 @@ def parse_bill(url):
       parts = name.split(' ')
       type = parts[1]
       sponsors = parts[2].split(',')
+      
       num = 1
-      num_parts = parts[-1].replace('.htm', '').split('_')
-      if num_parts and len(num_parts) > 1:
-        num = int(num_parts[1])
+      for i in range(10):
+        if '_%s' % str(i) in name:
+          num = i
       
       url = 'https://wvlegislature.gov' + a.get('href')
 
@@ -129,24 +130,24 @@ def parse_bill(url):
       })
     
     sorted_amendments = sorted(amendments, key=lambda a: statuses.index(a['status']))
-    #print('\n'.join([a['url'] for a in sorted_amendments]))
+    #print('\n'.join(["%s:%s:%s:%s" % (a['sponsors'], a['number'], a['status'], a['url']) for a in sorted_amendments]))
     for amendment in sorted_amendments:
       added = False
       for added_amendment in bill['amendments']:
         # if this is an updated version, then update it
         if amendment['sponsors'] == added_amendment['sponsors'] and amendment['number'] == added_amendment['number']:
-          print("Overwriting amendment status %s: %s" % (amendment['status'], url))
+          #print("Overwriting ", ["%s:%s" % (a['url'], a['status']) for a in [added_amendment, amendment]])
           added_amendment['status'] = amendment['status']
           added_amendment['url'] = amendment['url']
           added = True
           break
       if not added:
         bill['amendments'].append(amendment)
-
+    #print('\n'.join(["%s:%s" % (a['url'], a['status']) for a in bill['amendments']]))
   return bill
 
-#test_parse = parse_calendar('http://www.wvlegislature.gov/Bulletin_Board/house_calendar_daily.cfm?ses_year=2021&sesstype=RS&headtype=dc&houseorig=h')
-#print(test_parse)  
+test_parse = parse_bill('http://www.wvlegislature.gov/Bill_Status/Bills_history.cfm?input=2002&year=2021&sessiontype=RS&btype=bill')
+print(test_parse)  
 
 ### scrape bills
 
