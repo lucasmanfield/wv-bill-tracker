@@ -60,6 +60,7 @@ function App({ scrapedData }) {
                 party: rep.party.replace(' Party', '').replace('Democratic', 'Democrat'),
                 phone: rep.phones.length ? rep.phones[0] : null,
                 email: rep.emails.length ? rep.emails[0] : null,
+                chamber: office.name.includes('Senator') ? 'Senate' : 'House'
               })
             })
           })
