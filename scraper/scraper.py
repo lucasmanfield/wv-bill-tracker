@@ -101,7 +101,7 @@ def parse_bill(url):
 
   bill = {
     'url': url,
-    'last_action': bill_table.find_all('tr')[1].find_all('td')[1].find('i').string.strip(),
+    'last_action': bill_table.find_all('tr')[1].find_all('td')[1].find('i').strong.string if bill_table.find_all('tr')[1].find_all('td')[1].find('i').strong else bill_table.find_all('tr')[1].find_all('td')[1].find('i').string.strip(),
     'title': bill_table.find_all('tr')[2].find_all('td')[1].string.strip(),
     'sponsors': [{
       'name': bill_table.find_all('tr')[3].find_all('td')[1].find('a').string.strip(),
@@ -201,12 +201,13 @@ for tr in soup.find_all(id='wrapper')[1].find_all('tr')[1:]:
   bill_name = cells[0].find('a').string.strip()
   url = 'http://www.wvlegislature.gov/Bill_Status/' + cells[0].find('a').get('href')
 
-  if cells[2].string.strip() == 'Signed':
+  print(cells[2].string)
+  if cells[2].string.lower().strip() == 'signed':
     status = {
       'step': 'signed',
       'last_action_date': cells[4].string.strip()
     }
-  elif cells[2].string.strip() == 'PASSED':
+  elif cells[2].string.lower().strip() == 'pass':
     status = {
       'step': 'passed',
       'last_action_date': cells[4].string.strip()
