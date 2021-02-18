@@ -204,6 +204,12 @@ for tr in soup.find_all(id='wrapper')[1].find_all('tr')[1:]:
   if cells[2].string.strip() == 'Signed':
     status = {
       'step': 'signed',
+      'last_action_date': cells[4].string.strip()
+    }
+  elif cells[2].string.strip() == 'PASSED':
+    status = {
+      'step': 'passed',
+      'last_action_date': cells[4].string.strip()
     }
   else:
     if len(cells) == 5:
