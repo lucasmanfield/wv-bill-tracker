@@ -377,8 +377,8 @@ for name, chamber in chambers.items():
         'party': cells[1].string,
         'district': int(cells[2].string),
         'address': cells[3].string,
-        'phone': cells[4].string,
-        'email': cells[5].string
+        'phone': cells[5].string,
+        'email': cells[4].string
       }
   chamber['members'] = members
 
