@@ -117,7 +117,8 @@ function Wrapper() {
           <a className="Header-nav-button" href="/">Home</a>
           <a className="Header-nav-button" href="https://mountainstatespotlight.org/category/legislature/">Latest News</a>
           <a className="Header-nav-button" href="https://mountainstatespotlight.org/2021/02/14/introducing-mountain-state-spotlights-west-virginia-capitol-tracker/">Guide</a>
-          <a className="Header-nav-button" href="/agenda">Agendas</a>
+          <a className="Header-nav-button" href="/calendars">Calendars</a>
+          <a className="Header-nav-button" href="/agendas">Agendas</a>
         </div>
         <a className="Header-social" href="https://mountainstatespotlight.org/newsletter-sign-up/"><MdEmail /> SIGN UP</a>
         <a className="Header-button" href="https://checkout.fundjournalism.org/memberform?org_id=mountainstatespotlight&campaign=7014W000001diQiQAI" target="_blank">Donate</a>
@@ -127,7 +128,13 @@ function Wrapper() {
           <App scrapedData={scrapedData} loaded={loaded} />
         </Route>
         <Route exact path="/agenda">
-          <Agenda scrapedData={scrapedData} loaded={loaded} />
+          <Agenda scrapedData={scrapedData} loaded={loaded} type='committee'/>
+        </Route>
+        <Route exact path="/agendas">
+          <Agenda scrapedData={scrapedData} loaded={loaded} type='committee' />
+        </Route>
+        <Route exact path="/calendars">
+          <Agenda scrapedData={scrapedData} loaded={loaded} type='special,floor' />
         </Route>
         <Route path="/bill/:name">
           <Bill scrapedData={scrapedData} loaded={loaded} />

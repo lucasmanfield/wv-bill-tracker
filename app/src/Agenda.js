@@ -39,7 +39,8 @@ const agendaItem = (scrapedData, {name, url, date, bills}) => (
   </div>
 )
 
-function Agenda({ scrapedData, loaded }) {
+function Agenda({ scrapedData, loaded, type }) {
+  console.log(scrapedData.agendas)
   if (!loaded) {
     return <div />
   }
@@ -48,6 +49,7 @@ function Agenda({ scrapedData, loaded }) {
       {
         scrapedData.agendas
           .filter(a => moment().diff(moment(a.date), 'hours') < 12)
+          .filter(a => type.split(',').includes(a.type))
           .map(agenda => agendaItem(scrapedData, agenda))
       }
     </div>
