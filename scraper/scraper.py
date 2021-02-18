@@ -48,6 +48,7 @@ def parse_agenda(url):
   if agendaSoup.blockquote:
     agenda_text = agendaSoup.find(id='wrapleftcol').getText()
     agenda_bills = re.findall(r'\wB [0-9]+', agenda_text)
+    agenda_bills.extend([b.upper().replace('HB', 'HB ').replace('SB', 'SB ') for b in re.findall(r'\wB[0-9]+', agenda_text)])
     agenda_bills.extend([b.upper().replace('H. B.', 'HB').replace('S. B.', 'SB') for b in re.findall(r'\w. B. [0-9]+', agenda_text)])
     agenda_bills.extend([b.upper().replace('HOUSE BILL', 'HB').replace('SENATE BILL', 'SB') for b in re.findall(r'(?:House|house|Senate|senate) (?:Bill|bill) [0-9]+', agenda_text)])
     agenda = {
@@ -180,7 +181,7 @@ def parse_bill(url):
 #test_parse = parse_bill('http://www.wvlegislature.gov/Bill_Status/Bills_history.cfm?input=2002&year=2021&sessiontype=RS&btype=bill')
 #print(test_parse)  
 
-#test_agenda = parse_agenda('http://www.wvlegislature.gov/committees/senate/senate_com_agendas.cfm?input=2/18/21&Chart=fin')
+#test_agenda = parse_agenda('http://www.wvlegislature.gov/committees/house/house_com_agendas.cfm?Chart=jud&input=02-18-2021')
 #print(test_agenda)  
 
 
