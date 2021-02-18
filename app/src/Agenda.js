@@ -40,17 +40,18 @@ const agendaItem = (scrapedData, {name, url, date, bills}) => (
 )
 
 function Agenda({ scrapedData, loaded, type }) {
-  console.log(scrapedData.agendas)
+  const agendas = scrapedData.agendas
+    .filter(a => moment().diff(moment(a.date), 'hours') < 12)
+    .filter(a => type.split(',').includes(a.type))
+    .sort((a,b) => moment(a.date).unix() - moment(b.date).unix())
+  console.log(agendas)
   if (!loaded) {
     return <div />
   }
   return (
     <div className="Agenda-container">
       {
-        scrapedData.agendas
-          .filter(a => moment().diff(moment(a.date), 'hours') < 12)
-          .filter(a => type.split(',').includes(a.type))
-          .map(agenda => agendaItem(scrapedData, agenda))
+        agendas.map(agenda => agendaItem(scrapedData, agenda))
       }
     </div>
   );
