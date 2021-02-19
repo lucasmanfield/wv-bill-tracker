@@ -157,6 +157,9 @@ def parse_bill(url):
       if s in name:
         status = s
         name = name.replace(' ' + s, '').replace(s, '')
+
+    name = name.replace('  ', ' ')
+
     parts = name.split(' ')
     type = parts[1]
     sponsors = parts[2].split(',')
@@ -194,7 +197,7 @@ def parse_bill(url):
 
   return bill
 
-#test_parse = parse_bill('http://www.wvlegislature.gov/Bill_Status/Bills_history.cfm?input=2466&year=2021&sessiontype=RS&btype=bill')
+#test_parse = parse_bill('http://www.wvlegislature.gov/Bill_Status/Bills_history.cfm?input=295&year=2021&sessiontype=RS&btype=bill')
 #print(test_parse)  
 
 #test_agenda = parse_agenda('http://www.wvlegislature.gov/committees/house/house_com_agendas.cfm?Chart=jud&input=02-18-2021')
