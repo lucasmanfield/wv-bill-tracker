@@ -108,10 +108,21 @@ def parse_bill(url):
       'classification': 'primary'
     }],
     'subjects': [],
-    'amendments': []
+    'amendments': [],
+    'versions': []
   }
   if len(bill_table.find_all('tr')[5].find_all('td')[1].find_all('a')):
-    bill['bill_text'] = 'http://www.wvlegislature.gov' + bill_table.find_all('tr')[5].find_all('td')[1].find_all('a')[-1].get('href')
+    for a in bill_table.find_all('tr')[5].find_all('td')[1].find_all('a'):
+      if a.string.strip() == 'pdf':
+        title = a.get('title').strip().replace('PDF - ', '').split(' - ')[0].replace(' - ', '')
+        if 'Bill' in title:
+          title = 'Signed Enrolled Version'
+        bill['versions'].append({
+          'name': title,
+          'url': 'http://www.wvlegislature.gov' + a.get('href')
+        })
+  if len(bill_table.find_all('tr')) >= 15 and len(bill_table.find_all('tr')[14].find_all('td')) >= 2:
+    bill['similar_to'] = bill_table.find_all('tr')[14].find_all('td')[1].find('a').string.replace('HB', 'HB ').replace('SB', 'SB ')
   if len(bill_table.find_all('tr')) >= 16 and len(bill_table.find_all('tr')[15].find_all('td')) >= 2:
     bill['subjects'] = [a.string for a in bill_table.find_all('tr')[15].find_all('td')[1].find_all('a')]
   else:
@@ -123,62 +134,67 @@ def parse_bill(url):
       'classification': 'cosponsor'
     })
 
-  amendment_row = bill_table.find_all('tr')[10]
-  if len(amendment_row.find_all('td')):
-    amendments = []
-    statuses = ['introduced', 'amended', 'rejected', 'withdrawn', 'adopted']
-    for a in amendment_row.find_all('td')[1].find_all('a'):
-      status = 'introduced'
-      name = a.string.replace(' _ ', ',').replace(' AND ', ',').strip().lower()
-      
-      for s in statuses:
-        if s in name:
-          status = s
-          name = name.replace(' ' + s, '').replace(s, '')
-      parts = name.split(' ')
-      type = parts[1]
-      sponsors = parts[2].split(',')
-      
-        
-      
-      num = 1
-      for i in range(10):
-        if '_%s' % str(i) in name:
-          num = i
+  amendment_links = []
+  
+  for row in [bill_table.find_all('tr')[10], bill_table.find_all('tr')[11]]:
+    if len(row.find_all('td')):
+      amendment_links.extend(row.find_all('td')[1].find_all('a'))
 
-      
-      date = re.findall(r'[0-9]+-[0-9]+', name)[0]
-      amendment_id = "%s|%s|%s" % (','.join(sponsors), num, date)
-      
-      url = 'https://wvlegislature.gov' + a.get('href')
+  amendments = []
+  statuses = ['introduced', 'amended', 'rejected', 'withdrawn', 'adopted']
+  for a in amendment_links:
+    status = 'introduced'
+    name = a.string.replace(' _ ', ',').replace(' AND ', ',').strip().lower()
 
-      amendments.append({
-        'type': type,
-        'url': url,
-        'sponsors': sponsors,
-        'number': num,
-        'status': status,
-        'id': amendment_id
-      })
+    num = 1
+    for i in range(10):
+      searchNum = '_%s' % str(i)
+      if searchNum in name:
+        num = i
+        name = name.replace(searchNum, '')
     
-    sorted_amendments = sorted(amendments, key=lambda a: statuses.index(a['status']))
-    print('\n'.join([a['id'] for a in sorted_amendments]))
-    for amendment in sorted_amendments:
-      added = False
-      for added_amendment in bill['amendments']:
-        # if this is an updated version, then update it
-        if amendment['id'] == added_amendment['id']:
-          print("Overwriting ", [a['id']  for a in [added_amendment, amendment]])
-          added_amendment['status'] = amendment['status']
-          added_amendment['url'] = amendment['url']
-          added = True
-          break
-      if not added:
-        bill['amendments'].append(amendment)
-    print('\n'.join([a['id'] for a in bill['amendments']]))
+    for s in statuses:
+      if s in name:
+        status = s
+        name = name.replace(' ' + s, '').replace(s, '')
+    parts = name.split(' ')
+    type = parts[1]
+    sponsors = parts[2].split(',')
+
+    dates = re.findall(r'[0-9]+-[0-9]+', name)
+    date = dates[0] if len(dates) else ""
+    amendment_id = "%s|%s|%s" % (','.join(sponsors), num, date)
+    
+    url = 'https://wvlegislature.gov' + a.get('href')
+
+    amendments.append({
+      'type': type,
+      'url': url,
+      'sponsors': sponsors,
+      'number': num,
+      'status': status,
+      'id': amendment_id
+    })
+    
+  sorted_amendments = sorted(amendments, key=lambda a: statuses.index(a['status']))
+  print('\n'.join([a['id'] for a in sorted_amendments]))
+  for amendment in sorted_amendments:
+    added = False
+    for added_amendment in bill['amendments']:
+      # if this is an updated version, then update it
+      if amendment['id'] == added_amendment['id']:
+        print("Overwriting ", [a['id']  for a in [added_amendment, amendment]])
+        added_amendment['status'] = amendment['status']
+        added_amendment['url'] = amendment['url']
+        added = True
+        break
+    if not added:
+      bill['amendments'].append(amendment)
+  print('\n'.join([a['id'] for a in bill['amendments']]))
+
   return bill
 
-#test_parse = parse_bill('http://www.wvlegislature.gov/Bill_Status/Bills_history.cfm?input=2002&year=2021&sessiontype=RS&btype=bill')
+#test_parse = parse_bill('http://www.wvlegislature.gov/Bill_Status/Bills_history.cfm?input=2466&year=2021&sessiontype=RS&btype=bill')
 #print(test_parse)  
 
 #test_agenda = parse_agenda('http://www.wvlegislature.gov/committees/house/house_com_agendas.cfm?Chart=jud&input=02-18-2021')
@@ -201,7 +217,6 @@ for tr in soup.find_all(id='wrapper')[1].find_all('tr')[1:]:
   bill_name = cells[0].find('a').string.strip()
   url = 'http://www.wvlegislature.gov/Bill_Status/' + cells[0].find('a').get('href')
 
-  print(cells[2].string)
   if cells[2].string.lower().strip() == 'signed':
     status = {
       'step': 'signed',
@@ -348,6 +363,7 @@ for name, chamber in chambers.items():
     else:
       last_comm_name = a.string
 
+"""
 ### scrape legislators
 
 for name, chamber in chambers.items():
@@ -433,7 +449,7 @@ for name, chamber in chambers.items():
   members.update(chamber['members'])
 with open("legislators.json", "w") as f:
     f.write(json.dumps(members))
-
+"""
   
 with open("bills.json", "w") as f:
   f.write(json.dumps({

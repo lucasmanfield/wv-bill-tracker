@@ -29,7 +29,7 @@ function Bill({ scrapedData }) {
         setBill(bill)
       }
     })
-  }, []);
+  }, [name]);
 
   useLayoutEffect(() => {
     if (!laidOut && bill) {
@@ -55,6 +55,16 @@ function Bill({ scrapedData }) {
     </div>
   )
 
+  const versionNames = [
+    'Introduced Version',
+    'Committee Substitute',
+    'Engrossed Version',
+    'Engrossed Committee Substitute',
+    'Enrolled Committee Substitute',
+    'Signed Enrolled Version'
+  ]
+  const versions = bill.versions.sort((a, b) => versionNames.indexOf(b.name) - versionNames.indexOf(a.name))
+
   return (
     <div className="Bill-container">
       <div className='Bill-nav'>
@@ -65,7 +75,7 @@ function Bill({ scrapedData }) {
           {bill.agendas.length ?
             <a onClick={e => e.stopPropagation()} href={bill.agendas[0].url} target="_blank"><FaRegClipboard /> View Agenda</a>
           : ''}
-          <a target="_blank" href={bill.bill_text}><BsFileText /> Read Text</a>
+          <a target="_blank" href={versions[0]['url']}><BsFileText /> Read Text</a>
           <button className={`Bill-follow ${isFollowing ? 'Bill-following' : ''}`} onClick={() => {
             if (isFollowing) {
               setCookie('following', (cookies.following || '').replace(`${name},`, ''))
@@ -165,6 +175,14 @@ function Bill({ scrapedData }) {
                 <div className="Bill-fiscal-note">
                   Source: &nbsp;&nbsp;<a href={bill.fiscal_note.url} target="_blank">{bill.fiscal_note.agency} <RiExternalLinkLine /></a>
                 </div>
+              </div>
+            </div>
+          : ''}
+          {bill.similar_to ?
+            <div className="Bill-detail-item">
+              <div className="Bill-detail-item-header">Similar To</div>
+              <div className="Bill-detail-item-content">
+                <Link to={`/bill/${bill.similar_to}`}>{bill.similar_to}</Link>
               </div>
             </div>
           : ''}

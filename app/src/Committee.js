@@ -44,8 +44,8 @@ function Committee({ scrapedData, loaded }) {
         : ''}
         <div className="Subject-section-header">Bills</div>
         <div>
-          {bills.map(bill => (
-          <BillBox {...bill} key={bill.name} />
+          {bills.sort((a,b) => b.agendas.length - a.agendas.length).map(bill => (
+            <BillBox {...bill} key={bill.name} />
           ))}
         </div>
       </div>
