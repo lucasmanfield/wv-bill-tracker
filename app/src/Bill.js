@@ -15,7 +15,7 @@ import showdown from 'showdown'
 
 var markdownConverter = new showdown.Converter()
 
-function Bill({ scrapedData }) {
+function Bill({ scrapedData, loaded }) {
   const { name } = useParams();
   const [bill, setBill] = useState(null)
   const [cookies, setCookie, removeCookie] = useCookies(['following', 'address'])
@@ -29,7 +29,7 @@ function Bill({ scrapedData }) {
         setBill(bill)
       }
     })
-  }, [name]);
+  }, [name, loaded]);
 
   useLayoutEffect(() => {
     if (!laidOut && bill) {
@@ -210,7 +210,7 @@ function Bill({ scrapedData }) {
         <div className="Bill-section Bill-sponsors">
           <div className="Bill-sponsors-container" style={{width: bill.sponsors.length * 232 + 'px'}}>
             {bill.sponsors.map(sponsor => {
-              const person = getPersonByLastName(scrapedData.people, sponsor.name)
+              const person = getPersonByLastName(scrapedData.people.filter(p => bill.name.includes('HB') ? p.chamber == 'House' : p.chamber == 'Senate'), sponsor.name)
               if (!person) {
                 return <span className="Bill-sponsor" key={sponsor.name}>{sponsor.name}</span>
               }
@@ -221,7 +221,7 @@ function Bill({ scrapedData }) {
             })}
           </div>
         </div>
-        {(bill.dispatches || []).length ?
+        {loaded && (bill.dispatches || []).length ?
         <div>
           <div className="Bill-section-header">Updates</div>
           <div className="Bill-dispatches Bill-section">
