@@ -168,7 +168,7 @@ def parse_bill(url):
     date = dates[0] if len(dates) else ""
     amendment_id = "%s|%s|%s" % (','.join(sponsors), num, date)
     
-    url = 'https://wvlegislature.gov' + a.get('href')
+    url = 'http://wvlegislature.gov' + a.get('href')
 
     amendments.append({
       'type': type,
