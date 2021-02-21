@@ -75,13 +75,6 @@ h2 {
   }
 }
 
-.Header-topics-dropdown {
-  display: none;
-}
-.Header-topics-button:hover .Header-topics-dropdown {
-  display: block;
-}
-
 .Header-button {
   background: #142C5A;
   opacity: .8;
@@ -98,6 +91,51 @@ h2 {
 .Header-button:hover {
   opacity: 1;
   text-decoration: none;
+}
+
+.Header-mobilemenu-container {
+  display: none;
+  position: absolute;
+  top:5px;
+  right:5px;
+}
+
+.Header-mobilemenu-icon {
+  padding:5px 15px;
+  font-size:30px;
+  cursor: pointer;
+  float:right;
+}
+.Header-mobilemenu {
+  background: white;
+  border:1px solid #ddd;
+  border-radius:3px;
+  padding:30px;
+  margin-right:10px;
+}
+
+.Header-mobilemenu-button {
+  display: block;
+  margin-top:20px;
+  white-space: nowrap;
+  font-size:24px;
+  color: #333;
+}
+.Header-mobilemenu-button:hover {
+  color: black;
+  text-decoration: none;
+}
+
+@media only screen and (max-width: 800px) {
+  .Header-mobilemenu-container {
+    display: block;
+  }
+  .Header-button, .Header-nav-button {
+    display: none;
+  }
+  .Header-social {
+    display: none;
+  }
 }
 
 .App-container {
@@ -122,6 +160,12 @@ h2 {
   text-align: left;
   max-width:660px;
   margin:20px auto;
+}
+
+.App-intro img {
+  width: 100px;
+  float: left;
+  padding-right: 10px;
 }
 
 .App-intro p {

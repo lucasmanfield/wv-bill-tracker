@@ -10,12 +10,13 @@ import Subject from './Subject';
 import Agenda from './Agenda';
 import Logo from "./JUN20-MSS-Logo-Banner.png"
 import Airtable  from 'airtable'
-import { MdEmail } from 'react-icons/md';
+import { MdEmail, MdMenu, MdClose } from 'react-icons/md';
 import { updateBillStatus } from './utilities'
 import {
   BrowserRouter as Router,
   Switch,
-  Route
+  Route,
+  Link,
 } from "react-router-dom";
 
 function Wrapper() {
@@ -39,6 +40,7 @@ function Wrapper() {
 
   const base = new Airtable({apiKey: 'keyX0mQVFiAFPITWj'}).base('apphXzpbYfgPql6dw');
   const [loaded, setLoaded] = useState(false)
+  const [mobileMenuShow, setMobileMenuShow] = useState(false)
 
   const joinAirtable = async () => {
     return Promise.all([
@@ -119,8 +121,24 @@ function Wrapper() {
           <a className="Header-nav-button" href="https://mountainstatespotlight.org/2021/02/14/introducing-mountain-state-spotlights-west-virginia-capitol-tracker/">Guide</a>
           <a className="Header-nav-button" href="/calendars">Calendars</a>
           <a className="Header-nav-button" href="/agendas">Agendas</a>
+          <div className="Header-mobilemenu-container">
+            <div className="Header-mobilemenu-icon" onClick={() => setMobileMenuShow(!mobileMenuShow)}>
+              {mobileMenuShow ? <MdClose /> : <MdMenu />}
+            </div>
+            {mobileMenuShow ? 
+              <div className="Header-mobilemenu">
+                <Link className="Header-mobilemenu-button" onClick={() => setMobileMenuShow(false)} to="/">Home</Link>
+                <a className="Header-mobilemenu-button" onClick={() => setMobileMenuShow(false)} href="https://mountainstatespotlight.org/category/legislature/">Latest News</a>
+                <a className="Header-mobilemenu-button" onClick={() => setMobileMenuShow(false)} href="https://mountainstatespotlight.org/2021/02/14/introducing-mountain-state-spotlights-west-virginia-capitol-tracker/">Guide</a>
+                <Link className="Header-mobilemenu-button" onClick={() => setMobileMenuShow(false)} to="/calendars">Calendars</Link>
+                <Link className="Header-mobilemenu-button" onClick={() => setMobileMenuShow(false)} to="/agendas">Agendas</Link>
+                <a className="Header-mobilemenu-button" target="_blank" href="https://mountainstatespotlight.org/newsletter-sign-up/">Sign Up</a>
+                <a className="Header-mobilemenu-button" href="https://checkout.fundjournalism.org/memberform?org_id=mountainstatespotlight&campaign=7014W000001diQiQAI" target="_blank">Donate</a>
+              </div>
+            : ''}
+          </div>
         </div>
-        <a className="Header-social" href="https://mountainstatespotlight.org/newsletter-sign-up/"><MdEmail /> SIGN UP</a>
+        <a className="Header-social" href="https://mountainstatespotlight.org/newsletter-sign-up/" target="_blank"><MdEmail /> SIGN UP</a>
         <a className="Header-button" href="https://checkout.fundjournalism.org/memberform?org_id=mountainstatespotlight&campaign=7014W000001diQiQAI" target="_blank">Donate</a>
       </div>
       <Switch>
