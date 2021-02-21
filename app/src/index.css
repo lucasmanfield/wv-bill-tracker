@@ -112,6 +112,7 @@ h2 {
   border-radius:3px;
   padding:30px;
   margin-right:10px;
+  z-index: 1;
 }
 
 .Header-mobilemenu-button {
