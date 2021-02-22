@@ -37,7 +37,7 @@ function App({ scrapedData }) {
       .then(response => response.json())
       .then(data => {
         const coordinates = data['features'][0]['center']
-        fetch('https://openstates.org/find_your_legislator/?lat=' + coordinates[1] + '&lon=' + coordinates[0] + '&address=' + encodeURIComponent(address) + '&state=&json=json')
+        fetch('https://v3.openstates.org/people.geo?lat=' + coordinates[1] + '&lng=' + coordinates[0] + '&apikey=b41b45ec-6183-436a-8b37-cfe02bc5911f')
           .then(response => response.json())
           .then(data => {
             if (data.error) {
@@ -45,22 +45,21 @@ function App({ scrapedData }) {
               setRepresentatives([])
               return
             }
-            if (!data.legislators || !data.legislators.length) {
+            const legislators =  data.results
+            if (!legislators || !legislators.length) {
               setRepresentativesError('No information found at this address')
               setRepresentatives([])
               return
             }
             setRepresentativesError(null)
             const newRepresentatives = []
-            data.legislators.forEach(legislator => {
-              const chamber = legislator.chamber == 'upper' ? 'Senate' : 'House'
-              const names = legislator.name.replace(' Jr.', '').replace(' Sr.', '').replace(' IV', '').split(' ')
-              const lastName = names[names.length - 1]
-              const person = getPersonByLastName(scrapedData.people.filter(p => p.chamber == chamber), lastName)
+            legislators.forEach(legislator => {
+              const chamber = legislator.current_role.org_classification == 'upper' ? 'Senate' : 'House'
+              const person = scrapedData.people.find(p => p.chamber == chamber && p.name == legislator.name)
               if (person) {
                 newRepresentatives.push(person)
               } else {
-                console.log("Coudn not find", legislator.name)
+                console.log("Could not find", legislator.name)
               }
             })
             if (!newRepresentatives.length) {
