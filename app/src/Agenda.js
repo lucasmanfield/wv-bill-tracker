@@ -44,7 +44,7 @@ function Agenda({ scrapedData, loaded, type }) {
     .filter(a => moment().diff(moment(a.date), 'hours') < 12)
     .filter(a => type.split(',').includes(a.type))
     .sort((a,b) => moment(a.date).unix() - moment(b.date).unix())
-  console.log(agendas)
+
   if (!loaded) {
     return <div />
   }

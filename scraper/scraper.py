@@ -52,12 +52,18 @@ def parse_agenda(url):
     agenda_bills.extend([b.upper().replace('H. B.', 'HB').replace('S. B.', 'SB') for b in re.findall(r'\w. B. [0-9]+', agenda_text)])
     agenda_bills.extend([b.upper().replace('HOUSE BILL', 'HB').replace('SENATE BILL', 'SB') for b in re.findall(r'(?:House|house|Senate|senate) (?:Bill|bill) [0-9]+', agenda_text)])
     agenda = {
-      'date': agendaSoup.h1.string.strip(),
+      'date': agendaSoup.h1.string.strip()
+                .replace('a. m.', 'AM').replace('a. m.', 'AM')
+                .replace('a.m.', 'AM').replace('p.m.', 'PM')
+                .replace('a. m.', 'AM').replace('p. m.', 'PM'),
       'bills': agenda_bills,
       'url': url,
       'type': 'committee'
     }
-    
+    agenda['date'] = re.sub('a$', 'AM', agenda['date'], flags=re.IGNORECASE)
+    agenda['date'] = re.sub('p$', 'PM', agenda['date'], flags=re.IGNORECASE)
+    agenda['date'] = re.sub('\Sam', ' AM', agenda['date'], flags=re.IGNORECASE)
+    agenda['date'] = re.sub('\Spm', ' PM', agenda['date'], flags=re.IGNORECASE)
     print("Wrote agenda for %s: %s" % (url, agenda))
     return agenda
   else:
@@ -346,16 +352,17 @@ agendas = [
 ]
 
 for name, chamber in chambers.items():
-  html_doc = requests.get(chamber['committees'] + 'main.cfm').text
+  url = chamber['committees'] + 'main.cfm'
+  print("Loading", url)
+  html_doc = load_page(url)
   soup = BeautifulSoup(html_doc, 'html.parser')
   last_comm_name = None
   for a in soup.find_all('a'):
     link = a.get('href')
     if link and 'com_agendas' in link:
       url = chamber['committees'] + link.replace(' ', '+')
+      print("Found agenda", url)
       committee = last_comm_name
-
-
       agenda = parse_agenda(url)
       if agenda:
         agenda['committee'] = committee
@@ -459,6 +466,8 @@ with open("bills.json", "w") as f:
     'bills': bills,
     'agendas': agendas
   }))
+
+print("Wrote bills.json")
 
 
 
