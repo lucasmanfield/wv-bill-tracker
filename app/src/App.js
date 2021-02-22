@@ -2,7 +2,7 @@ import React, { useState, useEffect, } from 'react';
 import Autosuggest from 'react-autosuggest';
 import { useHistory } from "react-router-dom";
 import { useCookies } from 'react-cookie'
-import { deadlines, capitalize } from './utilities'
+import { deadlines, capitalize, getPersonByLastName } from './utilities'
 import BillBox from './BillBox'
 import PersonBox from './PersonBox'
 import moment from 'moment'
@@ -33,44 +33,34 @@ function App({ scrapedData }) {
 
 
   const getRepresentatives = (address) => {
-    fetch('https://www.googleapis.com/civicinfo/v2/representatives?key=AIzaSyA6pBuQbIQYtJYBarykcwYzxxmuWULqw4Q&roles=legislatorLowerBody&roles=legislatorUpperBody&roles=headOfGovernment&levels=administrativeArea1&address=' + encodeURIComponent(address))
+    fetch('https://api.mapbox.com/geocoding/v5/mapbox.places/' + encodeURIComponent(address) + '.json?country=US&limit=1&access_token=pk.eyJ1IjoibG1hbjgxNyIsImEiOiJjajEzemlybW4wMDJ5MndwaWVlM3QwbG1kIn0.XdGKlKDd6e7bCPxwy-Pteg')
       .then(response => response.json())
       .then(data => {
-        if (data.error) {
-          setRepresentativesError(data.error.message)
-          setRepresentatives([])
-          return
-        }
-        if (!data.divisions) {
-          setRepresentativesError('No information found at this address')
-          setRepresentatives([])
-          return
-        }
-        setRepresentativesError(null)
-        const newRepresentatives = []
-        Object.values(data.divisions).slice(1,3).forEach(district => {
-          district.officeIndices.forEach(officeIdx => {
-            const office = data.offices[officeIdx]
-            office.officialIndices.forEach(idx => {
-              const rep = data.officials[idx]
-              newRepresentatives.push({
-                ...rep, 
-                office: office.name,
-                district: district.name.replace('West Virginia State', '').replace('Senate district', '').replace('House district', ''),
-                party: rep.party.replace(' Party', '').replace('Democratic', 'Democrat'),
-                phone: rep.phones.length ? rep.phones[0] : null,
-                email: rep.emails.length ? rep.emails[0] : null,
-                chamber: office.name.includes('Senator') ? 'Senate' : 'House'
-              })
+        const coordinates = data['features'][0]['center']
+        fetch('https://openstates.org/find_your_legislator/?lat=' + coordinates[1] + '&lon=' + coordinates[0] + '&address=' + encodeURIComponent(address) + '&state=&json=json')
+          .then(response => response.json())
+          .then(data => {
+            if (data.error) {
+              setRepresentativesError(data.error.message)
+              setRepresentatives([])
+              return
+            }
+            if (!data.legislators || !data.legislators.length) {
+              setRepresentativesError('No information found at this address')
+              setRepresentatives([])
+              return
+            }
+            setRepresentativesError(null)
+            const newRepresentatives = []
+            data.legislators.forEach(legislator => {
+              const chamber = legislator.chamber == 'upper' ? 'Senate' : 'House'
+              const names = legislator.name.replace(' Jr.', '').replace(' Sr.', '').replace(' IV', '').split(' ')
+              const lastName = names[names.length - 1]
+              newRepresentatives.push(getPersonByLastName(scrapedData.people.filter(p => p.chamber == chamber), lastName))
             })
+            setRepresentatives(newRepresentatives)
           })
-        })
-        if (!newRepresentatives.length) {
-          setRepresentativesError('No information found at this address')
-          setRepresentatives([])
-          return
-        }
-        setRepresentatives(newRepresentatives)
+
       })
   }
 

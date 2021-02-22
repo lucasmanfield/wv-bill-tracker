@@ -6,9 +6,6 @@ function Bill({ name, title, status, notes, tags, step, agendas }) {
     const history = useHistory()
 
     let statusDescription = status.step
-    if (statusDescription.includes('reading')) {
-      statusDescription = 'on floor'
-    }
   
     return (
       <div className="BillBox" onClick={() => history.push(`/bill/${name}`)}>

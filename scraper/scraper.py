@@ -8,23 +8,23 @@ import time
 chambers = {
   'house': {
     'name': 'House',
-    'root': 'http://www.wvlegislature.gov/House/',
-    'committees': 'http://www.wvlegislature.gov/committees/house/',
-    'calendar': 'http://www.wvlegislature.gov/Bulletin_Board/house_calendar_daily.cfm?ses_year=2021&sesstype=RS&headtype=dc&houseorig=h',
-    'special_calendar': 'http://www.wvlegislature.gov/Bulletin_Board/house_calendar_special.cfm?ses_year=2021&sesstype=RS&headtype=sc&houseorig=h',
+    'root': 'https://www.wvlegislature.gov/House/',
+    'committees': 'https://www.wvlegislature.gov/committees/house/',
+    'calendar': 'https://www.wvlegislature.gov/Bulletin_Board/house_calendar_daily.cfm?ses_year=2021&sesstype=RS&headtype=dc&houseorig=h',
+    'special_calendar': 'https://www.wvlegislature.gov/Bulletin_Board/house_calendar_special.cfm?ses_year=2021&sesstype=RS&headtype=sc&houseorig=h',
     'agendas': {}
   }, 
   'senate': {
     'name': 'Senate',
-    'root': 'http://www.wvlegislature.gov/Senate1/',
-    'committees': 'http://www.wvlegislature.gov/committees/senate/',
-    'calendar': 'http://www.wvlegislature.gov/Bulletin_Board/senate_calendar.cfm?ses_year=2021&sesstype=RS&headtype=dc&houseorig=s',
+    'root': 'https://www.wvlegislature.gov/Senate1/',
+    'committees': 'https://www.wvlegislature.gov/committees/senate/',
+    'calendar': 'https://www.wvlegislature.gov/Bulletin_Board/senate_calendar.cfm?ses_year=2021&sesstype=RS&headtype=dc&houseorig=s',
     'agendas': {}
   }
 }
 
 def do_request(url):
-  r = requests.get(url, headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36'})
+  r = requests.get(url, headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36'}, verify=False)
   r.raise_for_status()
   return r
 
@@ -71,7 +71,7 @@ def parse_agenda(url):
   return None
 
 def parse_calendar(url):
-  html_doc = requests.get(url).text
+  html_doc = requests.get(url, verify=False).text
   soup = BeautifulSoup(html_doc, 'html.parser')
   
   date = None
@@ -125,7 +125,7 @@ def parse_bill(url):
           title = 'Signed Enrolled Version'
         bill['versions'].append({
           'name': title,
-          'url': 'http://www.wvlegislature.gov' + a.get('href')
+          'url': 'https://www.wvlegislature.gov' + a.get('href')
         })
   if len(bill_table.find_all('tr')) >= 15 and len(bill_table.find_all('tr')[14].find_all('td')) >= 2:
     bill['similar_to'] = bill_table.find_all('tr')[14].find_all('td')[1].find('a').string.replace('HB', 'HB ').replace('SB', 'SB ')
@@ -174,7 +174,7 @@ def parse_bill(url):
     date = dates[0] if len(dates) else ""
     amendment_id = "%s|%s|%s" % (','.join(sponsors), num, date)
     
-    url = 'http://wvlegislature.gov' + a.get('href')
+    url = 'https://wvlegislature.gov' + a.get('href')
 
     amendments.append({
       'type': type,
@@ -214,7 +214,7 @@ def parse_bill(url):
 
 bills = {}
 
-html_doc = requests.get('http://www.wvlegislature.gov/Bill_Status/Bills_all_bills.cfm?year=2021&sessiontype=RS&btype=bill').text
+html_doc = requests.get('https://www.wvlegislature.gov/Bill_Status/Bills_all_bills.cfm?year=2021&sessiontype=RS&btype=bill', verify=False).text
 soup = BeautifulSoup(html_doc, 'html.parser')
 
 bill_count = len(soup.find_all(id='wrapper')[1].find_all('tr')[1:])
@@ -224,7 +224,7 @@ for tr in soup.find_all(id='wrapper')[1].find_all('tr')[1:]:
 
   cells = tr.find_all('td')
   bill_name = cells[0].find('a').string.strip()
-  url = 'http://www.wvlegislature.gov/Bill_Status/' + cells[0].find('a').get('href')
+  url = 'https://www.wvlegislature.gov/Bill_Status/' + cells[0].find('a').get('href')
 
   if cells[2].string.lower().strip() == 'signed':
     status = {
@@ -281,7 +281,7 @@ for tr in soup.find_all(id='wrapper')[1].find_all('tr')[1:]:
 
 ### scrape fiscal notes
 
-html_doc = requests.get('http://www.wvlegislature.gov/Bill_Status/bills_fiscal.cfm?year=2021&sessiontype=RS&btype=bill&note=fiscal').text
+html_doc = requests.get('https://www.wvlegislature.gov/Bill_Status/bills_fiscal.cfm?year=2021&sessiontype=RS&btype=bill&note=fiscal', verify=False).text
 soup = BeautifulSoup(html_doc, 'html.parser')
 
 note_count = len(soup.find_all('table')[2].find_all('tr')[1:])
@@ -305,7 +305,7 @@ for tr in soup.find_all('table')[2].find_all('tr')[1:]:
   bill_agency_anchor = cells[4].find('a')
 
   if bill_agency_anchor and bill_agency_anchor != -1:
-    url = 'http://www.wvlegislature.gov' + bill_agency_anchor.get('href')
+    url = 'https://www.wvlegislature.gov' + bill_agency_anchor.get('href')
     note = {
       'agency': bill_agency_anchor.string,
       'url': url
@@ -313,7 +313,7 @@ for tr in soup.find_all('table')[2].find_all('tr')[1:]:
 
     print("Loading %s" % url)
     try:
-      html_doc = requests.get(url).text
+      html_doc = requests.get(url, verify=False).text
       fiscalNoteSoup = BeautifulSoup(html_doc, 'html.parser')
       fiscal_note_table = fiscalNoteSoup.find_all('table')[2]
 
@@ -381,7 +381,7 @@ for name, chamber in chambers.items():
   leadership = {}
   url = chamber['root'] + 'roster.cfm'
   print("Loading " + url)
-  html_doc = requests.get(url).text
+  html_doc = requests.get(url, verify=False).text
   soup = BeautifulSoup(html_doc, 'html.parser')
 
   title = None
@@ -419,7 +419,7 @@ for name, chamber in chambers.items():
   for name, member in members.items():
     member['url'] = chamber['root'] + member['url']
     print("Loading " + member['url'])
-    html_doc = requests.get(member['url']).text
+    html_doc = requests.get(member['url'], verify=False).text
     soup = BeautifulSoup(html_doc, 'html.parser')
 
     member['biography'] = soup.find(class_='popup').div.text
