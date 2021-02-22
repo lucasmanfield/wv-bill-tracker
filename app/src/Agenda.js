@@ -45,9 +45,6 @@ function Agenda({ scrapedData, loaded, type }) {
     .filter(a => type.split(',').includes(a.type))
     .sort((a,b) => moment(a.date).unix() - moment(b.date).unix())
 
-  if (!loaded) {
-    return <div />
-  }
   return (
     <div className="Agenda-container">
       {
