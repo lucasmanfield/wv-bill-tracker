@@ -56,8 +56,18 @@ function App({ scrapedData }) {
               const chamber = legislator.chamber == 'upper' ? 'Senate' : 'House'
               const names = legislator.name.replace(' Jr.', '').replace(' Sr.', '').replace(' IV', '').split(' ')
               const lastName = names[names.length - 1]
-              newRepresentatives.push(getPersonByLastName(scrapedData.people.filter(p => p.chamber == chamber), lastName))
+              const person = getPersonByLastName(scrapedData.people.filter(p => p.chamber == chamber), lastName)
+              if (person) {
+                newRepresentatives.push(person)
+              } else {
+                console.log("Coudn not find", legislator.name)
+              }
             })
+            if (!newRepresentatives.length) {
+              setRepresentativesError('No information found at this address')
+              setRepresentatives([])
+              return
+            }
             setRepresentatives(newRepresentatives)
           })
 

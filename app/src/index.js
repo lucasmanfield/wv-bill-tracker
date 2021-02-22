@@ -116,11 +116,11 @@ function Wrapper() {
       <div className="Header">
         <div className="Header-nav">
           <a href="https://mountainstatespotlight.org"><img className="Header-logo" src={Logo} /></a>
-          <a className="Header-nav-button" href="/">Home</a>
+          <Link className="Header-nav-button" to="/">Home</Link>
           <a className="Header-nav-button" href="https://mountainstatespotlight.org/category/legislature/">Latest News</a>
           <a className="Header-nav-button" href="https://mountainstatespotlight.org/2021/02/14/introducing-mountain-state-spotlights-west-virginia-capitol-tracker/">Guide</a>
-          <a className="Header-nav-button" href="/calendars">Calendars</a>
-          <a className="Header-nav-button" href="/agendas">Agendas</a>
+          <Link className="Header-nav-button" to="/calendars">Calendars</Link>
+          <Link className="Header-nav-button" to="/agendas">Agendas</Link>
           <div className="Header-mobilemenu-container">
             <div className="Header-mobilemenu-icon" onClick={() => setMobileMenuShow(!mobileMenuShow)}>
               {mobileMenuShow ? <MdClose /> : <MdMenu />}
