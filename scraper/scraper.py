@@ -50,6 +50,7 @@ def parse_agenda(url):
     agenda_bills = re.findall(r'\wB [0-9]+', agenda_text)
     agenda_bills.extend([b.upper().replace('HB', 'HB ').replace('SB', 'SB ') for b in re.findall(r'\wB[0-9]+', agenda_text)])
     agenda_bills.extend([b.upper().replace('H. B.', 'HB').replace('S. B.', 'SB') for b in re.findall(r'\w. B. [0-9]+', agenda_text)])
+    agenda_bills.extend([b.upper().replace('H.B.', 'HB').replace('S.B.', 'SB') for b in re.findall(r'\w.B. [0-9]+', agenda_text)])
     agenda_bills.extend([b.upper().replace('HOUSE BILL', 'HB').replace('SENATE BILL', 'SB') for b in re.findall(r'(?:House|house|Senate|senate) (?:Bill|bill) [0-9]+', agenda_text)])
     agenda = {
       'date': agendaSoup.h1.string.strip()
