@@ -228,8 +228,7 @@ for tr in soup.find_all(id='wrapper')[1].find_all('tr')[1:]:
 
   if cells[2].string.lower().strip() == 'signed':
     status = {
-      'step': 'signed',
-      'last_action_date': cells[4].string.strip()
+      'step': 'signed'
     }
   elif cells[2].string.lower().strip() == 'pass':
     status = {
@@ -373,7 +372,7 @@ for name, chamber in chambers.items():
     else:
       last_comm_name = a.string
 
-"""
+
 ### scrape legislators
 
 for name, chamber in chambers.items():
@@ -459,7 +458,7 @@ for name, chamber in chambers.items():
   members.update(chamber['members'])
 with open("legislators.json", "w") as f:
     f.write(json.dumps(members))
-"""
+
   
 with open("bills.json", "w") as f:
   f.write(json.dumps({
