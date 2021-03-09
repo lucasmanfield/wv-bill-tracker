@@ -51,7 +51,7 @@ function Bill({ scrapedData, loaded }) {
   const statusBox = (
     <div className='Bill-statusbar-status'>
       <div className='Bill-statusbar-status-name'>{bill.status.step == 'committee' ? `In committee` : capitalize(bill.status.step)}</div>
-      <div className='Bill-statusbar-status-date'>{bill.status.step == 'committee' ? 'Since' : ''} {bill.last_update_parsed.format('MMM D')}</div>
+      {bill.last_update_parsed.isValid() ? <div className='Bill-statusbar-status-date'>{bill.status.step == 'committee' ? 'Since' : ''} {bill.last_update_parsed.format('MMM D')}</div> : ''}
     </div>
   )
 
