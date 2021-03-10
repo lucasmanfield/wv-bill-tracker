@@ -113,7 +113,7 @@ def parse_bill(url):
     'sponsors': [{
       'name': bill_table.find_all('tr')[3].find_all('td')[1].find('a').string.strip(),
       'classification': 'primary'
-    }],
+    }] if bill_table.find_all('tr')[3].find_all('td')[1].find('a') else [],
     'subjects': [],
     'amendments': [],
     'versions': []
