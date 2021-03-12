@@ -75,7 +75,9 @@ function Bill({ scrapedData, loaded }) {
           {bill.agendas.length ?
             <a onClick={e => e.stopPropagation()} href={bill.agendas[0].url} target="_blank"><FaRegClipboard /> View Agenda</a>
           : ''}
-          <a target="_blank" href={versions[0]['url']}><BsFileText /> Read Text</a>
+          {versions.length ?
+            <a target="_blank" href={versions[0]['url']}><BsFileText /> Read Text</a>
+          : ''}
           <button className={`Bill-follow ${isFollowing ? 'Bill-following' : ''}`} onClick={() => {
             if (isFollowing) {
               setCookie('following', (cookies.following || '').replace(`${name},`, ''))
