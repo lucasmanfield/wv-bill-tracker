@@ -26,7 +26,7 @@ jobs:
           path: main
 
       - name: Install poppler
-        run: sudo apt-get install poppler
+        run: sudo apt-get install poppler-utils
 
       - name: Install pip
         working-directory: main/scraper
