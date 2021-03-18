@@ -25,8 +25,8 @@ jobs:
         with:
           path: main
 
-      - name: Install xpdf
-        run: sudo apt-get install xpdf
+      - name: Install poppler
+        run: sudo apt-get install poppler
 
       - name: Install pip
         working-directory: main/scraper
