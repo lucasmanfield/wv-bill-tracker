@@ -2,8 +2,22 @@ from bs4 import BeautifulSoup
 from urllib.parse import urlencode, quote_plus, quote
 import json
 import re
+import subprocess
 import requests
 import time
+import os
+import datetime
+from urllib.request import urlretrieve, build_opener, install_opener, urlcleanup
+import socket
+import ssl
+
+socket.setdefaulttimeout(3)
+opener = build_opener()
+opener.addheaders = [('User-Agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36')]
+install_opener(opener)
+ssl._create_default_https_context = ssl._create_unverified_context
+
+urlcleanup()
 
 chambers = {
   'house': {
@@ -24,11 +38,15 @@ chambers = {
 }
 
 def do_request(url):
-  r = requests.get(url, headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36'}, verify=False)
+  r = requests.get(url, headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36'}, verify=False, timeout=5)
   r.raise_for_status()
   return r
 
-def load_page(url, wait=None, retries=5):
+def do_download(url):
+  filename, resp = urlretrieve(url)
+  return filename
+
+def load_page(url, wait=None, retries=10):
   for i in range(retries):
     try:
       if wait:
@@ -39,6 +57,176 @@ def load_page(url, wait=None, retries=5):
       print(e)
       continue
   raise Exception("%s failed" % url)
+
+def download_file(url, wait=1, retries=5):
+  for i in range(retries):
+    try:
+      if wait:
+        time.sleep(wait)  # necessary to avoid 500 errors
+      filename = do_download(url)
+      return filename
+    except Exception as e:
+      print(e)
+      continue
+  raise Exception("%s failed" % url)
+
+def convert_pdf(filename, type="xml"):
+    commands = {
+        "text": ["pdftotext", "-layout", filename, "-"],
+        "text-nolayout": ["pdftotext", filename, "-"],
+        "xml": ["pdftohtml", "-xml", "-stdout", filename],
+        "html": ["pdftohtml", "-stdout", filename],
+    }
+    try:
+        pipe = subprocess.Popen(
+            commands[type], stdout=subprocess.PIPE, close_fds=True
+        ).stdout
+    except OSError as e:
+        raise EnvironmentError(
+            "error running %s, missing executable? [%s]" % " ".join(commands[type]), e
+        )
+    data = pipe.read()
+    pipe.close()
+    return data
+
+def scrape_senate_vote_3col(text):
+  lines = filter(None, text.splitlines())
+  votes = {
+    'yes': [],
+    'no': [],
+    'other': []
+  }
+  for line in lines:
+    vals = re.findall(r"(?<!\w)(Y|N|A)\s+((?:\S+ ?)+)", line)
+    for vote_val, name in vals:
+        vote_val = vote_val.strip()
+        name = name.strip()
+        if vote_val == "Y":
+            if "Class Y" in line:
+                continue
+            votes['yes'].append(name)
+        elif vote_val == "N":
+          votes['no'].append(name)
+        else:
+          votes['other'].append(name)
+
+  return {
+    'chamber': 'senate',
+    'votes': votes
+  }
+
+def scrape_senate_vote(url):
+  try:
+    filename = download_file(url)
+  except:
+    return None
+  print("Downloaded %s to %s" % (url, filename))
+  text = convert_pdf(filename, "text").decode("utf-8")
+  os.remove(filename)
+
+  if re.search(r"Yea:\s+\d+\s+Nay:\s+\d+\s+Absent:\s+\d+", text):
+    return scrape_senate_vote_3col(text)
+
+  data = re.split(r"(Yea|Nay|Absent)s?:", text)[::-1]
+  data = filter(None, data)
+  keymap = dict(yea="yes", nay="no")
+  votes = {
+    'yes': [],
+    'no': [],
+    'other': [],
+    'paired': []
+  }
+
+  while True:
+      if not data:
+          break
+      vote_val = data.pop()
+      key = keymap.get(vote_val.lower(), "other")
+      values = data.pop()
+      for name in re.split(r"(?:[\s,]+and\s|[\s,]{2,})", values):
+          if name.lower().strip() == "none.":
+              continue
+          name = name.replace("..", "")
+          name = re.sub(r"\.$", "", name)
+          name = name.strip("-1234567890 \n")
+          if not name:
+              continue
+          votes[vote_val].append(name)
+
+  return {
+      'chamber': 'senate',
+      'votes': votes
+    }
+
+def scrape_house_vote(url):
+  print("Downloading", url)
+  try:
+    filename = download_file(url)
+  except:
+    return None
+  text = convert_pdf(filename, "text")
+  os.remove(filename)
+
+  lines = text.splitlines()
+  vote_type = None
+  date = None
+  passed = False
+  votes = {
+    'yes': [],
+    'no': [],
+    'other': [],
+    'paired': []
+  }
+
+  for idx, line in enumerate(lines):
+    line = line.rstrip().upper().decode("utf-8")
+    match = re.search(r"(\d+)/(\d+)/(\d{4,4})", line)
+    if match:
+      date = datetime.datetime.strptime(match.group(0), "%m/%d/%Y")
+      continue
+    
+    if line.endswith("ADOPTED") or line.endswith("PASSED"):
+        passed = True
+
+    match = re.match(r"(YEAS|NAYS|YEA|NAY|NOT VOTING|PAIRED|EXCUSED):\s+(\d+)\s*$", line)
+    if match:
+      vote_type = {
+        "YEAS": "yes",
+        "NAYS": "no",
+        "YEA": "yes",
+        "NAY": "no",
+        "NOT VOTING": "other",
+        "EXCUSED": "other",
+        "PAIRED": "paired",
+      }[match.group(1)]
+      continue
+
+    if vote_type == "paired":
+      for part in line.split("   "):
+          part = part.strip()
+          if not part:
+              continue
+          name, pair_type = re.match(r"([^\(]+)\((YEA|NAY)\)", line).groups()
+          name = name.strip()
+          if pair_type == "YEA":
+              votes["yes"].append(name)
+          elif pair_type == "NAY":
+              votes["no"].append(name)
+    elif vote_type:
+        for name in line.split("   "):
+            name = name.strip()
+            if not name:
+                continue
+            votes[vote_type].append(name)
+  if not date:
+    raise Exception("No date")
+
+  return {
+    'chamber': 'house',
+    'votes': votes
+  }
+
+
 
 def parse_agenda(url):
   print("Loading", url)
@@ -101,7 +289,7 @@ def parse_calendar(url):
   
 def parse_bill(url):
   print("Loading " + url)
-  html_doc = load_page(url)
+  html_doc = load_page(url, wait=1)
   soup = BeautifulSoup(html_doc, 'html.parser')
 
   bill_table = soup.find_all('table')[1]
@@ -116,7 +304,8 @@ def parse_bill(url):
     }] if bill_table.find_all('tr')[3].find_all('td')[1].find('a') else [],
     'subjects': [],
     'amendments': [],
-    'versions': []
+    'versions': [],
+    'votes': []
   }
   if len(bill_table.find_all('tr')[5].find_all('td')[1].find_all('a')):
     for a in bill_table.find_all('tr')[5].find_all('td')[1].find_all('a'):
@@ -175,7 +364,7 @@ def parse_bill(url):
     date = dates[0] if len(dates) else ""
     amendment_id = "%s|%s|%s" % (','.join(sponsors), num, date)
     
-    url = 'https://wvlegislature.gov' + a.get('href')
+    url = 'https://www.wvlegislature.gov' + a.get('href')
 
     amendments.append({
       'type': type,
@@ -202,9 +391,27 @@ def parse_bill(url):
       bill['amendments'].append(amendment)
   print('\n'.join([a['id'] for a in bill['amendments']]))
 
+  for tr in soup.find_all('tr'):
+    roll_link = tr.find('a', attrs={'data-type': 'rol'})
+    if roll_link:
+      date = tr.find_all('td')[2].string.strip()
+      name = roll_link.string.strip().lower()
+      url = 'https://www.wvlegislature.gov' + roll_link.get('href')
+      vote = None
+      if 'passed house' in name:
+        vote = scrape_house_vote(url)
+      if 'passed senate' in name:
+        vote = scrape_senate_vote(url)
+      if vote:
+        vote['date'] = date
+        vote['passed'] = True
+        vote['url'] = url
+        print("Adding %s vote %s to %s" % (vote['chamber'], str(vote), bill['title']))
+        bill['votes'].append(vote)
+
   return bill
 
-#test_parse = parse_bill('http://www.wvlegislature.gov/Bill_Status/Bills_history.cfm?input=295&year=2021&sessiontype=RS&btype=bill')
+#test_parse = parse_bill('http://www.wvlegislature.gov/Bill_Status/Bills_history.cfm?input=2012&year=2021&sessiontype=RS&btype=bill')
 #print(test_parse)  
 
 #test_agenda = parse_agenda('http://www.wvlegislature.gov/committees/house/house_com_agendas.cfm?Chart=jud&input=02-18-2021')

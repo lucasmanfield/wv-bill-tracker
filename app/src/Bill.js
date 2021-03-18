@@ -64,7 +64,8 @@ function Bill({ scrapedData, loaded }) {
     'Signed Enrolled Version'
   ]
   const versions = bill.versions.sort((a, b) => versionNames.indexOf(b.name) - versionNames.indexOf(a.name))
-
+  const houseVote = bill.votes.find(v => v.chamber == 'house')
+  const senateVote = bill.votes.find(v => v.chamber == 'senate')
   return (
     <div className="Bill-container">
       <div className='Bill-nav'>
@@ -104,9 +105,29 @@ function Bill({ scrapedData, loaded }) {
       <div className="Bill-statusbar">
         <div className="Bill-statusbar-group">
           <div className="Bill-statusbar-group-name">{bill.name.includes('HB') ? 'House' : 'Senate'}</div>
+          {bill.name.includes('HB') && houseVote ?
+            <div className="Bill-statusbar-group-vote">
+              <a href={houseVote.url} target="_blank">{houseVote.passed ? 'Passed' : 'Failed'} {houseVote.votes.yes.length}-{houseVote.votes.no.length} <RiExternalLinkLine /></a>
+            </div>
+          : ''}
+          {bill.name.includes('SB') && senateVote ?
+            <div className="Bill-statusbar-group-vote">
+              <a href={senateVote.url} target="_blank">{senateVote.passed ? 'Passed' : 'Failed'} {senateVote.votes.yes.length}-{senateVote.votes.no.length}  <RiExternalLinkLine /></a>
+            </div>
+          : ''}
         </div>
         <div className="Bill-statusbar-group" style={{left: '42%'}}>
           <div className="Bill-statusbar-group-name">{bill.name.includes('HB') ? 'Senate' : 'House'}</div>
+          {bill.name.includes('SB') && houseVote ?
+            <div className="Bill-statusbar-group-vote">
+              <a href={houseVote.url} target="_blank">{houseVote.passed ? 'Passed' : 'Failed'} {houseVote.votes.yes.length}-{houseVote.votes.no.length}  <RiExternalLinkLine /></a>
+            </div>
+          : ''}
+          {bill.name.includes('HB') && senateVote ?
+            <div className="Bill-statusbar-group-vote">
+              <a href={senateVote.url} target="_blank">{senateVote.passed ? 'Passed' : 'Failed'} {senateVote.votes.yes.length}-{senateVote.votes.no.length}  <RiExternalLinkLine /></a>
+            </div>
+          : ''}
         </div>
         <div className="Bill-statusbar-group" style={{left: '80.5%', width: '14%'}}>
           <div className="Bill-statusbar-group-name">Governor</div>
