@@ -102,7 +102,7 @@ function Bill({ scrapedData, loaded }) {
           Source:&nbsp;&nbsp;<a href={bill.url} target="_blank">West Virginia Legislature <RiExternalLinkLine /></a>
         </div>
       </div>
-      <div className="Bill-statusbar">
+      <div className={`Bill-statusbar ${bill.status.step == 'failed' || bill.status.step == 'vetoed' ? 'Bill-failed': ''}`}>
         <div className="Bill-statusbar-group">
           <div className="Bill-statusbar-group-name">{bill.name.includes('HB') ? 'House' : 'Senate'}</div>
           {bill.name.includes('HB') && houseVote ?
@@ -145,7 +145,7 @@ function Bill({ scrapedData, loaded }) {
         <div className="Bill-statusbar-segment Bill-statusbar-segment-long">
           {bill.step == 5 ? statusBox: ''}
           <div className={`Bill-statusbar-dot ${bill.step >= 5 ? 'active' : ''}`} />
-          <div className={`Bill-statusbar-line ${bill.step >= 5 ? 'active' : ''}`} />
+          <div className={`Bill-statusbar-line ${bill.step >= 5 && bill.status.step != 'failed' ? 'active' : ''}`} />
         </div>
         <div className="Bill-statusbar-segment">
           {bill.step == 6 ? statusBox: ''}
@@ -155,7 +155,7 @@ function Bill({ scrapedData, loaded }) {
         <div className="Bill-statusbar-segment">
           {bill.step > 6 && bill.step < 10 ? statusBox : ''}
           <div className={`Bill-statusbar-dot ${bill.step >= 7 ? 'active' : ''}`} />
-          <div className={`Bill-statusbar-line ${bill.step >= 10 ? 'active' : ''}`} />
+          <div className={`Bill-statusbar-line ${bill.step >= 10 && bill.status.step != 'failed' ? 'active' : ''}`} />
         </div>
         <div className="Bill-statusbar-segment Bill-statusbar-segment-long">
           {bill.step == 10 ? statusBox : ''}

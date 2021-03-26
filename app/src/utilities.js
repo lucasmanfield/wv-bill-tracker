@@ -60,10 +60,20 @@ export function updateBillStatus(bill) {
   bill.last_update_parsed = moment(bill.status.last_action_date)
   if (bill.status.step == 'signed') {
     bill.step = 12;
-  } if (bill.status.step == 'governor') {
+  } else if (bill.status.step == 'governor') {
     bill.step = 11;
-  } if (bill.status.step == 'passed') {
+  } else if (bill.status.step == 'vetoed') {
+    bill.step = 12;
+  } else if (bill.status.step == 'passed') {
     bill.step = 10;
+  } else if (bill.status.step == 'failed') {
+    bill.step = 10
+    if (bill.name.includes('HB') && bill.status.chamber == 'house') {
+      bill.step = 5
+    }
+    if (bill.name.includes('SB') && bill.status.chamber == 'senate') {
+      bill.step = 5
+    }
   } else if (bill.status.step.toLowerCase() == 'committee') {
     bill.step = 6
     if (bill.name.includes('HB') && bill.status.chamber == 'house') {

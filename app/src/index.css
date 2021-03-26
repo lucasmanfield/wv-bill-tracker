@@ -740,6 +740,11 @@ h2 {
   background: green;
   border-color: green;
 }
+.Bill-failed .Bill-statusbar-dot.active {
+  background: rgb(218, 1, 1);
+  border-color: rgb(218, 1, 1);
+}
+
 .Bill-statusbar-line {
   height:3px;
   width: 100%;
@@ -747,6 +752,10 @@ h2 {
 }
 .Bill-statusbar-line.active {
   background: green;
+}
+
+.Bill-failed .Bill-statusbar-line.active {
+  background: rgb(218, 1, 1);
 }
 
 .Bill-dispatch-header {
@@ -1195,6 +1204,10 @@ h2 {
   background: green;
   border-color: green;
 }
+.BillBox-failed .BillBox-statusbar-dot.active {
+  background: rgb(218, 1, 1);
+  border-color: rgb(218, 1, 1);
+}
 .BillBox-statusbar-line {
   height:2px;
   width: 100%;
@@ -1202,6 +1215,9 @@ h2 {
 }
 .BillBox-statusbar-line.active {
   background: green;
+}
+.BillBox-failed .BillBox-statusbar-line.active {
+  background: rgb(218, 1, 1);
 }
 
 @media only screen and (max-width: 500px) {

@@ -411,7 +411,7 @@ def parse_bill(url):
 
   return bill
 
-#test_parse = parse_bill('http://www.wvlegislature.gov/Bill_Status/Bills_history.cfm?input=2012&year=2021&sessiontype=RS&btype=bill')
+#test_parse = parse_bill('http://www.wvlegislature.gov/Bill_Status/Bills_history.cfm?input=2702&year=2021&sessiontype=RS&btype=bill')
 #print(test_parse)  
 
 #test_agenda = parse_agenda('http://www.wvlegislature.gov/committees/house/house_com_agendas.cfm?Chart=jud&input=02-18-2021')
@@ -438,9 +438,18 @@ for tr in soup.find_all(id='wrapper')[1].find_all('tr')[1:]:
     status = {
       'step': 'signed'
     }
+  elif cells[2].string.lower().strip() == 'vetoed':
+    status = {
+      'step': 'vetoed'
+    }
   elif cells[2].string.lower().strip() == 'pass':
     status = {
       'step': 'passed',
+      'last_action_date': cells[4].string.strip()
+    }
+  elif cells[2].string.lower().strip() == 'rejected':
+    status = {
+      'step': 'failed',
       'last_action_date': cells[4].string.strip()
     }
   else:
