@@ -57,7 +57,9 @@ export function styleForTag(tag) {
 }
 
 export function updateBillStatus(bill) {
-  bill.last_update_parsed = moment(bill.status.last_action_date)
+  if (bill.status.last_action_date) {
+    bill.last_update_parsed = moment(bill.status.last_action_date)
+  }
   if (bill.status.step == 'signed') {
     bill.step = 12;
   } else if (bill.status.step == 'governor') {
