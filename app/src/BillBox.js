@@ -29,11 +29,11 @@ function Bill({ name, title, status, notes, tags, step, agendas }) {
           <div className={`BillBox-statusbar ${status.step == 'failed' || status.step == 'vetoed' ? 'BillBox-failed': ''}`}>
             <div className="BillBox-statusbar-segment">
               <div className={`BillBox-statusbar-dot ${step >= 1 ? 'active' : ''}`} />
-              <div className={`BillBox-statusbar-line ${step >= 5 ? 'active' : ''}`} />
+              <div className={`BillBox-statusbar-line ${step >= 5 && status.step != 'failed'  ? 'active' : ''}`} />
             </div>
             <div className="BillBox-statusbar-segment">
               <div className={`BillBox-statusbar-dot ${step >= 6 ? 'active' : ''}`} />
-              <div className={`BillBox-statusbar-line ${step >= 11 ? 'active' : ''}`} />
+              <div className={`BillBox-statusbar-line ${step >= 11 && status.step != 'failed' ? 'active' : ''}`} />
             </div>
             <div className="BillBox-statusbar-segment" style={{flex: 0}}>
               <div className={`BillBox-statusbar-dot ${step == 12 ? 'active' : ''}`} />

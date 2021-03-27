@@ -401,6 +401,17 @@ h2 {
   padding: 15px 20px;
 }
 
+.Bill-banner {
+  background: #004400;
+  color: white;
+  text-align: center;
+  padding: 7px;
+  border-radius: 3px;
+  margin: 10px 0px;
+  font-weight: bold;
+  font-size:13px;
+}
+
 .Bill-title {
   font-weight: bold;
   font-size: 20px;

@@ -53,7 +53,7 @@ function Bill({ scrapedData, loaded }) {
       <div className='Bill-statusbar-status-name'>{bill.status.step == 'committee' ? `In committee` : capitalize(bill.status.step)}</div>
       {bill.last_update_parsed && bill.last_update_parsed.isValid() ? 
         <div className='Bill-statusbar-status-date'>{bill.status.step == 'committee' ? 'Since' : ''} {bill.last_update_parsed.format('MMM D')}</div> 
-        : <div className='Bill-statusbar-status-date'>{bill.last_action.replace('from passage - (', '').replace('Ninety Days from Passage - (', '').replace(')','')}</div>
+        : ''
       }
     </div>
   )
@@ -93,6 +93,9 @@ function Bill({ scrapedData, loaded }) {
           </button>
         </div>
       </div>
+      {bill.step == '12' && bill.status.step == 'signed' ?
+        <div className="Bill-banner">PASSED — {bill.last_action}</div>
+      : ''}
       <div className="Bill-header">
         <div className="Bill-title">{bill.title}</div>
         <div className="Bill-subjects">

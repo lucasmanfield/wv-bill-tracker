@@ -398,13 +398,20 @@ def parse_bill(url):
       name = roll_link.string.strip().lower()
       url = 'https://www.wvlegislature.gov' + roll_link.get('href')
       vote = None
+      passed = False
       if 'passed house' in name:
         vote = scrape_house_vote(url)
-      if 'passed senate' in name:
+        passed = True
+      elif 'house rejected' in name:
+        vote = scrape_house_vote(url)
+      elif 'passed senate' in name:
+        vote = scrape_senate_vote(url)
+        passed = True
+      elif 'senate rejected' in name:
         vote = scrape_senate_vote(url)
       if vote:
+        vote['passed'] = passed
         vote['date'] = date
-        vote['passed'] = True
         vote['url'] = url
         print("Adding %s vote %s to %s" % (vote['chamber'], str(vote), bill['title']))
         bill['votes'].append(vote)
