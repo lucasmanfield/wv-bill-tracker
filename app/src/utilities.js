@@ -76,6 +76,12 @@ export function updateBillStatus(bill) {
     if (bill.name.includes('SB') && bill.status.chamber == 'senate') {
       bill.step = 5
     }
+  } else if (bill.status.step.includes('senate introduction')) {
+    bill.step = 5
+    bill.status.step = 'To Senate'
+  } else if (bill.status.step.includes('house introduction')) {
+    bill.step = 5
+    bill.status.step = 'To House'
   } else {
     if (bill.status.step.toLowerCase() == 'committee') {
       bill.step = 6
@@ -109,13 +115,7 @@ export function updateBillStatus(bill) {
       if (bill.name.includes('SB') && bill.status.chamber == 'senate') {
         bill.step = 4
       }
-    } else if (bill.status.step.includes('senate introduction')) {
-      bill.step = 5
-      bill.status.step = 'To Senate'
-    } else if (bill.status.step.includes('house introduction')) {
-      bill.step = 5
-      bill.status.step = 'To House'
-    }
+    } 
 
     if (!(bill.title.startsWith('Budget Bill') || bill.title.startsWith('Supplemental appropriation') || bill.title.startsWith('Supplementing'))) {
       if (bill.name.includes('HB') && bill.status.chamber == 'house') {
