@@ -60,6 +60,7 @@ export function updateBillStatus(bill) {
   if (bill.status.last_action_date) {
     bill.last_update_parsed = moment(bill.status.last_action_date)
   }
+  let canDie = false
   if (bill.status.step == 'signed') {
     bill.step = 12;
   } else if (bill.status.step == 'governor') {
@@ -76,54 +77,61 @@ export function updateBillStatus(bill) {
     if (bill.name.includes('SB') && bill.status.chamber == 'senate') {
       bill.step = 5
     }
+  } else if (bill.status.step.toLowerCase() == 'committee') {
+    canDie = true
+    bill.step = 6
+    if (bill.name.includes('HB') && bill.status.chamber == 'house') {
+      bill.step = 1
+    }
+    if (bill.name.includes('SB') && bill.status.chamber == 'senate') {
+      bill.step = 1
+    }
+  } else if (bill.status.step.toLowerCase() == '1st reading') {
+    canDie = true
+    bill.step = 7
+    if (bill.name.includes('HB') && bill.status.chamber == 'house') {
+      bill.step = 2
+    }
+    if (bill.name.includes('SB') && bill.status.chamber == 'senate') {
+      bill.step = 2
+    }
+  } else if (bill.status.step.toLowerCase() == '2nd reading') {
+    canDie = true
+    bill.step = 8
+    if (bill.name.includes('HB') && bill.status.chamber == 'house') {
+      bill.step = 3
+    }
+    if (bill.name.includes('SB') && bill.status.chamber == 'senate') {
+      bill.step = 3
+    }
+  } else if (bill.status.step.toLowerCase() == '3rd reading') {
+    canDie = true
+    bill.step = 9
+    if (bill.name.includes('HB') && bill.status.chamber == 'house') {
+      bill.step = 4
+    }
+    if (bill.name.includes('SB') && bill.status.chamber == 'senate') {
+      bill.step = 4
+    }
   } else if (bill.status.step.includes('senate introduction')) {
     bill.step = 5
     bill.status.step = 'To Senate'
   } else if (bill.status.step.includes('house introduction')) {
     bill.step = 5
     bill.status.step = 'To House'
-  } else {
-    if (bill.status.step.toLowerCase() == 'committee') {
-      bill.step = 6
-      if (bill.name.includes('HB') && bill.status.chamber == 'house') {
-        bill.step = 1
-      }
-      if (bill.name.includes('SB') && bill.status.chamber == 'senate') {
-        bill.step = 1
-      }
-    } else if (bill.status.step.toLowerCase() == '1st reading') {
-      bill.step = 7
-      if (bill.name.includes('HB') && bill.status.chamber == 'house') {
-        bill.step = 2
-      }
-      if (bill.name.includes('SB') && bill.status.chamber == 'senate') {
-        bill.step = 2
-      }
-    } else if (bill.status.step.toLowerCase() == '2nd reading') {
-      bill.step = 8
-      if (bill.name.includes('HB') && bill.status.chamber == 'house') {
-        bill.step = 3
-      }
-      if (bill.name.includes('SB') && bill.status.chamber == 'senate') {
-        bill.step = 3
-      }
-    } else if (bill.status.step.toLowerCase() == '3rd reading') {
-      bill.step = 9
-      if (bill.name.includes('HB') && bill.status.chamber == 'house') {
-        bill.step = 4
-      }
-      if (bill.name.includes('SB') && bill.status.chamber == 'senate') {
-        bill.step = 4
-      }
-    } 
-    
-    if (!(bill.title.startsWith('Budget Bill') || bill.title.startsWith('Supplemental appropriation') || bill.title.startsWith('Supplementing'))) {
-      if (bill.name.includes('HB') && bill.status.chamber == 'house') {
-        bill.status.step = 'likely dead'
-      }
-      if (bill.name.includes('SB') && bill.status.chamber == 'senate') {
-        bill.status.step = 'likely dead'
-      }
+  }
+
+  if (canDie && 
+      !(
+        bill.title.startsWith('Budget Bill') || 
+        bill.title.startsWith('Supplemental appropriation') || 
+        bill.title.startsWith('Supplementing')
+      )) {
+    if (bill.name.includes('HB') && bill.status.chamber == 'house') {
+      bill.status.step = 'likely dead'
+    }
+    if (bill.name.includes('SB') && bill.status.chamber == 'senate') {
+      bill.status.step = 'likely dead'
     }
   }
 }
