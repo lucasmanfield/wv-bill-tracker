@@ -116,7 +116,7 @@ export function updateBillStatus(bill) {
         bill.step = 4
       }
     } 
-
+    /*
     if (!(bill.title.startsWith('Budget Bill') || bill.title.startsWith('Supplemental appropriation') || bill.title.startsWith('Supplementing'))) {
       if (bill.name.includes('HB') && bill.status.chamber == 'house') {
         bill.status.step = 'likely dead'
@@ -125,6 +125,7 @@ export function updateBillStatus(bill) {
         bill.status.step = 'likely dead'
       }
     }
+    */
   }
 }
 
