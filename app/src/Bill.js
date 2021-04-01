@@ -108,7 +108,7 @@ function Bill({ scrapedData, loaded }) {
           Source:&nbsp;&nbsp;<a href={bill.url} target="_blank">West Virginia Legislature <RiExternalLinkLine /></a>
         </div>
       </div>
-      <div className={`Bill-statusbar ${bill.status.step == 'failed' || bill.status.step == 'vetoed' ? 'Bill-failed': ''}`}>
+      <div className={`Bill-statusbar ${bill.status.step == 'likely dead' ? 'Bill-dead': ''} ${bill.status.step == 'failed' || bill.status.step == 'vetoed' ? 'Bill-failed': ''}`}>
         <div className="Bill-statusbar-group">
           <div className="Bill-statusbar-group-name">{bill.name.includes('HB') ? 'House' : 'Senate'}</div>
           {bill.name.includes('HB') && houseVote ?

@@ -26,7 +26,7 @@ function Bill({ name, title, status, notes, tags, step, agendas }) {
         </div>
         <div className="BillBox-status">
           {capitalize(statusDescription)}
-          <div className={`BillBox-statusbar ${status.step == 'failed' || status.step == 'vetoed' ? 'BillBox-failed': ''}`}>
+          <div className={`BillBox-statusbar ${status.step == 'likely dead' ? 'BillBox-dead': ''} ${status.step == 'failed' || status.step == 'vetoed' ? 'BillBox-failed': ''}`}>
             <div className="BillBox-statusbar-segment">
               <div className={`BillBox-statusbar-dot ${step >= 1 ? 'active' : ''}`} />
               <div className={`BillBox-statusbar-line ${step >= 5 && status.step != 'failed'  ? 'active' : ''}`} />
