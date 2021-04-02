@@ -126,7 +126,8 @@ export function updateBillStatus(bill) {
         bill.title.startsWith('Budget Bill') || 
         bill.title.startsWith('Supplemental appropriation') || 
         bill.title.startsWith('Supplementing') || 
-        bill.title.startsWith('Making supplemental appropriation')
+        bill.title.startsWith('Making supplemental appropriation') ||
+        bill.title.startsWith('Expiring funds to')
       )) {
     if (bill.name.includes('HB') && bill.status.chamber == 'house') {
       bill.status.step = 'likely dead'
