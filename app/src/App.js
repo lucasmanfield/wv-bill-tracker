@@ -109,12 +109,6 @@ function App({ scrapedData }) {
       </div>
       <div className="App-timeline">
         <div className="App-timeline-line"></div>
-        <div className="App-timeline-today" style={{
-          left: ((moment(moment().format('YYYY-MM-DD') + ' 00:01:00').unix() - deadlines[0].date.unix()) / sessionLength * 100) + '%'
-        }}>
-          <div className="App-timeline-today-label">Today</div>
-          <div className="App-timeline-today-arrow"></div>
-        </div>
         {deadlines.map(d => {
           const fromStart = d.date.unix() - deadlines[0].date.unix()
           return (
