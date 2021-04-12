@@ -400,7 +400,10 @@ def parse_bill(url):
       vote = None
       passed = False
       try:
-        if 'passed house' in name:
+        if 'motion' in name:
+          pass
+          # do nothing
+        elif 'passed house' in name:
           vote = scrape_house_vote(url)
           passed = True
         elif 'house rejected' in name:
