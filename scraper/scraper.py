@@ -90,7 +90,7 @@ def convert_pdf(filename, type="xml"):
     return data
 
 def scrape_senate_vote_3col(text):
-  lines = filter(None, text.splitlines())
+  lines = list(filter(None, text.splitlines()))
   votes = {
     'yes': [],
     'no': [],
@@ -128,7 +128,7 @@ def scrape_senate_vote(url):
     return scrape_senate_vote_3col(text)
 
   data = re.split(r"(Yea|Nay|Absent)s?:", text)[::-1]
-  data = filter(None, data)
+  data = list(filter(None, data))
   keymap = dict(yea="yes", nay="no")
   votes = {
     'yes': [],
@@ -399,16 +399,19 @@ def parse_bill(url):
       url = 'https://www.wvlegislature.gov' + roll_link.get('href')
       vote = None
       passed = False
-      if 'passed house' in name:
-        vote = scrape_house_vote(url)
-        passed = True
-      elif 'house rejected' in name:
-        vote = scrape_house_vote(url)
-      elif 'passed senate' in name:
-        vote = scrape_senate_vote(url)
-        passed = True
-      elif 'senate rejected' in name:
-        vote = scrape_senate_vote(url)
+      try:
+        if 'passed house' in name:
+          vote = scrape_house_vote(url)
+          passed = True
+        elif 'house rejected' in name:
+          vote = scrape_house_vote(url)
+        elif 'passed senate' in name:
+          vote = scrape_senate_vote(url)
+          passed = True
+        elif 'senate rejected' in name:
+          vote = scrape_senate_vote(url)
+      except Exception as e:
+        print("FAILED to scrape vote from ", url)
       if vote:
         vote['passed'] = passed
         vote['date'] = date
@@ -418,8 +421,8 @@ def parse_bill(url):
 
   return bill
 
-#test_parse = parse_bill('http://www.wvlegislature.gov/Bill_Status/Bills_history.cfm?input=2702&year=2021&sessiontype=RS&btype=bill')
-#print(test_parse)  
+test_parse = parse_bill('http://www.wvlegislature.gov/Bill_Status/Bills_history.cfm?input=569&year=2021&sessiontype=RS&btype=bill')
+print(test_parse)  
 
 #test_agenda = parse_agenda('http://www.wvlegislature.gov/committees/house/house_com_agendas.cfm?Chart=jud&input=02-18-2021')
 #print(test_agenda)  
