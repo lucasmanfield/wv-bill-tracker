@@ -60,10 +60,12 @@ function Bill({ scrapedData, loaded }) {
 
   const versionNames = [
     'Introduced Version',
+    'Originating in Committee',
     'Committee Substitute',
     'Engrossed Version',
     'Engrossed Committee Substitute',
     'Enrolled Committee Substitute',
+    'Enrolled Version',
     'Signed Enrolled Version'
   ]
   const versions = bill.versions.sort((a, b) => versionNames.indexOf(b.name) - versionNames.indexOf(a.name))
