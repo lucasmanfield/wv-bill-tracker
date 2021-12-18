@@ -104,7 +104,7 @@ function App({ scrapedData }) {
         <div className="App-intro">
           <p>Keeping track of West Virginia's chaotic two months of lawmaking can be daunting. To help you decipher it, our nonprofit investigative newsroom at <a href="https://mountainstatespotlight.org">Mountain State Spotlight</a> is trying something new.</p>
           <p>Here, you can: get live updates from our reporters as they cover legislators' latest moves; contact your elected representatives; keep tabs on all of the bills you’re following in one place; and look up a bill to find out why it is stuck — or sailing through. The current status of each bill is updated nightly from the legislature's <a href="http://www.wvlegislature.gov/">official website</a>.</p>
-          <p>If you have questions, check out <a href="https://mountainstatespotlight.org/2021/02/14/introducing-mountain-state-spotlights-west-virginia-capitol-tracker/">our guide to the tracker here</a>, or <a href="mailto:lucasmanfield@mountainstatespotlight.org">reach out</a>. We'd love to know what's working and what's not.</p>
+          <p>If you have questions, check out <a href="https://mountainstatespotlight.org/2021/02/14/introducing-mountain-state-spotlights-west-virginia-capitol-tracker/">our guide to the tracker here</a>, or <a href="mailto:contact@mountainstatespotlight.org">reach out</a>. We'd love to know what's working and what's not.</p>
         </div>
       </div>
       <div className="App-timeline">
