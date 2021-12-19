@@ -99,7 +99,7 @@ function App({ scrapedData }) {
   return (
     <div className="App-container">
       <div className="App-header">
-        <h1>West Virginia's 2021 Capitol Tracker</h1>
+        <h1>West Virginia's 2022 Capitol Tracker</h1>
         <div className="byline">By <a href="https://mountainstatespotlight.org/author/lucasmanfield/">Lucas Manfield</a>, Mountain State Spotlight. {lastModified ? `Data updated ${lastModified.format('MMMM D, YYYY').replace('pm', 'p.m.').replace('am', 'a.m.')}.`: ''}</div>
         <div className="App-intro">
           <p>Keeping track of West Virginia's chaotic two months of lawmaking can be daunting. To help you decipher it, our nonprofit investigative newsroom at <a href="https://mountainstatespotlight.org">Mountain State Spotlight</a> is trying something new.</p>
