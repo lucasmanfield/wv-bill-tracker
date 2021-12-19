@@ -17,7 +17,7 @@ const agendaItem = (scrapedData, {name, url, date, bills}) => (
       </div>
       <a className="Agenda-url" href={url} target="_blank"><RiExternalLinkLine /> View</a>
     </div>
-    {bills.length ?
+    {bills && bills.length ?
       <div className="Agenda-bills">
         {bills.map(name => {
           let bill = null
