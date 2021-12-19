@@ -265,6 +265,9 @@ def parse_calendar(url):
   
   date = None
   container = soup.find(id='wraprightcolxr')
+  if not container:
+    return {}
+
   for span in container.find_all('span'):
     content = span.string.strip().replace('&nbsp;', '')
     if len(content) and 'CALENDAR' not in content:
@@ -513,49 +516,54 @@ for tr in soup.find_all(id='wrapper')[1].find_all('tr')[1:]:
 html_doc = requests.get('https://www.wvlegislature.gov/Bill_Status/bills_fiscal.cfm?year=2022&sessiontype=RS&btype=bill&note=fiscal', verify=False).text
 soup = BeautifulSoup(html_doc, 'html.parser')
 
-note_count = len(soup.find_all('table')[2].find_all('tr')[1:])
-note_num = 0
+try:
+  note_count = len(soup.find_all('table')[2].find_all('tr')[1:])
+except:
+  note_count = 0
 
-for tr in soup.find_all('table')[2].find_all('tr')[1:]:
-  note_num += 1
+if note_count:
+  note_num = 0
 
-  cells = tr.find_all('td')
-  bill_name = cells[1].string.strip() if len(cells[1].string.strip()) else cells[2].string.strip()
-  
-  if not len(bill_name):
-    print("Skipping fiscal note row %s" % cells)
-    continue
+  for tr in soup.find_all('table')[2].find_all('tr')[1:]:
+    note_num += 1
 
-  bill_name = bill_name.replace("HB", "HB ").replace("SB", "SB ")
-  if bill_name not in bills.keys():
-    print("Fiscal note: %s not found" % bill_name)
-    continue
-
-  bill_agency_anchor = cells[4].find('a')
-
-  if bill_agency_anchor and bill_agency_anchor != -1:
-    url = 'https://www.wvlegislature.gov' + bill_agency_anchor.get('href')
-    note = {
-      'agency': bill_agency_anchor.string,
-      'url': url
-    }
-
-    print("Loading %s" % url)
-    try:
-      html_doc = requests.get(url, verify=False).text
-      fiscalNoteSoup = BeautifulSoup(html_doc, 'html.parser')
-      fiscal_note_table = fiscalNoteSoup.find_all('table')[2]
-
-      note['annual_cost'] = float(fiscal_note_table.find_all('tr')[2].find_all('td')[2].string.replace(',',''))
-      note['annual_revenue'] = float(fiscal_note_table.find_all('tr')[8].find_all('td')[2].string.replace(',',''))
-    except Exception as e:
-      print("Unable to parse %s: %s" % (url, e))
-      pass
+    cells = tr.find_all('td')
+    bill_name = cells[1].string.strip() if len(cells[1].string.strip()) else cells[2].string.strip()
     
-    bills[bill_name]['fiscal_note'] = note
-    print("Loaded fiscal note %d of %d: %s" % (note_num, note_count, note))
-  else:
-    print("Skipping fiscal note for %s" % bill_name)
+    if not len(bill_name):
+      print("Skipping fiscal note row %s" % cells)
+      continue
+
+    bill_name = bill_name.replace("HB", "HB ").replace("SB", "SB ")
+    if bill_name not in bills.keys():
+      print("Fiscal note: %s not found" % bill_name)
+      continue
+
+    bill_agency_anchor = cells[4].find('a')
+
+    if bill_agency_anchor and bill_agency_anchor != -1:
+      url = 'https://www.wvlegislature.gov' + bill_agency_anchor.get('href')
+      note = {
+        'agency': bill_agency_anchor.string,
+        'url': url
+      }
+
+      print("Loading %s" % url)
+      try:
+        html_doc = requests.get(url, verify=False).text
+        fiscalNoteSoup = BeautifulSoup(html_doc, 'html.parser')
+        fiscal_note_table = fiscalNoteSoup.find_all('table')[2]
+
+        note['annual_cost'] = float(fiscal_note_table.find_all('tr')[2].find_all('td')[2].string.replace(',',''))
+        note['annual_revenue'] = float(fiscal_note_table.find_all('tr')[8].find_all('td')[2].string.replace(',',''))
+      except Exception as e:
+        print("Unable to parse %s: %s" % (url, e))
+        pass
+      
+      bills[bill_name]['fiscal_note'] = note
+      print("Loaded fiscal note %d of %d: %s" % (note_num, note_count, note))
+    else:
+      print("Skipping fiscal note for %s" % bill_name)
 
 ### scrape agendas
 
