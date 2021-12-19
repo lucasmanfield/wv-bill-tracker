@@ -24,15 +24,15 @@ chambers = {
     'name': 'House',
     'root': 'https://www.wvlegislature.gov/House/',
     'committees': 'https://www.wvlegislature.gov/committees/house/',
-    'calendar': 'https://www.wvlegislature.gov/Bulletin_Board/house_calendar_daily.cfm?ses_year=2021&sesstype=RS&headtype=dc&houseorig=h',
-    'special_calendar': 'https://www.wvlegislature.gov/Bulletin_Board/house_calendar_special.cfm?ses_year=2021&sesstype=RS&headtype=sc&houseorig=h',
+    'calendar': 'https://www.wvlegislature.gov/Bulletin_Board/house_calendar_daily.cfm?ses_year=2022&sesstype=RS&headtype=dc&houseorig=h',
+    'special_calendar': 'https://www.wvlegislature.gov/Bulletin_Board/house_calendar_special.cfm?ses_year=2022&sesstype=RS&headtype=sc&houseorig=h',
     'agendas': {}
   }, 
   'senate': {
     'name': 'Senate',
     'root': 'https://www.wvlegislature.gov/Senate1/',
     'committees': 'https://www.wvlegislature.gov/committees/senate/',
-    'calendar': 'https://www.wvlegislature.gov/Bulletin_Board/senate_calendar.cfm?ses_year=2021&sesstype=RS&headtype=dc&houseorig=s',
+    'calendar': 'https://www.wvlegislature.gov/Bulletin_Board/senate_calendar.cfm?ses_year=2022&sesstype=RS&headtype=dc&houseorig=s',
     'agendas': {}
   }
 }
@@ -424,7 +424,7 @@ def parse_bill(url):
 
   return bill
 
-test_parse = parse_bill('http://www.wvlegislature.gov/Bill_Status/Bills_history.cfm?input=569&year=2021&sessiontype=RS&btype=bill')
+test_parse = parse_bill('http://www.wvlegislature.gov/Bill_Status/Bills_history.cfm?input=569&year=2022&sessiontype=RS&btype=bill')
 print(test_parse)  
 
 #test_agenda = parse_agenda('http://www.wvlegislature.gov/committees/house/house_com_agendas.cfm?Chart=jud&input=02-18-2021')
@@ -435,7 +435,7 @@ print(test_parse)
 
 bills = {}
 
-html_doc = requests.get('https://www.wvlegislature.gov/Bill_Status/Bills_all_bills.cfm?year=2021&sessiontype=RS&btype=bill', verify=False).text
+html_doc = requests.get('https://www.wvlegislature.gov/Bill_Status/Bills_all_bills.cfm?year=2022&sessiontype=RS&btype=bill', verify=False).text
 soup = BeautifulSoup(html_doc, 'html.parser')
 
 bill_count = len(soup.find_all(id='wrapper')[1].find_all('tr')[1:])
@@ -510,7 +510,7 @@ for tr in soup.find_all(id='wrapper')[1].find_all('tr')[1:]:
 
 ### scrape fiscal notes
 
-html_doc = requests.get('https://www.wvlegislature.gov/Bill_Status/bills_fiscal.cfm?year=2021&sessiontype=RS&btype=bill&note=fiscal', verify=False).text
+html_doc = requests.get('https://www.wvlegislature.gov/Bill_Status/bills_fiscal.cfm?year=2022&sessiontype=RS&btype=bill&note=fiscal', verify=False).text
 soup = BeautifulSoup(html_doc, 'html.parser')
 
 note_count = len(soup.find_all('table')[2].find_all('tr')[1:])

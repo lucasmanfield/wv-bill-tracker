@@ -144,40 +144,40 @@ export function capitalize(string) {
 
 export const deadlines = [
   {
-    date: moment('2/10/21'),
+    date: moment('1/12/21'),
     name: 'First Day',
     prose: 'the first day of the session',
     description: "Bills can be introduced."
   },
   {
-    date: moment('3/16/21'),
+    date: moment('2/15/21'),
     name: 'House Deadline',
     prose: 'the last day to introduce bills in the house',
     description: "Last day to introduce bills in the House."
   },
   {
-    date: moment('3/22/21'),
+    date: moment('2/21/21'),
     name: 'Senate Deadline',
     prose: 'the last day to introduce bills in the senate',
     padding: 15,
     description: "Last day to introduce bills in the Senate."
   },
   {
-    date: moment('3/28/21'),
+    date: moment('2/27/21'),
     name: 'Committee Deadline',
     prose: 'the last day for bills to emerge from committee',
     padding: 30,
     description: "Bills due out of committee."
   },
   {
-    date: moment('3/31/21'),
+    date: moment('3/2/21'),
     name: 'Crossover Day',
     prose: 'the last day to consider bills on the floor',
     padding: 45,
     description: "Last day for a bill to pass in its chamber of origin."
   },
   {
-    date: moment('4/10/21'),
+    date: moment('3/12/21'),
     name: 'Final Day',
     prose: 'the last day of the session',
     description: "Deadline for passage is midnight on the sixtieth day of the session."
