@@ -27,7 +27,7 @@ function Wrapper() {
   })
   bills.forEach(b => {
     updateBillStatus(b)
-    b.agendas = scrapedData.agendas.filter(a => a.bills.includes(b.name) && moment().diff(moment(a.date), 'hours') < 12)
+    b.agendas = scrapedData.agendas.filter(a => a.bills && a.bills.includes(b.name) && moment().diff(moment(a.date), 'hours') < 12)
   })
   scrapedData.bills = bills
 

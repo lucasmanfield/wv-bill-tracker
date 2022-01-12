@@ -1,2 +1,5 @@
 app/.eslintcache
 scraper/venv/*
+.DS_Store
+scraper/.DS_Store
+app/.eslintcache
