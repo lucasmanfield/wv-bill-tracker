@@ -120,7 +120,9 @@ export function updateBillStatus(bill) {
     bill.step = 5
     bill.status.step = 'To House'
   }
-
+  
+  //UNCOMMENT THIS AFTER CROSSOVER DATE
+  /*
   if (canDie && 
       !(
         bill.title.startsWith('Budget Bill') || 
@@ -136,6 +138,7 @@ export function updateBillStatus(bill) {
       bill.status.step = 'likely dead'
     }
   }
+  */
 }
 
 export function capitalize(string) {
