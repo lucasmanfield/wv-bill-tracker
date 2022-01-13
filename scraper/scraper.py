@@ -10,6 +10,8 @@ import datetime
 from urllib.request import urlretrieve, build_opener, install_opener, urlcleanup
 import socket
 import ssl
+from dateutil.parser import parse
+import pytz
 
 socket.setdefaulttimeout(3)
 opener = build_opener()
@@ -241,18 +243,18 @@ def parse_agenda(url):
     agenda_bills.extend([b.upper().replace('H.B.', 'HB').replace('S.B.', 'SB') for b in re.findall(r'\w.B. [0-9]+', agenda_text)])
     agenda_bills.extend([b.upper().replace('HOUSE BILL', 'HB').replace('SENATE BILL', 'SB') for b in re.findall(r'(?:House|house|Senate|senate) (?:Bill|bill) [0-9]+', agenda_text)])
     agenda = {
-      'date': agendaSoup.h1.string.strip()
-                .replace('a. m.', 'AM').replace('a. m.', 'AM')
-                .replace('a.m.', 'AM').replace('p.m.', 'PM')
-                .replace('a. m.', 'AM').replace('p. m.', 'PM'),
+      'date': agendaSoup.h1.string.strip(),
       'bills': agenda_bills,
       'url': url,
       'type': 'committee'
     }
-    agenda['date'] = re.sub('a$', 'AM', agenda['date'], flags=re.IGNORECASE)
-    agenda['date'] = re.sub('p$', 'PM', agenda['date'], flags=re.IGNORECASE)
-    agenda['date'] = re.sub('\Sam', ' AM', agenda['date'], flags=re.IGNORECASE)
-    agenda['date'] = re.sub('\Spm', ' PM', agenda['date'], flags=re.IGNORECASE)
+    agenda['date'] = agenda['date'].split('-')[0]
+    try:
+      agenda['date'] = pytz.timezone('US/Eastern').localize(parse(agenda['date'])).isoformat()
+    except:
+      agenda['date'] = agenda['date'].split('2021')[0]
+      agenda['date'] = agenda['date'].split('2022')[0]
+      agenda['date'] = pytz.timezone('US/Eastern').localize(parse(agenda['date'])).isoformat()
     print("Wrote agenda for %s: %s" % (url, agenda))
     return agenda
   else:
@@ -564,6 +566,7 @@ if note_count:
       print("Loaded fiscal note %d of %d: %s" % (note_num, note_count, note))
     else:
       print("Skipping fiscal note for %s" % bill_name)
+
 
 ### scrape agendas
 
