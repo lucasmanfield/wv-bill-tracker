@@ -41,7 +41,6 @@ const agendaItem = (scrapedData, {name, url, date, bills}) => (
 
 function Agenda({ scrapedData, loaded, type }) {
   const agendas = scrapedData.agendas
-    .filter(a => moment().diff(moment(a.date), 'hours') < 12)
     .filter(a => type.split(',').includes(a.type))
     .sort((a,b) => moment(a.date).unix() - moment(b.date).unix())
 
