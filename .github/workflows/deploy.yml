@@ -40,6 +40,10 @@ jobs:
         working-directory: main/scraper
         run: pip install requests
 
+      - name: Install dateutil
+        working-directory: main/scraper
+        run: pip install python-dateutil
+
       - name: Run scaper
         working-directory: main/scraper
         run: python scraper.py
