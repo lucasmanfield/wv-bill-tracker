@@ -429,8 +429,8 @@ def parse_bill(url):
 
   return bill
 
-#test_parse = parse_bill('http://www.wvlegislature.gov/Bill_Status/Bills_history.cfm?input=569&year=2022&sessiontype=RS&btype=bill')
-#print(test_parse)  
+test_parse = parse_bill('https://www.wvlegislature.gov/Bill_Status/Bills_history.cfm?input=306&year=2022&sessiontype=RS&btype=bill')
+print(test_parse)  
 
 #test_agenda = parse_agenda('http://www.wvlegislature.gov/committees/house/house_com_agendas.cfm?Chart=jud&input=02-18-2021')
 #print(test_agenda)  
