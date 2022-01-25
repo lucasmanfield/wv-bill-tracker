@@ -17,10 +17,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           path: main
-
-      - name: Install poppler
-        run: sudo apt-get install poppler-utils
-
+          
       - name: Install pip
         working-directory: main/scraper
         run: python -m pip install --upgrade pip
@@ -50,5 +47,5 @@ jobs:
         with:
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          source: './scraper/bills.json'
+          source: 'main/scraper/bills.json'
           dest: 's3://capitoltracker.mountainstatespotlight.org/output/bills.json'
