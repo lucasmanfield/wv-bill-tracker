@@ -48,4 +48,4 @@ jobs:
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           source: 'main/scraper/bills.json'
-          dest: 's3://capitoltracker.mountainstatespotlight.org/output/bills.json'
+          dest: 's3://projects.mountainstatespotlight.org/scraper/bills.json'
