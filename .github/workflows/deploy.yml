@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main 
-  schedule:
-    - cron: "0 */3 * * *"
   workflow_dispatch:
 
 jobs:
@@ -17,44 +15,14 @@ jobs:
         with:
           node-version: 12.x
 
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
-
       - uses: actions/checkout@v2
         with:
           path: main
 
-      - name: Install poppler
-        run: sudo apt-get install poppler-utils
-
-      - name: Install pip
-        working-directory: main/scraper
-        run: python -m pip install --upgrade pip
-
-      - name: Install bs
-        working-directory: main/scraper
-        run: pip install bs4
-
-      - name: Install requests
-        working-directory: main/scraper
-        run: pip install requests
-
-      - name: Install dateutil
-        working-directory: main/scraper
-        run: pip install python-dateutil
-
-      - name: Install pytz
-        working-directory: main/scraper
-        run: pip install pytz
-
-      - name: Run scaper
-        working-directory: main/scraper
-        run: python scraper.py
-
-      - name: Copy output
-        working-directory: main
-        run: cp scraper/bills.json app/src
+      - uses: actions/download-artifact@v2
+        with:
+          name: bills
+          path: app/src
 
       - name: Yarn Install
         working-directory: main/app
@@ -76,23 +44,3 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: 'us-east-1'
           SOURCE_DIR: "main/app/build"
-
-      - name: Notify slack success
-        if: success()
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          channel: bill-tracker
-          status: SUCCESS
-          color: good
-
-      - name: Notify slack fail
-        if: failure()
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          channel: bill-tracker
-          status: FAILED
-          color: danger
