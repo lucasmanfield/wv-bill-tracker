@@ -21,10 +21,13 @@ jobs:
         with:
           path: main
 
-      - uses: actions/download-artifact@v2
+      - name: Retrieve from s3
+        uses: prewk/s3-cp-action@v2
         with:
-          name: bills
-          path: app/src
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          dest: 'app/src/bills.json'
+          source: 's3://capitoltracker.mountainstatespotlight.org/output/bills.json'
 
       - name: Yarn Install
         working-directory: main/app

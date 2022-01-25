@@ -45,7 +45,10 @@ jobs:
         working-directory: main/scraper
         run: python scraper.py
 
-      - uses: actions/upload-artifact@v2
+      - name: Save to s3
+        uses: prewk/s3-cp-action@v2
         with:
-          name: bills
-          path: scraper/bills.json
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          source: 'scraper/bills.json'
+          dest: 's3://capitoltracker.mountainstatespotlight.org/output/bills.json'
