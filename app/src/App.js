@@ -95,7 +95,7 @@ function App({ scrapedData }) {
     }
   })
   const sessionLength = deadlines[deadlines.length - 1].date.unix() - deadlines[0].date.unix()
-
+  const sessionProgress = (moment(moment().format('YYYY-MM-DD') + ' 00:01:00').unix() - deadlines[0].date.unix()) / sessionLength
   return (
     <div className="App-container">
       <div className="App-header">
@@ -109,12 +109,14 @@ function App({ scrapedData }) {
       </div>
       <div className="App-timeline">
         <div className="App-timeline-line"></div>
-        <div className="App-timeline-today" style={{
-          left: ((moment(moment().format('YYYY-MM-DD') + ' 00:01:00').unix() - deadlines[0].date.unix()) / sessionLength * 100) + '%'
-        }}>
-          <div className="App-timeline-today-label">Today</div>
-          <div className="App-timeline-today-arrow"></div>
-        </div>
+        {sessionProgress <= 1 && sessionLength >= 0 ?
+          <div className="App-timeline-today" style={{
+            left: (sessionProgress * 100) + '%'
+          }}>
+            <div className="App-timeline-today-label">Today</div>
+            <div className="App-timeline-today-arrow"></div>
+          </div>
+        : ''}
         {deadlines.map(d => {
           const fromStart = d.date.unix() - deadlines[0].date.unix()
           return (
