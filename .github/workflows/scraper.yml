@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  run:
     runs-on: ubuntu-latest
 
     steps:
@@ -49,3 +49,5 @@ jobs:
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           source: 'main/scraper/bills.json'
           dest: 's3://projects.mountainstatespotlight.org/scraper/bills.json'
+  call-deploy:
+    uses: ./.github/workflows/deploy.yml
