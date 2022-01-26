@@ -109,7 +109,7 @@ function App({ scrapedData }) {
       </div>
       <div className="App-timeline">
         <div className="App-timeline-line"></div>
-        {sessionProgress <= 1 && sessionLength >= 0 ?
+        {sessionProgress <= 1 && sessionProgress >= 0 ?
           <div className="App-timeline-today" style={{
             left: (sessionProgress * 100) + '%'
           }}>
