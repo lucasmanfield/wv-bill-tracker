@@ -254,7 +254,11 @@ def parse_agenda(url):
     except:
       agenda['date'] = agenda['date'].split('2021')[0]
       agenda['date'] = agenda['date'].split('2022')[0]
-      agenda['date'] = pytz.timezone('US/Eastern').localize(parse(agenda['date'])).isoformat()
+      try:
+        agenda['date'] = pytz.timezone('US/Eastern').localize(parse(agenda['date'])).isoformat()
+      except:
+        print("Bad agenda date: %s" % agenda['date'])
+        return None
     print("Wrote agenda for %s: %s" % (url, agenda))
     return agenda
   else:
@@ -432,8 +436,8 @@ def parse_bill(url):
 test_parse = parse_bill('https://www.wvlegislature.gov/Bill_Status/Bills_history.cfm?input=306&year=2022&sessiontype=RS&btype=bill')
 print(test_parse)  
 
-#test_agenda = parse_agenda('http://www.wvlegislature.gov/committees/house/house_com_agendas.cfm?Chart=jud&input=02-18-2021')
-#print(test_agenda)  
+test_agenda = parse_agenda('https://www.wvlegislature.gov/committees/house/house_com_agendas.cfm?Chart=hhr&input=Tuesdat,+Feb.+1,+2022')
+print(test_agenda)  
 
 
 ### scrape bills
