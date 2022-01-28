@@ -50,6 +50,7 @@ jobs:
           source: 'main/scraper/bills.json'
           dest: 's3://projects.mountainstatespotlight.org/scraper/bills.json'
   call-deploy:
+    needs: run
     uses: ./.github/workflows/deploy.yml
     secrets:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
