@@ -85,10 +85,11 @@ function Bill({ scrapedData, loaded }) {
             <a target="_blank" href={versions[0]['url']}><BsFileText /> Read Text</a>
           : ''}
           <button className={`Bill-follow ${isFollowing ? 'Bill-following' : ''}`} onClick={() => {
+            const expires = new Date('January 1, 2024 00:00:00')
             if (isFollowing) {
-              setCookie('following', (cookies.following || '').replace(`${name},`, ''))
+              setCookie('following', (cookies.following || '').replace(`${name},`, ''), {expires})
             } else {
-              setCookie('following', `${cookies.following || ''}${name},`)
+              setCookie('following', `${cookies.following || ''}${name},`, {expires})
             }
           }}>
             {isFollowing ? <BsStarFill /> : <BsStar />} {isFollowing ? 'Following' : 'Follow'}
