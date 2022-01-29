@@ -85,7 +85,7 @@ function Bill({ scrapedData, loaded }) {
             <a target="_blank" href={versions[0]['url']}><BsFileText /> Read Text</a>
           : ''}
           <button className={`Bill-follow ${isFollowing ? 'Bill-following' : ''}`} onClick={() => {
-            const expires = new Date('January 1, 2024 00:00:00')
+            const expires = moment().add(1, 'Y').toDate()
             if (isFollowing) {
               setCookie('following', (cookies.following || '').replace(`${name},`, ''), {expires})
             } else {
