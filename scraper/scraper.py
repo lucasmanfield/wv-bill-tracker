@@ -262,7 +262,7 @@ def parse_agenda(url):
     print("Wrote agenda for %s: %s" % (url, agenda))
     return agenda
   else:
-    print("No agenda found for", committee)
+    print("No agenda found for", url)
   return None
 
 def parse_calendar(url):
